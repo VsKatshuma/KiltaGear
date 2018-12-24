@@ -1,0 +1,22 @@
+{
+  "name": "kiltagear",
+  "version": "1.0.0",
+  "description": "A 2D fighting game presented by NiemiSmäsh.",
+  "main": "kiltagear.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VsKatshuma/KiltaGear.git"
+  },
+  "author": "NiemiSmäsh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VsKatshuma/KiltaGear/issues"
+  },
+  "homepage": "https://github.com/VsKatshuma/KiltaGear#readme",
+  "dependencies": {
+    "pixi.js": "^4.8.4"
+  }
+}

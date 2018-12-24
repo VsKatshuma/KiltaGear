@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="author" content="NiemiSmäsh">
+		<title>KiltaGear</title>
+		<script src="node_modules/pixi.js/dist/pixi.min.js"></script>
+	</head>
+	<body style="margin: 0;">
+		<script type="text/javascript">
+			let type = "WebGL"
+			if (!PIXI.utils.isWebGLSupported()) {
+				type = "canvas"
+			}
+
+			let app = new PIXI.Application({width: 256, height: 256});
+			
+			app.renderer.view.style.position = "absolute";
+			app.renderer.view.style.display = "block";
+			app.renderer.autoResize = true;
+			app.renderer.resize(window.innerWidth, window.innerHeight);
+			
+			document.body.appendChild(app.view);
+			
+			PIXI.loader.add([
+				"sprites/Sonic Battle.png"
+			]).load(setup);
+			
+			function setup() {
+				let sprite = new PIXI.Sprite(
+					PIXI.loader.resources["sprites/Sonic Battle.png"].texture
+				);
+				sprite.pivot.set(20, 29);
+				app.stage.addChild(sprite);
+				
+				sprite.x = app.renderer.width / 2;
+				sprite.y = app.renderer.height / 2;
+			}
+		</script>
+	</body>
+</html>
