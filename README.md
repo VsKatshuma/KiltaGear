@@ -1,9 +1,13 @@
 # KiltaGear
 A 2D fighting game presented by NiemiSmäsh.
 
-#### How to run
+### Installation
 
-1. Have **node** installed.
-2. Have **http-server** installed. If you don't, run `npm install http-server -g`.
-3. Run command `http-server` in project folder.
-4. Game is running on *http://localhost:8080/*
+1. Have `yarn` and Node.js 10.15.0 installed (see https://yarnpkg.com/lang/en/docs/install/).
+2. Run `yarn` to install local dependencies.
+
+### Running locally
+
+1. `yarn start`
+2. Open *http://localhost:8080/* in your favourite browser.
+3. Enjoy *KiltaGear*!
