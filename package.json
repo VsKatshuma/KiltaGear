@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "http-server",
+    "watch": "tsc --watch && nodemon dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,7 +23,11 @@
   },
   "homepage": "https://github.com/VsKatshuma/KiltaGear#readme",
   "dependencies": {
+    "@types/node": "^11.11.5",
+    "awesome-typescript-loader": "^5.2.1",
     "http-server": "^0.11.1",
-    "pixi.js": "^4.8.4"
+    "pixi.js": "^4.8.4",
+    "source-map-loader": "^0.2.4",
+    "typescript": "^3.3.4000"
   }
 }
