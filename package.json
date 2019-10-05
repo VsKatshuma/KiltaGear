@@ -16,16 +16,16 @@
     "url": "git+https://github.com/VsKatshuma/KiltaGear.git"
   },
   "author": "NiemiSmäsh",
-  "license": "Refer to the LICENSE file.",
+  "license": "Refer to LICENSE file",
   "bugs": {
     "url": "https://github.com/VsKatshuma/KiltaGear/issues"
   },
   "homepage": "https://github.com/VsKatshuma/KiltaGear#readme",
   "dependencies": {
-    "@types/node": "^11.11.5",
     "pixi.js": "^5.1.5"
   },
   "devDependencies": {
+    "@types/node": "^11.11.5",
     "typescript": "^3.6.3",
     "parcel-bundler": "^1.9.4"
   }
