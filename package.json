@@ -8,7 +8,7 @@
     "node": ">=10.15.0"
   },
   "scripts": {
-    "start": "tsc --noEmit && parcel index.html",
+    "start": "yarn run tsc --noEmit && parcel index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
