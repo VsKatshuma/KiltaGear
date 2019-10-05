@@ -9,16 +9,84 @@ let app = new PIXI.Application({width: 256, height: 256})
 
 app.renderer.view.style.position = 'absolute'
 app.renderer.view.style.display = 'block'
-app.renderer.autoResize = true
+//app.renderer.autoResize = true
 app.renderer.resize(window.innerWidth, window.innerHeight)
 
 document.body.appendChild(app.view)
 
-// Game state
-const gameState = {
-  screen: 'character-select',
-  state: {}
+type hitbox = {
+    damage: number,
+    knockbackBase: number,
+    knockbackGrowth: number,
+    knockbackX: number,
+    knockbackY: number,
+    stunBase: number,
+    stunGrowth: number,
+    hitLag: number,
+    //characterSpecific: number,
+    relativeToCharacter: boolean,
+    x: number,
+    y: number,
+    framesUntilActive: number,
+    framesUntilEnd: number,
+    onStart: () => undefined,
+    onActivation: () => undefined,
+    onHit: () => undefined,
+    onEnd: () => undefined
 }
+
+/*var hitbox = {
+    damage: 0,
+    knockbackBase: 0,
+    knockbackGrowth: 0,
+    knockbackX: 0,
+    knockbackY: 0,
+    stunBase: 0,
+    stunGrowth: 0,
+    hitLag: 0,
+    //characterSpecific: 0,
+    relativeToCharacter: false,
+    x: 0,
+    y: 0,
+    framesUntilActive: 0,
+    framesUntilEnd: 0,
+    onStart: () => {},
+    onActivation: () => {},
+    onHit: () => {},
+    onEnd: () => {}
+}*/
+
+function initializePlayer() {
+    return {
+        state: 'groundborne',
+        health: 100,
+        meter: 0,
+        speed: 0,
+        direction: 0,
+        framesUntilNeutral: 0
+    }
+}
+
+const playerOne = {
+    ...initializePlayer(),
+    x: 500,
+    y: 450,
+    facing: 'right'
+}
+const playerTwo = {
+    ...initializePlayer(),
+    x: 700,
+    y: 450,
+    facing: 'left'
+}
+
+// Game state
+var gameState = 'title-screen'
+
+/* const gameState = {
+    screen: 'character-select',
+    state: {}
+} */
 
 interface KeyStatus {
   isDown: boolean;
@@ -28,18 +96,20 @@ interface KeyStatus {
 const keys: { [key: string]: KeyStatus } = {}
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
-  keys[event.key] = { isDown: true, lastPressed: Date.now() }
-  switch (gameState.screen) {
-    case 'in-game':
-      console.log(`pressed ${event.key}`)
-    break
-    case 'character-select':
-
-    break
-    case 'title-screen':
-      break
-    default:
-      throw new Error(`unknown gs.screen when pressing key\nscreen: ${gameState.screen}\nkey event: ${event}`)
+    keys[event.key] = { isDown: true, lastPressed: Date.now() }
+    console.log(`pressed ${event.key} in state ${gameState}`)
+    switch (gameState) {
+        case 'in-game':
+            gameState = 'title-screen'
+            break
+        case 'character-select':
+            gameState = 'in-game'
+            break
+        case 'title-screen':
+            gameState = 'character-select'
+            break
+        default:
+            throw new Error(`unknown game state when pressing key\nscreen: ${gameState}\nkey event: ${event}`)
   }
 })
 
