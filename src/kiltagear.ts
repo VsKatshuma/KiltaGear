@@ -1,4 +1,4 @@
-import { Hitbox, Attack } from './types'
+import { Hitbox, Attack, Character } from './types'
 import { player1selection, player2selection } from './render';
 
 export const createHitbox = (startFrame: number, endFrame: number, strength: number = 4): Hitbox => {
@@ -36,24 +36,22 @@ export const generateAttack = (hitboxes: Hitbox[]): Attack => {
 
 function initializePlayer() {
     return {
+        // create character base, e.g. ...Katshuma()
         state: 'groundborne',
-        health: 100,
         meter: 0,
-        speed: 0,
-        direction: 0,
+        xSpeed: 0,
+        ySpeed: 0,
         framesUntilNeutral: 0,
-        weight: 1,
-        hurtboxRadius: 20
     }
 }
 
-const playerOne = {
+const playerOne: Character = {
     ...initializePlayer(),
     x: 500,
     y: 450,
     facing: 'right',
 }
-const playerTwo = {
+const playerTwo: Character = {
     ...initializePlayer(),
     x: 700,
     y: 450,
