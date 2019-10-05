@@ -9,52 +9,64 @@ let app = new PIXI.Application({width: 256, height: 256})
 
 app.renderer.view.style.position = 'absolute'
 app.renderer.view.style.display = 'block'
-//app.renderer.autoResize = true
+// app.renderer.autoResize = true
 app.renderer.resize(window.innerWidth, window.innerHeight)
 
 document.body.appendChild(app.view)
 
-type hitbox = {
+type Attack = {
+    player: number,
+    hitboxes: Hitbox[],
+    projectile: boolean,
+    onStart: () => {},
+    onEnd: () => {}
+}
+
+type Hitbox = {
     damage: number,
+    radius: number,
     knockbackBase: number,
     knockbackGrowth: number,
     knockbackX: number,
     knockbackY: number,
-    stunBase: number,
-    stunGrowth: number,
+    hitstunBase: number,
+    hitstunGrowth: number,
     hitLag: number,
-    //characterSpecific: number,
+    // characterSpecific: number,
     relativeToCharacter: boolean,
     x: number,
     y: number,
-    framesUntilActive: number,
+    framesUntilActivation: number,
     framesUntilEnd: number,
-    onStart: () => undefined,
-    onActivation: () => undefined,
-    onHit: () => undefined,
-    onEnd: () => undefined
+    onStart: () => void,
+    onActivation: () => void,
+    onHit: () => void,
+    onEnd: () => void
 }
 
-/*var hitbox = {
-    damage: 0,
-    knockbackBase: 0,
-    knockbackGrowth: 0,
-    knockbackX: 0,
-    knockbackY: 0,
-    stunBase: 0,
-    stunGrowth: 0,
-    hitLag: 0,
-    //characterSpecific: 0,
-    relativeToCharacter: false,
-    x: 0,
-    y: 0,
-    framesUntilActive: 0,
-    framesUntilEnd: 0,
-    onStart: () => {},
-    onActivation: () => {},
-    onHit: () => {},
-    onEnd: () => {}
-}*/
+const createHitbox = (startFrame: number, endFrame: number, strength: number = 4): Hitbox => {
+    return {
+        damage: strength,
+        radius: strength * 3,
+        knockbackBase: strength * 20,
+        knockbackGrowth: 0,
+        knockbackX: 0,
+        knockbackY: 0,
+        hitstunBase: 0,
+        hitstunGrowth: 0,
+        hitLag: 0,
+        //characterSpecific: 0,
+        relativeToCharacter: false,
+        x: 0,
+        y: 0,
+        framesUntilActivation: startFrame,
+        framesUntilEnd: endFrame,
+        onStart: () => {},
+        onActivation: () => {},
+        onHit: () => {},
+        onEnd: () => {}
+    }
+}
 
 function initializePlayer() {
     return {
@@ -63,7 +75,9 @@ function initializePlayer() {
         meter: 0,
         speed: 0,
         direction: 0,
-        framesUntilNeutral: 0
+        framesUntilNeutral: 0,
+        weight: 1,
+        hurtboxRadius: 20
     }
 }
 
@@ -71,7 +85,7 @@ const playerOne = {
     ...initializePlayer(),
     x: 500,
     y: 450,
-    facing: 'right'
+    facing: 'right',
 }
 const playerTwo = {
     ...initializePlayer(),
@@ -81,19 +95,14 @@ const playerTwo = {
 }
 
 // Game state
-var gameState = 'title-screen'
-
-/* const gameState = {
-    screen: 'character-select',
-    state: {}
-} */
+export let gameState: 'title-screen' | 'character-select' | 'in-game' = 'title-screen'
 
 interface KeyStatus {
   isDown: boolean;
   lastPressed?: number;
 }
 
-const keys: { [key: string]: KeyStatus } = {}
+export const keys: { [key: string]: KeyStatus } = {}
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
     keys[event.key] = { isDown: true, lastPressed: Date.now() }
