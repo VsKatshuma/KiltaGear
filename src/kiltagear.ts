@@ -1,7 +1,7 @@
 import { Hitbox, Attack, Character, Player, GameScreen, CharacterState, PlayerBase, InputStatus } from './types'
 import { startGameLoop } from './gameloop'
 import { Katshuma } from './characters/katshuma'
-import { True_mmKALLL } from './characters/mmkalll'
+import { True_mmKALLL } from './characters/true-mmkalll'
 
 const playerBase: PlayerBase = {
     state: 'groundborne',

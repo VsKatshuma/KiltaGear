@@ -2,7 +2,7 @@ import { Character } from "../types";
 import { generateAttack, createHitbox } from "../utilities";
 
 
-export const True_mmKALLL: Character = {
+export const mmKALLL: Character = {
   health: 100,
   walkSpeed: 5,
   airSpeed: 8,
