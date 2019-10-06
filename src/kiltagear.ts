@@ -1,3 +1,4 @@
+import { Hitbox, Attack, Character, Player, GameScreen, CharacterState, PlayerBase } from './types'
 import { Katshuma } from './characters/katshuma'
 import { True_mmKALLL } from './characters/mmkalll'
 
@@ -70,20 +71,6 @@ export const keys: { [key: string]: KeyStatus } = {}
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
     keys[event.key] = { isDown: true, lastPressed: Date.now() }
-    console.log(`pressed ${event.key} in state ${gameState}`)
-    switch (gameState) {
-        case 'in-game':
-            gameState = 'title-screen'
-            break
-        case 'character-select':
-            gameState = 'in-game'
-            break
-        case 'title-screen':
-            gameState = 'character-select'
-            break
-        default:
-            throw new Error(`unknown game state when pressing key\nscreen: ${gameState}\nkey event: ${event}`)
-  }
 })
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {

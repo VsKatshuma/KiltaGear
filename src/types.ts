@@ -1,3 +1,4 @@
+export type GameScreen = 'title-screen' | 'character-select' | 'in-game' // Don't rename to GameState, it will confuse gameloop.ts
 
 export type NeutralCharacterState = 'groundborne' | 'airborne'
 export type BouncingCharacterState = 'wallbounce' | 'floorbounce'
