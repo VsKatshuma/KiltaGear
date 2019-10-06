@@ -9,7 +9,7 @@ export const True_mmKALLL: Character = {
   walkSpeed: 5,
   airSpeed: 8,
   weight: 1,
-  jumps: 2,
+  maxJumps: 2,
   jumpStrength: 1,
   hurtboxRadius: 0,
   attacks: {

@@ -15,7 +15,7 @@ const playerBase: PlayerBase = {
 
 const playerOne: Player = {
     ...playerBase,
-    playerPort: 1,
+    playerSlot: 1,
     character: Katshuma,
     x: 500,
     y: 450,
@@ -33,7 +33,7 @@ const playerOne: Player = {
 
 const playerTwo: Player = {
     ...playerBase,
-    playerPort: 2,
+    playerSlot: 2,
     character: True_mmKALLL,
     x: 700,
     y: 450,
@@ -68,6 +68,7 @@ window.addEventListener('keydown', (event: KeyboardEvent) => {
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
     keysReleased.push(event.key)
+    console.log(keys)
     keys[event.key].isDown = false
 })
 

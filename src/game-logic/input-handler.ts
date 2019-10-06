@@ -1,5 +1,6 @@
 import { Player, KeyStatus, InputStatus, InGameState, playerCanMove, playerCanSDI, playerCanAct } from "../types";
 import { getAttackString } from "../utilities";
+import { handlePlayerMove, handlePlayerJump } from "./physics";
 
 export enum PlayerInput {
   Left,
@@ -16,6 +17,21 @@ export type PlayerAction = { playerPort: number, action: PlayerInput }
 export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatus, keysPressed: KeyStatus[], keysReleased: KeyStatus[]): InGameState => {
   const nextState: InGameState = currentState
   const players: Player[] = nextState.players
+  console.log(keyHeld(inputs, 'ArrowLeft'), playerCanMove(players[1].state))
+
+  if (keyHeld(inputs, 'a') && playerCanMove(players[0].state)) {
+    players[0] = handlePlayerMove(players[0], -1)
+  }
+  if (keyHeld(inputs, 'd') && playerCanMove(players[0].state)) {
+    players[0] = handlePlayerMove(players[0], 1)
+  }
+
+  if (keyHeld(inputs, 'ArrowLeft') && playerCanMove(players[1].state)) {
+    players[1] = handlePlayerMove(players[1], -1)
+  }
+  if (keyHeld(inputs, 'ArrowRight') && playerCanMove(players[1].state)) {
+    players[1] = handlePlayerMove(players[1], 1)
+  }
 
   players.forEach((player) => {
     keysPressed.forEach((key: KeyStatus) => {
@@ -24,28 +40,14 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
         if (input) {
           switch (input[1]) {
             case PlayerInput.Up:
-              if (player.jumps > 0) {
-                player.jumps -= 1
-                player.ySpeed -= player.character.jumpStrength // positive y is downwards
-              }
-
+              console.log('JUMP!!!')
+              players[player.playerSlot - 1] = handlePlayerJump(player)
+              break
             case PlayerInput.Down:
               if (player.state === 'airborne') {
                 player.ySpeed += player.character.weight * 3
               }
-
-            case PlayerInput.Left:
-            case PlayerInput.Right:
-              const direction: number = input[1] === PlayerInput.Left ? -1 : 1
-              if (playerCanMove(player.state)) {
-                player.xSpeed = player.character.walkSpeed * direction
-              }
-
-              if (playerCanSDI(player.state)) {
-                player.x += 8 * direction
-              }
               break
-
             case PlayerInput.Light:
               if (playerCanAct(player.state)) {
                 if (keyHeld(inputs, 'ArrowLeft') || keyHeld(inputs, 'ArrowRight')) {
@@ -90,7 +92,7 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
       })
   })
 
-  return nextState
+  return { ...nextState, players: players }
 }
 
 function keyHeld(inputs: InputStatus, key: string) {

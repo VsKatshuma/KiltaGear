@@ -2,7 +2,7 @@ import * as kiltagear from '../kiltagear'
 import { render } from '../render'
 import { Player, ActiveAttack, InputStatus, KeyStatus, GameState } from '../types';
 import { handlePlayerInputs } from './input-handler';
-import { checkCollisions } from './collisions';
+import { checkCollisions } from './physics';
 
 // As a developer, I want this file to be indented with 2 spaces. -- Esa
 

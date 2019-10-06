@@ -38,15 +38,15 @@ export type NoActionCharacterState = SmashDICharacterState | 'attacking' | 'land
 
 export type CharacterState = NeutralCharacterState | NoActionCharacterState
 
-export const playerCanAct = (state: any): state is NeutralCharacterState => {
+export const playerCanAct = (state: CharacterState): state is NeutralCharacterState => {
   return state === 'airborne' || state === 'groundborne'
 }
 
-export const playerCanMove = (state: any): state is NeutralCharacterState => {
+export const playerCanMove = (state: CharacterState): state is NeutralCharacterState => {
   return playerCanAct(state)
 }
 
-export const playerCanSDI = (state: any): state is SmashDICharacterState => {
+export const playerCanSDI = (state: CharacterState): state is SmashDICharacterState => {
   return state === 'wallbouncing' || state === 'floorbouncing' || state === 'hitlag'
 }
 
@@ -93,7 +93,7 @@ export type Character = {
   walkSpeed: number,
   airSpeed: number,
   weight: number,
-  jumps: number,
+  maxJumps: number,
   jumpStrength: number,
   hurtboxRadius: number,
   attacks: Partial<{
@@ -141,7 +141,7 @@ export type PlayerBase = {
 }
 
 export type Player = PlayerBase & {
-  playerPort: number
+  playerSlot: number
   playerInputs: { [key: string]: PlayerInput }
   character: Character,
   x: number,
