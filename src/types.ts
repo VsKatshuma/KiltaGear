@@ -5,6 +5,9 @@ export type NoActionCharacterState = BouncingCharacterState | 'landing' | 'hitla
 
 export type CharacterState = NeutralCharacterState | NoActionCharacterState
 
+export type AttackStrength = 'Light' | 'Special' | 'Meter'
+export type AttackDirection = 'Neutral' | 'Up' | 'Down' | 'Forward' | 'Back'
+
 export type Attack = {
   hitboxes: Hitbox[],
   projectile: boolean,
