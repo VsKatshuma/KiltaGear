@@ -38,11 +38,11 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
             case PlayerInput.Right:
               const direction: number = input[1] === PlayerInput.Left ? -1 : 1
               if (playerCanMove(player.state)) {
-                player.xSpeed = 3 * direction
+                player.xSpeed = player.character.walkSpeed * direction
               }
 
               if (playerCanSDI(player.state)) {
-                player.x += 3 * direction
+                player.x += 8 * direction
               }
               break
 

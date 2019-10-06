@@ -1,4 +1,4 @@
-import { PlayerInput } from "./game-loop/input-handler";
+import { PlayerInput } from "./game-logic/input-handler";
 
 // Game state handling related typings
 

@@ -48,7 +48,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       break
     case 'title-screen':
       // Change to character select
-      if (inputs[' '] && inputs[' '].isDown) {
+      if (keysPressed.length > 0) {
         return {
           ...currentState,
           screen: 'character-select',

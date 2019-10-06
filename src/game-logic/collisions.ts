@@ -8,5 +8,10 @@ export const checkCollisions = (state: InGameState): InGameState => {
 
   // TODO: Check for wall/floorbounce
 
+  // movement, physics, landing
+  players.map((players) => {
+
+  })
+
   return { ...state }
 }

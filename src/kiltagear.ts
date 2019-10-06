@@ -1,8 +1,8 @@
 import { Player, PlayerBase, InputStatus } from './types'
-import { startGameLoop } from './game-loop/game-loop'
+import { startGameLoop } from './game-logic/game-loop'
 import { Katshuma } from './characters/katshuma'
 import { True_mmKALLL } from './characters/true-mmkalll'
-import { PlayerInput } from './game-loop/input-handler';
+import { PlayerInput } from './game-logic/input-handler';
 
 const playerBase: PlayerBase = {
     state: 'groundborne',
