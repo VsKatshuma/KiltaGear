@@ -1,7 +1,6 @@
 import { Character } from "../types";
 import { generateAttack, createHitbox } from "../utilities";
 
-
 export const Katshuma: Character = {
     name: 'Katshuma',
     id: 'katshuma',
@@ -19,7 +18,53 @@ export const Katshuma: Character = {
           { ...createHitbox(12, 20, 10) },
           { ...createHitbox(19, 40, 50) }
         ]),
-        projectile: true,
+        projectile: true
+      },
+      LightForward: {
+        ...generateAttack([
+          {
+            damage: ,
+            radius: ,
+            knockbackBase: ,
+            knockbackGrowth: ,
+            knockbackX: ,
+            knockbackY: ,
+            hitstunBase: ,
+            hitstunGrowth: ,
+            hitLag: ,
+            // characterSpecific: ,
+            relativeToCharacter: true,
+            x: ,
+            y: ,
+            framesUntilActivation: ,
+            framesUntilEnd: ,
+            onStart: () => {},
+            onActivation: () => {},
+            onHit: () => {},
+            onEnd: () => {},
+          },
+          {
+            damage: ,
+            radius: ,
+            knockbackBase: ,
+            knockbackGrowth: ,
+            knockbackX: ,
+            knockbackY: ,
+            hitstunBase: ,
+            hitstunGrowth: ,
+            hitLag: ,
+            // characterSpecific: ,
+            relativeToCharacter: true,
+            x: ,
+            y: ,
+            framesUntilActivation: ,
+            framesUntilEnd: ,
+            onStart: () => {},
+            onActivation: () => {},
+            onHit: () => {},
+            onEnd: () => {},
+          },
+        ])
       }
       // TODO: Add remaining attacks
     },
