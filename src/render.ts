@@ -1,5 +1,4 @@
 import * as PIXI from 'pixi.js'
-import { gameState, keys } from './kiltagear'
 
 let type = 'WebGL'
 if (!PIXI.utils.isWebGLSupported()) {

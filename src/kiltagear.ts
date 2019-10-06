@@ -90,6 +90,7 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
   keys[event.key] = { isDown: false }
 })
 
+/*
 function keyboard(value: string) {
   let key: any = {}
   key.value = value
@@ -170,3 +171,4 @@ let characterSelectionDown = keyboard('ArrowDown')
 characterSelectionDown.press = () => {
   player2selection.y += 64
 }
+*/
