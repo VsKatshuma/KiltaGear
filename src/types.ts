@@ -41,6 +41,7 @@ export type Hitbox = {
 }
 
 export type Character = {
+  icon: PIXI.Sprite,
   health: number,
   walkSpeed: number,
   airSpeed: number,

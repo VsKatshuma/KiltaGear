@@ -2,39 +2,6 @@ import { Hitbox, Attack, Character, Player, GameScreen, CharacterState, PlayerBa
 import { Katshuma } from './characters/katshuma'
 import { True_mmKALLL } from './characters/mmkalll'
 
-export const createHitbox = (startFrame: number, endFrame: number, strength: number = 4): Hitbox => {
-    return {
-        damage: strength,
-        radius: strength * 3,
-        knockbackBase: strength * 20,
-        knockbackGrowth: 0,
-        knockbackX: 0,
-        knockbackY: 0,
-        hitstunBase: 0,
-        hitstunGrowth: 0,
-        hitLag: 0,
-        //characterSpecific: 0,
-        relativeToCharacter: false,
-        x: 0,
-        y: 0,
-        framesUntilActivation: startFrame,
-        framesUntilEnd: endFrame,
-        onStart: () => {},
-        onActivation: () => {},
-        onHit: () => {},
-        onEnd: () => {}
-    }
-}
-
-export const generateAttack = (hitboxes: Hitbox[]): Attack => {
-    return {
-        hitboxes: hitboxes,
-        projectile: false,
-        onStart: () => {},
-        onEnd: () => {}
-    }
-}
-
 const playerBase: PlayerBase = {
     state: 'groundborne',
     meter: 0,
@@ -62,9 +29,9 @@ const playerTwo: Player = {
 
 export const players = [playerOne, playerTwo]
 
-interface KeyStatus {
-  isDown: boolean;
-  lastPressed?: number;
+type KeyStatus = {
+  isDown: boolean
+  lastPressed?: number
 }
 
 export const keys: { [key: string]: KeyStatus } = {}

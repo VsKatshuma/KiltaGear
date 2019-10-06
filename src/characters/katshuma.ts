@@ -1,5 +1,5 @@
-import { createHitbox, generateAttack } from "../kiltagear";
 import { Character } from "../types";
+import { generateAttack, createHitbox } from "../utilities";
 
 
 export const Katshuma: Character = {
