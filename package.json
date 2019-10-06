@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "A 2D fighting game presented by NiemiSmäsh.",
     "private": true,
+    "browser": true,
     "main": "kiltagear.js",
     "engines": {
         "node": ">=10.15.0"
@@ -22,7 +23,7 @@
     },
     "homepage": "https://github.com/VsKatshuma/KiltaGear#readme",
     "dependencies": {
-        "pixi.js": "^5.1.5"
+        "pixi.js": "^5.1.3"
     },
     "devDependencies": {
         "@types/node": "^11.11.5",

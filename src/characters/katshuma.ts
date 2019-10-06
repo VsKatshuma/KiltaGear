@@ -3,12 +3,14 @@ import { generateAttack, createHitbox } from "../utilities";
 
 
 export const Katshuma: Character = {
+    name: 'Katshuma',
+    id: 'katshuma',
     health: 100,
     walkSpeed: 5,
     airSpeed: 8,
     weight: 1,
     jumpStrength: 1,
-
+    hurtboxRadius: 20,
     attacks: {
       LightNeutral: {
         ...generateAttack([
