@@ -1,4 +1,9 @@
-export type CharacterState = 'groundborne' | 'airborne' | 'landing' // TODO: add types
+
+export type NeutralCharacterState = 'groundborne' | 'airborne'
+export type BouncingCharacterState = 'wallbounce' | 'floorbounce'
+export type NoActionCharacterState = BouncingCharacterState | 'landing' | 'hitlag' | 'hitstun'
+
+export type CharacterState = NeutralCharacterState | NoActionCharacterState
 
 export type Attack = {
   hitboxes: Hitbox[],
