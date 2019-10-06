@@ -111,6 +111,7 @@ const ingamemmKALLL = PIXI.Sprite.from(ingamemmKALLLUrl)
 
 ingameKatshuma.width = 40
 ingameKatshuma.height = 40
+
 ingamemmKALLL.width = 40
 ingamemmKALLL.height = 40
 
@@ -128,6 +129,9 @@ player1.addChild(ingameKatshuma)
 player2.addChild(characterBody2)
 player2.addChild(ingamemmKALLL)
 
+const hurtboxes = new PIXI.Graphics()
+hurtboxes.alpha = 0.5
+
 // Backgrounds
 var backgroundUrl = require('../assets/sprites/ingame-6.jpg')
 
@@ -135,6 +139,15 @@ const background1 = PIXI.Sprite.from(backgroundUrl)
 
 background1.width = window.innerWidth
 background1.height = window.innerHeight
+
+function transitionToTitleScreen(): void {
+    app.renderer.backgroundColor = 0x7799FF
+    app.stage.removeChildren()
+    app.stage.addChild(titleBeam1)
+    app.stage.addChild(titleBeam2)
+    app.stage.addChild(titleBeam3)
+    app.stage.addChild(titleEsa)
+}
 
 function transitionToCharacterSelect(): void {
     app.renderer.backgroundColor = 0xFF0000
@@ -150,15 +163,7 @@ function transitionToIngame(): void {
     app.stage.addChild(background1)
     app.stage.addChild(player1)
     app.stage.addChild(player2)
-}
-
-function transitionToTitleScreen(): void {
-    app.renderer.backgroundColor = 0x7799FF
-    app.stage.removeChildren()
-    app.stage.addChild(titleBeam1)
-    app.stage.addChild(titleBeam2)
-    app.stage.addChild(titleBeam3)
-    app.stage.addChild(titleEsa)
+    app.stage.addChild(hurtboxes)
 }
 
 let previousScreen = 'title-screen'
@@ -194,5 +199,10 @@ export function render(state: GameState): void {
         player1.y = state.players[0].y
         player2.x = state.players[1].x
         player2.y = state.players[1].y
+        hurtboxes.clear()
+        hurtboxes.beginFill(0x6688FF)
+        hurtboxes.drawCircle(player1.x + 50, player1.y + 50, state.players[0].character.hurtboxRadius)
+        hurtboxes.drawCircle(player2.x + 50, player2.y + 50, state.players[1].character.hurtboxRadius)
+        hurtboxes.endFill()
     }
 }

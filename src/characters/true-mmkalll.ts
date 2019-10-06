@@ -11,7 +11,7 @@ export const True_mmKALLL: Character = {
   weight: 1,
   maxJumps: 2,
   jumpStrength: 1,
-  hurtboxRadius: 0,
+  hurtboxRadius: 30,
   attacks: {
     LightNeutral: {
       ...generateAttack([
