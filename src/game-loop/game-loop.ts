@@ -1,28 +1,12 @@
-import * as kiltagear from './kiltagear'
-import { render } from './render'
-import { Player, ActiveAttack, InputStatus, KeyStatus } from './types';
+import * as kiltagear from '../kiltagear'
+import { render } from '../render'
+import { Player, ActiveAttack, InputStatus, KeyStatus, GameState } from '../types';
 import { handlePlayerInputs } from './input-handler';
 import { checkCollisions } from './collisions';
 
 // As a developer, I want this file to be indented with 2 spaces. -- Esa
 
 const FRAMES_PER_SECOND = 60
-
-export type GameState = (TitleScreenState | CharacterSelectionState | InGameState)
-
-export type CharacterSelectionState = {
-  screen: 'character-select'
-}
-
-export type TitleScreenState = {
-  screen: 'title-screen'
-}
-
-export type InGameState = {
-  screen: 'in-game'
-  players: Player[],
-  activeAttacks: ActiveAttack[],
-}
 
 let currentState: GameState = {
   screen: 'title-screen',
@@ -52,7 +36,8 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       return state
       break
     case 'character-select':
-      if (inputs[' '] && inputs[' '].isDown) {
+      // Change to in-game when any key is pressed
+      if (keysPressed.length > 0) {
         return {
           ...currentState,
           screen: 'in-game',
@@ -62,10 +47,15 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       }
       break
     case 'title-screen':
+      // Change to character select
       if (inputs[' '] && inputs[' '].isDown) {
         return {
           ...currentState,
           screen: 'character-select',
+          characterSelection: [
+            { x: 1, y: 1 },
+            { x: 1, y: 1}
+          ]
         }
       }
       break

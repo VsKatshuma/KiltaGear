@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js'
-import { GameState, InGameState } from './gameloop'
+import { GameState } from './types';
 
 let type = 'WebGL'
 if (!PIXI.utils.isWebGLSupported()) {
