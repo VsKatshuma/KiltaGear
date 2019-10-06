@@ -38,37 +38,38 @@ export type Character = {
   weight: number,
   jumpStrength: number,
   hurtboxRadius: number,
+  attacks: Partial<{
+    LightNeutral: Attack,
+    LightForward: Attack,
+    LightDown: Attack,
 
-  // Attacks
-  lightNeutral: Attack,
-  lightSide: Attack,
-  lightDown: Attack,
+    airLightNeutral: Attack,
+    airLightUp: Attack,
+    airLightDown: Attack,
+    airLightForward: Attack,
+    airLightBack: Attack,
 
-  airLightNeutral: Attack,
-  airLightUp: Attack,
-  airLightDown: Attack,
-  airLightForward: Attack,
-  airLightBack: Attack,
+    SpecialNeutral: Attack,
+    SpecialForward: Attack,
+    SpecialDown: Attack,
 
-  specialNeutral: Attack,
-  specialSide: Attack,
-  specialDown: Attack,
+    airSpecialNeutral: Attack,
+    airSpecialUp: Attack,
+    airSpecialDown: Attack,
+    airSpecialForward: Attack,
+    airSpecialBack: Attack,
 
-  airSpecialNeutral: Attack,
-  airSpecialUp: Attack,
-  airSpecialDown: Attack,
-  airSpecialForward: Attack,
-  airSpecialBack: Attack,
+    MeterNeutral: Attack,
+    MeterForward: Attack,
+    MeterDown: Attack,
 
-  meterNeutral: Attack,
-  meterSide: Attack,
-  meterDown: Attack,
-
-  airMeterNeutral: Attack,
-  airMeterUp: Attack,
-  airMeterDown: Attack,
-  airMeterForward: Attack,
-  airMeterBack: Attack,
+    airMeterNeutral: Attack,
+    airMeterUp: Attack,
+    airMeterDown: Attack,
+    airMeterForward: Attack,
+    airMeterBack: Attack,
+  }>
+}
 
 export type PlayerBase = {
   state: CharacterState,
