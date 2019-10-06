@@ -1,4 +1,4 @@
-import { Hitbox, Attack, Character, Player, GameScreen, CharacterState, PlayerBase } from './types'
+import { Hitbox, Attack, Character, Player, GameScreen, CharacterState, PlayerBase, InputStatus } from './types'
 import { startGameLoop } from './gameloop'
 import { Katshuma } from './characters/katshuma'
 import { True_mmKALLL } from './characters/mmkalll'
@@ -30,12 +30,7 @@ const playerTwo: Player = {
 
 export const players = [playerOne, playerTwo]
 
-type KeyStatus = {
-  isDown: boolean
-  lastPressed?: number
-}
-
-export const keys: { [key: string]: KeyStatus } = {}
+export const keys: InputStatus = {}
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
     keys[event.key] = { isDown: true, lastPressed: Date.now() }

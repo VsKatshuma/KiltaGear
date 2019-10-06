@@ -1,4 +1,16 @@
+
+// Game state handling related typings
+
 export type GameScreen = 'title-screen' | 'character-select' | 'in-game' // Don't rename to GameState, it will confuse gameloop.ts
+
+export type InputStatus = { [key: string]: KeyStatus }
+
+export type KeyStatus = {
+  isDown: boolean
+  lastPressed?: number
+}
+
+// Character status related typings
 
 export type NeutralCharacterState = 'groundborne' | 'airborne'
 export type BouncingCharacterState = 'wallbounce' | 'floorbounce'
@@ -8,6 +20,9 @@ export type CharacterState = NeutralCharacterState | NoActionCharacterState
 
 export type AttackStrength = 'Light' | 'Special' | 'Meter'
 export type AttackDirection = 'Neutral' | 'Up' | 'Down' | 'Forward' | 'Back'
+export type ActiveAttack = Attack & { player: number }
+
+// Character file related typings
 
 export type Attack = {
   hitboxes: Hitbox[],
@@ -16,7 +31,6 @@ export type Attack = {
   onEnd?: () => void
 }
 
-export type ActiveAttack = Attack & { player: number }
 
 export type Hitbox = {
   damage: number,
@@ -80,6 +94,8 @@ export type Character = {
     airMeterBack: Attack,
   }>
 }
+
+// In-game player related typings
 
 export type PlayerBase = {
   state: CharacterState,
