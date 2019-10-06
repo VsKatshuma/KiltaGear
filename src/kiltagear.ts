@@ -1,4 +1,5 @@
 import { Hitbox, Attack, Character, Player, GameScreen, CharacterState, PlayerBase } from './types'
+import { startGameLoop } from './gameloop'
 import { Katshuma } from './characters/katshuma'
 import { True_mmKALLL } from './characters/mmkalll'
 
@@ -43,6 +44,8 @@ window.addEventListener('keydown', (event: KeyboardEvent) => {
 window.addEventListener('keyup', (event: KeyboardEvent) => {
   keys[event.key] = { isDown: false }
 })
+
+startGameLoop()
 
 /*
 function keyboard(value: string) {
