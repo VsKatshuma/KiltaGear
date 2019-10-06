@@ -18,10 +18,11 @@ document.body.appendChild(app.view)
 const middleX = app.renderer.width / 2
 const middleY = app.renderer.height / 2
 
-// Character selection screen grid
+/*// Character selection screen grid
 const characterSelectionColumns = 5
-const characterSelectionRows = 1
+const characterSelectionRows = 1*/
 
+// Title screen
 var titleBeam1Url = require('../assets/sprites/title-2.png')
 var titleBeam2Url = require('../assets/sprites/title-3.png')
 var titleBeam3Url = require('../assets/sprites/title-4.png')
@@ -43,6 +44,7 @@ app.stage.addChild(titleEsa)
 titleBeam1.x, titleBeam2.x, titleBeam3.x = middleX
 titleBeam1.y, titleBeam2.y, titleBeam3.y = middleY
 
+// Character selection
 var characterSelectKatshumaUrl = require('../assets/sprites/character-select-katshuma.jpg')
 var characterSelectmmKALLLUrl = require('../assets/sprites/character-select-mmkalll.jpg')
 var characterSelectTruemmKALLLUrl = require('../assets/sprites/character-select-true-mmkalll.jpg')
@@ -68,7 +70,7 @@ player1selection.lineTo(64, 64)
 player1selection.lineTo(0, 64)
 player1selection.lineTo(0, 0)
 player1selection.pivot.set(32, 32)
-player1selection.x = middleX - (characterSelectionColumns / 2) * 64
+//player1selection.x = middleX - (characterSelectionColumns / 2) * 64
 player1selection.y = middleY
 //app.stage.addChild(player1selection)
 
@@ -80,7 +82,7 @@ player2selection.lineTo(64, 64)
 player2selection.lineTo(0, 64)
 player2selection.lineTo(0, 0)
 player2selection.pivot.set(32, 32)
-player2selection.x = middleX + (characterSelectionColumns / 2) * 64
+//player2selection.x = middleX + (characterSelectionColumns / 2) * 64
 player2selection.y = middleY
 //app.stage.addChild(player2selection)
 
@@ -97,31 +99,57 @@ for (var y = -64; y < app.renderer.height; y += 64) {
     characterSelectionBackgroundHorizontal.lineTo(app.renderer.width, y)
 }
 
-/*PIXI.loader.add([
-  '../assets/sprites/sonic-battle.png'
-]).load(setup)*/
+// Characters
+var characterBaseUrl = require('../assets/sprites/character.png')
+var ingameKatshumaUrl = require('../assets/sprites/in-game-katshuma.jpg')
+var ingamemmKALLLUrl = require('../assets/sprites/in-game-mmkalll.jpg')
 
-/*function setup() {
-  const sprite = new PIXI.Sprite(
-    PIXI.loader.resources['../assets/sprites/sonic-battle.png'].texture
-  )
-  sprite.pivot.set(20, 29)
-  app.stage.addChild(sprite)
+const characterBody1 = PIXI.Sprite.from(characterBaseUrl)
+const characterBody2 = PIXI.Sprite.from(characterBaseUrl)
+const ingameKatshuma = PIXI.Sprite.from(ingameKatshumaUrl)
+const ingamemmKALLL = PIXI.Sprite.from(ingamemmKALLLUrl)
 
-  sprite.x = middleX
-  sprite.y = middleY
-}*/
+ingameKatshuma.width = 40
+ingameKatshuma.height = 40
+ingamemmKALLL.width = 40
+ingamemmKALLL.height = 40
+
+ingameKatshuma.x = 30
+ingameKatshuma.y = 5
+
+ingamemmKALLL.x = 30
+ingamemmKALLL.y = 5
+
+const player1 = new PIXI.Container()
+const player2 = new PIXI.Container()
+
+player1.addChild(characterBody1)
+player1.addChild(ingameKatshuma)
+player2.addChild(characterBody2)
+player2.addChild(ingamemmKALLL)
+
+// Backgrounds
+var backgroundUrl = require('../assets/sprites/ingame-6.jpg')
+
+const background1 = PIXI.Sprite.from(backgroundUrl)
+
+background1.width = window.innerWidth
+background1.height = window.innerHeight
 
 function transitionToCharacterSelect(): void {
     app.renderer.backgroundColor = 0xFF0000
-    app.stage.removeChild(titleBeam1)
-    app.stage.removeChild(titleBeam2)
-    app.stage.removeChild(titleBeam3)
-    app.stage.removeChild(titleEsa)
+    app.stage.removeChildren()
     app.stage.addChild(characterSelectionBackgroundVertical)
     app.stage.addChild(characterSelectionBackgroundHorizontal)
     app.stage.addChild(characterSelectionImageKatshuma)
     app.stage.addChild(characterSelectionImagemmKALLL)
+}
+
+function transitionToIngame(): void {
+    app.stage.removeChildren()
+    app.stage.addChild(background1)
+    app.stage.addChild(player1)
+    app.stage.addChild(player2)
 }
 
 function transitionToTitleScreen(): void {
@@ -156,10 +184,15 @@ export function render(state: GameState): void {
     if (state.screen === 'in-game') {
         if (previousScreen != 'in-game') {
             previousScreen = 'in-game'
-
+            transitionToIngame()
         }
         state.players.forEach(player => {
             // Draw something at (player.x, player.y)
+            // Need to implement player sprites in a smart way first
         })
+        player1.x = state.players[0].x
+        player1.y = state.players[0].y
+        player2.x = state.players[1].x
+        player2.y = state.players[1].y
     }
 }
