@@ -1,8 +1,10 @@
 import { Player, PlayerBase, InputStatus } from './types'
 import { startGameLoop } from './game-logic/game-loop'
 import { Katshuma } from './characters/katshuma'
+import { mmKALLL } from './characters/mmkalll';
 import { True_mmKALLL } from './characters/true-mmkalll'
 import { PlayerInput } from './game-logic/input-handler';
+
 
 const playerBase: PlayerBase = {
     state: 'groundborne',
@@ -34,7 +36,7 @@ const playerOne: Player = {
 const playerTwo: Player = {
     ...playerBase,
     playerPort: 2,
-    character: True_mmKALLL,
+    character: mmKALLL,
     x: 700,
     y: 450,
     facing: 'left',
