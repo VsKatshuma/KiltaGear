@@ -48,11 +48,19 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
 
             case PlayerInput.Light:
               if (playerCanAct(player.state)) {
-                nextState.activeAttacks.push(
+                if (keyHeld(inputs, 'ArrowLeft') || keyHeld(inputs, 'ArrowRight')) {
+                  nextState.activeAttacks.push(
                     player.character.attacks[
-                        getAttackString(player.state, 'Light', 'Neutral')
+                        getAttackString(player.state, 'Light', 'Forward')
                     ]
                 )
+                } else {
+                  nextState.activeAttacks.push(
+                      player.character.attacks[
+                          getAttackString(player.state, 'Light', 'Neutral')
+                      ]
+                  )
+                }
               }
               break
 

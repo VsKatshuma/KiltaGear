@@ -39,7 +39,6 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       // Change to in-game when any key is pressed
       if (keysPressed.length > 0) {
         return {
-          ...currentState,
           screen: 'in-game',
           players: kiltagear.players,
           activeAttacks: []
@@ -50,7 +49,6 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       // Change to character select
       if (keysPressed.length > 0) {
         return {
-          ...currentState,
           screen: 'character-select',
           characterSelection: [
             { x: 1, y: 1 },
