@@ -1,5 +1,5 @@
-import { Hitbox, Attack, Character } from './types'
-import { player1selection, player2selection } from './render';
+import { Katshuma } from './characters/katshuma'
+import { True_mmKALLL } from './characters/mmkalll'
 
 export const createHitbox = (startFrame: number, endFrame: number, strength: number = 4): Hitbox => {
     return {
