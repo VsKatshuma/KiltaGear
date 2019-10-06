@@ -19,6 +19,7 @@ const playerOne: Player = {
     y: 450,
     facing: 'right',
 }
+
 const playerTwo: Player = {
     ...playerBase,
     playerPort: 2,
@@ -28,16 +29,25 @@ const playerTwo: Player = {
     facing: 'left'
 }
 
-export const players = [playerOne, playerTwo]
+export const players: Player[] = [playerOne, playerTwo]
 
 export const keys: InputStatus = {}
+export let keysPressed: string[] = []
+export let keysReleased: string[] = []
+export const clearKeyArrays: () => void = () => { keysPressed = []; keysReleased = [] }
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
-    keys[event.key] = { isDown: true, lastPressed: Date.now() }
+    keysPressed.push(event.key)
+    keys[event.key] = {
+        keyName: event.key,
+        isDown: true,
+        lastPressed: Date.now(),
+    }
 })
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
-  keys[event.key] = { isDown: false }
+    keysPressed.push(event.key)
+    keys[event.key].isDown = false
 })
 
 startGameLoop()

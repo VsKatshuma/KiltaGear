@@ -1,3 +1,4 @@
+import { PlayerInput } from "./input-handler";
 
 // Game state handling related typings
 
@@ -6,8 +7,9 @@ export type GameScreen = 'title-screen' | 'character-select' | 'in-game' // Don'
 export type InputStatus = { [key: string]: KeyStatus }
 
 export type KeyStatus = {
+  keyName: string
   isDown: boolean
-  lastPressed?: number
+  lastPressed: number
 }
 
 // Character status related typings
@@ -107,6 +109,7 @@ export type PlayerBase = {
 
 export type Player = PlayerBase & {
   playerPort: number
+  playerInputs: { [key: string]: PlayerInput }
   character: Character,
   x: number,
   y: number,

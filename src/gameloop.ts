@@ -1,6 +1,8 @@
 import * as kiltagear from './kiltagear'
 import { render } from './render'
-import { Player, ActiveAttack, InputStatus } from './types';
+import { Player, ActiveAttack, InputStatus, KeyStatus } from './types';
+import { handlePlayerInputs } from './input-handler';
+import { checkCollisions } from './collisions';
 
 // As a developer, I want this file to be indented with 2 spaces. -- Esa
 
@@ -37,15 +39,17 @@ export const startGameLoop = () => {
 const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
   // console.log('advance frame:\n  currentState:', currentState, '\n  inputs: ', inputs)
 
+  const keysPressed: KeyStatus[] = kiltagear.keysPressed.map((key: string) => kiltagear.keys[key])
+  const keysReleased: KeyStatus[] = kiltagear.keysReleased.map((key: string) => kiltagear.keys[key])
+  kiltagear.clearKeyArrays()
+
   switch (currentState.screen) {
     case 'in-game':
-      // TODO
-      if (inputs[' '] && inputs[' '].isDown) {
-        return {
-          ...currentState,
-          screen: 'title-screen',
-        }
-      }
+      let state = currentState
+      state = handlePlayerInputs(state, inputs, keysPressed, keysReleased)
+      state = checkCollisions(state)
+
+      return state
       break
     case 'character-select':
       if (inputs[' '] && inputs[' '].isDown) {
