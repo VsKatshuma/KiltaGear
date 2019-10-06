@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js'
-import { gameState, keys } from './kiltagear'
+import { GameState, InGameState } from './gameloop'
 
 let type = 'WebGL'
 if (!PIXI.utils.isWebGLSupported()) {
@@ -61,3 +61,10 @@ function setup() {
   sprite.y = middleY
 }
 
+export function render(state: GameState): void {
+  if (state.screen === 'in-game') {
+    state.players.forEach(player => {
+      // Draw something at (player.x, player.y)
+    })
+  }
+}
