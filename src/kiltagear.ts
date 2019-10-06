@@ -1,7 +1,8 @@
-import { Hitbox, Attack, Character, Player, GameScreen, CharacterState, PlayerBase, InputStatus } from './types'
-import { startGameLoop } from './gameloop'
+import { Player, PlayerBase, InputStatus } from './types'
+import { startGameLoop } from './game-loop/game-loop'
 import { Katshuma } from './characters/katshuma'
 import { True_mmKALLL } from './characters/true-mmkalll'
+import { PlayerInput } from './game-loop/input-handler';
 
 const playerBase: PlayerBase = {
     state: 'groundborne',
@@ -9,6 +10,7 @@ const playerBase: PlayerBase = {
     xSpeed: 0,
     ySpeed: 0,
     framesUntilNeutral: 0,
+    jumps: 2,
 }
 
 const playerOne: Player = {
@@ -18,26 +20,55 @@ const playerOne: Player = {
     x: 500,
     y: 450,
     facing: 'right',
+    playerInputs: {
+      'w': PlayerInput.Up,
+      'a': PlayerInput.Left,
+      's': PlayerInput.Down,
+      'd': PlayerInput.Right,
+      'c': PlayerInput.Light,
+      'v': PlayerInput.Special,
+      'b': PlayerInput.Meter,
+    }
 }
+
 const playerTwo: Player = {
     ...playerBase,
     playerPort: 2,
     character: True_mmKALLL,
     x: 700,
     y: 450,
-    facing: 'left'
+    facing: 'left',
+    playerInputs: {
+      'ArrowUp': PlayerInput.Up,
+      'ArrowLeft': PlayerInput.Left,
+      'ArrowDown': PlayerInput.Down,
+      'ArrowRight': PlayerInput.Right,
+      '.': PlayerInput.Light,
+      ',': PlayerInput.Special,
+      '/': PlayerInput.Meter,
+      '-': PlayerInput.Meter,
+    }
 }
 
-export const players = [playerOne, playerTwo]
+export const players: Player[] = [playerOne, playerTwo]
 
 export const keys: InputStatus = {}
+export let keysPressed: string[] = []
+export let keysReleased: string[] = []
+export const clearKeyArrays: () => void = () => { keysPressed = []; keysReleased = [] }
 
 window.addEventListener('keydown', (event: KeyboardEvent) => {
-    keys[event.key] = { isDown: true, lastPressed: Date.now() }
+    keysPressed.push(event.key)
+    keys[event.key] = {
+        keyName: event.key,
+        isDown: true,
+        lastPressed: Date.now(),
+    }
 })
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
-  keys[event.key] = { isDown: false }
+    keysPressed.push(event.key)
+    keys[event.key].isDown = false
 })
 
 startGameLoop()

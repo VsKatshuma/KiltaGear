@@ -1,22 +1,54 @@
+import { PlayerInput } from "./game-loop/input-handler";
 
 // Game state handling related typings
 
-export type GameScreen = 'title-screen' | 'character-select' | 'in-game' // Don't rename to GameState, it will confuse gameloop.ts
+export type GameState = (TitleScreenState | CharacterSelectionState | InGameState)
+
+export type TitleScreenState = {
+  screen: 'title-screen'
+}
+
+export type CharacterSelectionState = {
+  screen: 'character-select'
+  characterSelection: {
+    x: number,
+    y: number
+  }[]
+}
+
+export type InGameState = {
+  screen: 'in-game'
+  players: Player[],
+  activeAttacks: ActiveAttack[],
+}
 
 export type InputStatus = { [key: string]: KeyStatus }
 
 export type KeyStatus = {
+  keyName: string
   isDown: boolean
-  lastPressed?: number
+  lastPressed: number
 }
 
 // Character status related typings
 
 export type NeutralCharacterState = 'groundborne' | 'airborne'
-export type BouncingCharacterState = 'wallbounce' | 'floorbounce'
-export type NoActionCharacterState = BouncingCharacterState | 'landing' | 'hitlag' | 'hitstun'
+export type SmashDICharacterState = 'wallbouncing' | 'floorbouncing' | 'hitlag'
+export type NoActionCharacterState = SmashDICharacterState | 'attacking' | 'landing' | 'hitstun'
 
 export type CharacterState = NeutralCharacterState | NoActionCharacterState
+
+export const playerCanAct = (state: any): state is NeutralCharacterState => {
+  return state === 'airborne' || state === 'groundborne'
+}
+
+export const playerCanMove = (state: any): state is NeutralCharacterState => {
+  return playerCanAct(state)
+}
+
+export const playerCanSDI = (state: any): state is SmashDICharacterState => {
+  return state === 'wallbouncing' || state === 'floorbouncing' || state === 'hitlag'
+}
 
 export type AttackStrength = 'Light' | 'Special' | 'Meter'
 export type AttackDirection = 'Neutral' | 'Up' | 'Down' | 'Forward' | 'Back'
@@ -61,6 +93,7 @@ export type Character = {
   walkSpeed: number,
   airSpeed: number,
   weight: number,
+  jumps: number,
   jumpStrength: number,
   hurtboxRadius: number,
   attacks: Partial<{
@@ -104,10 +137,12 @@ export type PlayerBase = {
   ySpeed: number,
   framesUntilNeutral: number,
   meter: number,
+  jumps: number,
 }
 
 export type Player = PlayerBase & {
   playerPort: number
+  playerInputs: { [key: string]: PlayerInput }
   character: Character,
   x: number,
   y: number,
