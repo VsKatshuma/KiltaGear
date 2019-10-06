@@ -70,8 +70,18 @@ export type Character = {
   airMeterForward: Attack,
   airMeterBack: Attack,
 
+export type PlayerBase = {
+  state: CharacterState,
+  xSpeed: number,
+  ySpeed: number,
+  framesUntilNeutral: number,
+  meter: number,
 }
 
-export const attackName = (state: CharacterState, attack: string, direction: string) => {
-  return `${ state === 'airborne' ? 'air' : '' }${ attack === 'light' ? 'Light' : 'Special' }${direction}`
+export type Player = PlayerBase & {
+  playerPort: number
+  character: Character,
+  x: number,
+  y: number,
+  facing: 'left' | 'right',
 }

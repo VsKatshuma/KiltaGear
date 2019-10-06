@@ -34,32 +34,32 @@ export const generateAttack = (hitboxes: Hitbox[]): Attack => {
     }
 }
 
-function initializePlayer() {
-    return {
-        // create character base, e.g. ...Katshuma()
-        state: 'groundborne',
-        meter: 0,
-        xSpeed: 0,
-        ySpeed: 0,
-        framesUntilNeutral: 0,
-    }
+const playerBase: PlayerBase = {
+    state: 'groundborne',
+    meter: 0,
+    xSpeed: 0,
+    ySpeed: 0,
+    framesUntilNeutral: 0,
 }
 
-const playerOne: Character = {
-    ...initializePlayer(),
+const playerOne: Player = {
+    ...playerBase,
+    playerPort: 1,
+    character: Katshuma,
     x: 500,
     y: 450,
     facing: 'right',
 }
-const playerTwo: Character = {
-    ...initializePlayer(),
+const playerTwo: Player = {
+    ...playerBase,
+    playerPort: 2,
+    character: True_mmKALLL,
     x: 700,
     y: 450,
     facing: 'left'
 }
 
-// Game state
-export let gameState: 'title-screen' | 'character-select' | 'in-game' = 'title-screen'
+export const players = [playerOne, playerTwo]
 
 interface KeyStatus {
   isDown: boolean;
