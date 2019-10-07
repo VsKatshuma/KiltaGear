@@ -425,11 +425,11 @@ export function render(state: GameState): void {
 
         let player1healthRemaining = state.players[0].health / state.players[0].character.maxHealth
         let player2healthRemaining = state.players[1].health / state.players[1].character.maxHealth
-        healthBarLeft.drawRect((windowWidth * 0.06) + (1 - (windowWidth * 0.4 * player1healthRemaining)), 26, windowWidth * 0.4 * player1healthRemaining, 20)
+        healthBarLeft.drawRect((windowWidth * 0.06) + (windowWidth * 0.4 * (1 - player1healthRemaining)), 26, windowWidth * 0.4 * player1healthRemaining, 20)
         healthBarLeft.endFill()
         healthBarRight.clear()
         healthBarRight.beginFill(0x00FF00)
-        healthBarRight.drawRect((windowWidth / 2 + windowWidth * 0.04) + (1 - (windowWidth * 0.4 * player2healthRemaining)), 26, windowWidth * 0.4 * player2healthRemaining, 20)
+        healthBarRight.drawRect((windowWidth / 2 + windowWidth * 0.04) + (windowWidth * 0.4 * (1 - player2healthRemaining)), 26, windowWidth * 0.4 * player2healthRemaining, 20)
         healthBarRight.endFill()
     }
 }
