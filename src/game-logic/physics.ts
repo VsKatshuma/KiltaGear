@@ -4,12 +4,16 @@ import { ActiveAttack, Player, InGameState, Hitbox } from "../types";
 export const checkCollisions = (state: InGameState): InGameState => {
   return {
     ...state,
-    players: nextPlayers(state.players)
+    players: nextPlayers(state)
   }
 }
 
-const nextPlayers = (players: Player[]): Player[] => {
-  let nextPlayers = players
+const removeHitbox = (hitbox: Hitbox): void => {
+  // TODO: Hitbox connected, deactivate hitbox
+}
+
+const nextPlayers = (state: InGameState): Player[] => {
+  let nextPlayers = state.players
 
   // TODO: Check for wall/floorbounce
 
@@ -17,9 +21,36 @@ const nextPlayers = (players: Player[]): Player[] => {
 
   // Check for collisions with hitboxes
   nextPlayers = nextPlayers.map((player: Player): Player => {
+    let hit: boolean = false
+    let damage: number = 0
+    let xKnockback: number = 0
+    let yKnockback: number = 0
+    let stunDuration: number = 0
+    state.activeAttacks.forEach(attack => {
+      if (attack.player != player.playerSlot) {
+        attack.hitboxes.forEach(hitbox => {
+          // TODO: Doesn't handle hitboxes that don't move with character
+          console.log('Käsiteltävän hyökkäyksen pelaaja', state.players[attack.player].playerSlot)
+          if (Math.sqrt(Math.pow((state.players[attack.player].x + hitbox.x) - player.x, 2) + Math.pow((state.players[attack.player].y + hitbox.y) - player.y, 2)) < hitbox.radius + player.character.hurtboxRadius) {
+            hit = true
+            damage = hitbox.damage
+            let growth = 1 - (player.health / player.character.maxHealth)
+            xKnockback = ((hitbox.knockbackX * hitbox.knockbackBase) + (hitbox.knockbackGrowth * growth)) * attack.xDirection
+            yKnockback = (hitbox.knockbackY * hitbox.knockbackBase) + (hitbox.knockbackGrowth * growth)
+            stunDuration = hitbox.hitstunBase + (hitbox.hitstunGrowth * growth)
+            removeHitbox(hitbox)
+          }
+        })
+      }
+    })
+    // TODO: Refactor this later to take into account getting hit by multiple hitboxes at once
     return {
       ...player,
-      // TODO
+      health: hit ? player.health - damage: player.health,
+      xSpeed: hit ? xKnockback : player.xSpeed,
+      ySpeed: hit ? yKnockback : player.ySpeed,
+      framesUntilNeutral: hit ? stunDuration : player.framesUntilNeutral,
+      state: hit ? 'hitstun' : player.state
     }
   })
 
