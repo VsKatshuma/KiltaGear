@@ -5,7 +5,7 @@ import { generateAttack, createHitbox } from "../utilities";
 export const True_mmKALLL: Character = {
     name: '真・mmKALLL',
     id: 'true-mmkalll',
-    health: 100,
+    maxHealth: 100,
     walkSpeed: 5,
     airSpeed: 8,
     weight: 1,

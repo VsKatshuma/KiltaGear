@@ -89,7 +89,7 @@ export type Hitbox = {
 export type Character = {
   name: string,
   id: string,
-  health: number,
+  maxHealth: number,
   walkSpeed: number,
   airSpeed: number,
   weight: number,
@@ -147,4 +147,5 @@ export type Player = PlayerBase & {
   x: number,
   y: number,
   facing: 'left' | 'right',
+  health: number,
 }
