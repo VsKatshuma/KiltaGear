@@ -79,8 +79,8 @@ function keyHeld(inputs: InputStatus, key: string) {
 
 function actionToAttackDirection(action: PlayerInput, facing: 'left' | 'right', state: CharacterState): AttackDirection {
   switch (action) {
-    case PlayerInput.Left: return facing === 'left' ? 'Forward' : 'Back'
-    case PlayerInput.Right: return facing === 'right' ? 'Forward' : 'Back'
+    case PlayerInput.Left: return state === 'groundborne' ? 'Forward' : (facing === 'left' ? 'Forward' : 'Back')
+    case PlayerInput.Right: return state === 'groundborne' ? 'Forward' : (facing === 'right' ? 'Forward' : 'Back')
     case PlayerInput.Down: return 'Down'
     case PlayerInput.Up: return state === 'airborne' ? 'Up' : 'Neutral'
     case PlayerInput.Neutral: return 'Neutral'
