@@ -187,7 +187,7 @@ for (var y = -64; y < app.renderer.height; y += 64) {
     characterSelectionBackgroundHorizontal.lineTo(app.renderer.width, y)
 }
 
-// Characters
+// In-game characters
 var characterBaseUrl = require('../assets/sprites/character.png')
 var ingameKatshumaUrl = require('../assets/sprites/in-game-katshuma.jpg')
 var ingamemmKALLLUrl = require('../assets/sprites/in-game-mmkalll.jpg')
@@ -218,11 +218,31 @@ container1.addChild(ingameKatshuma)
 container2.addChild(characterBody2)
 container2.addChild(ingamemmKALLL)
 
+// Gameplay features
 const hurtboxes = new PIXI.Graphics()
 hurtboxes.alpha = 0.5
-
 const hitboxes = new PIXI.Graphics()
 hitboxes.alpha = 0.5
+
+const healthBarLeftBackground = new PIXI.Graphics()
+const healthBarRightBackground = new PIXI.Graphics()
+const healthBarLeft = new PIXI.Graphics()
+const healthBarRight = new PIXI.Graphics()
+const meterLeft = new PIXI.Graphics()
+const meterRight = new PIXI.Graphics()
+
+healthBarLeftBackground.beginFill(0xFF0000)
+healthBarLeftBackground.drawRect(windowWidth * 0.06, 26, windowWidth * 0.4, 20)
+healthBarLeftBackground.endFill()
+healthBarRightBackground.beginFill(0xFF0000)
+healthBarRightBackground.drawRect(windowWidth / 2 + windowWidth * 0.04, 26, windowWidth * 0.4, 20)
+healthBarRightBackground.endFill()
+healthBarLeft.beginFill(0x00FF00)
+healthBarLeft.drawRect(windowWidth * 0.06, 26, windowWidth * 0.4, 20)
+healthBarLeft.endFill()
+healthBarRight.beginFill(0x00FF00)
+healthBarRight.drawRect(windowWidth / 2 + windowWidth * 0.04, 26, windowWidth * 0.4, 20)
+healthBarRight.endFill()
 
 // Backgrounds
 var backgroundUrl = require('../assets/sprites/ingame-6.jpg')
@@ -232,6 +252,7 @@ const background1 = PIXI.Sprite.from(backgroundUrl) // 2730 (width of original i
 const backgroundOriginalWidth = 2730 // background1 width is currently hardcoded to be 2730
 const backgroundOriginalHeight = 1536 // background1 height is currently hardcoded to be 1536
 
+// Gamestate transitions
 function transitionToTitleScreen(): void {
     app.renderer.backgroundColor = 0x7799FF
     app.stage.removeChildren()
@@ -259,6 +280,13 @@ function transitionToIngame(): void {
     app.stage.addChild(container1)
     app.stage.addChild(container2)
     app.stage.addChild(hurtboxes)
+    app.stage.addChild(hitboxes)
+    app.stage.addChild(healthBarLeftBackground)
+    app.stage.addChild(healthBarLeft)
+    app.stage.addChild(meterLeft)
+    app.stage.addChild(healthBarRightBackground)
+    app.stage.addChild(healthBarRight)
+    app.stage.addChild(meterRight)
 }
 
 let previousScreen = 'title-screen'
@@ -362,22 +390,22 @@ export function render(state: GameState): void {
         hitboxes.beginFill(0xDD0000)
         state.activeAttacks.forEach(attack => {
             attack.hitboxes.forEach(hitbox => {
-                if (hitbox.framesUntilActivation <= 0) {
+                if (hitbox.framesUntilActivation <= 0 && hitbox.framesUntilEnd > 0) {
                     if (hitbox.relativeToCharacter) {
-                        if (attack.player === 1) {
+                        if (attack.player === 0) {
                             hitboxes.drawCircle(
                                 container1.x + (50 * playerScale) + (hitbox.x * playerScale),
                                 container1.y + (50 * playerScale) + (hitbox.y * playerScale),
                                 hitbox.radius * playerScale
                             )
-                        } else if (attack.player === 2) {
+                        } else if (attack.player === 1) {
                             hitboxes.drawCircle(
                                 container2.x + (50 * playerScale) + (hitbox.x * playerScale),
                                 container2.y + (50 * playerScale) + (hitbox.y * playerScale),
                                 hitbox.radius * playerScale
                             )
                         } else {
-                            console.log('Renreding hitboxes is not implemented for more than 2 players')
+                            console.log('Rendering hitboxes is not implemented for more than 2 players')
                         }
                     } else {
                         hitboxes.drawCircle(
@@ -390,6 +418,19 @@ export function render(state: GameState): void {
             })
         })
         hitboxes.endFill()
+
+        // Health
+        healthBarLeft.clear()
+        healthBarLeft.beginFill(0x00FF00)
+
+        let player1healthRemaining = state.players[0].health / state.players[0].character.maxHealth
+        let player2healthRemaining = state.players[1].health / state.players[1].character.maxHealth
+        healthBarLeft.drawRect((windowWidth * 0.06) + (1 - (windowWidth * 0.4 * player1healthRemaining)), 26, windowWidth * 0.4 * player1healthRemaining, 20)
+        healthBarLeft.endFill()
+        healthBarRight.clear()
+        healthBarRight.beginFill(0x00FF00)
+        healthBarRight.drawRect((windowWidth / 2 + windowWidth * 0.04) + (1 - (windowWidth * 0.4 * player2healthRemaining)), 26, windowWidth * 0.4 * player2healthRemaining, 20)
+        healthBarRight.endFill()
     }
 }
             
