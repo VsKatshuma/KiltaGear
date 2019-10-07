@@ -24,8 +24,8 @@ export const Katshuma: Character = {
                 {
                     damage: 4,
                     radius: 20,
-                    knockbackBase: 5,
-                    knockbackGrowth: 1,
+                    knockbackBase: 10,
+                    knockbackGrowth: 2,
                     knockbackX: 0.5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     knockbackY: -1,
                     hitstunBase: 20,
@@ -50,7 +50,7 @@ export const Katshuma: Character = {
                     damage: 6,
                     radius: 20,
                     knockbackBase: 15,
-                    knockbackGrowth: 1,
+                    knockbackGrowth: 5,
                     knockbackX: 1, // NEEDS TO TAKE FACING INTO ACCOUNT
                     knockbackY: 1,
                     hitstunBase: 20,
@@ -100,7 +100,7 @@ export const Katshuma: Character = {
                     damage: 4,
                     radius: 20,
                     knockbackBase: 18,
-                    knockbackGrowth: 1,
+                    knockbackGrowth: 2,
                     knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
                     knockbackY: -1,
                     hitstunBase: 10,
@@ -123,7 +123,7 @@ export const Katshuma: Character = {
                     damage: 4,
                     radius: 20,
                     knockbackBase: 18,
-                    knockbackGrowth: 1,
+                    knockbackGrowth: 2,
                     knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
                     knockbackY: -1,
                     hitstunBase: 10,
@@ -148,7 +148,7 @@ export const Katshuma: Character = {
                     damage: 10,
                     radius: 30,
                     knockbackBase: 30,
-                    knockbackGrowth: 1,
+                    knockbackGrowth: 3,
                     knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
                     knockbackY: 1,
                     hitstunBase: 10,
@@ -173,7 +173,7 @@ export const Katshuma: Character = {
                     damage: 5,
                     radius: 10,
                     knockbackBase: 10,
-                    knockbackGrowth: 1,
+                    knockbackGrowth: 2,
                     knockbackX: 1, // NEEDS TO TAKE FACING INTO ACCOUNT
                     knockbackY: -0.2,
                     hitstunBase: 10,
@@ -198,7 +198,7 @@ export const Katshuma: Character = {
                     damage: 8,
                     radius: 20,
                     knockbackBase: 30,
-                    knockbackGrowth: 1,
+                    knockbackGrowth: 5,
                     knockbackX: 1, // NEEDS TO TAKE FACING INTO ACCOUNT
                     knockbackY: -0.4,
                     hitstunBase: 25,
