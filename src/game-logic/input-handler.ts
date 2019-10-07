@@ -20,17 +20,17 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
   const players: Player[] = nextState.players
   // console.log(keyHeld(inputs, 'ArrowLeft'), playerCanMove(players[1].state))
 
-  if (keyHeld(inputs, 'a') && playerCanMove(players[0].state)) {
+  if (keyHeld(inputs, 'a') && playerCanMove(players[0].state) && !keyHeld(inputs, 'd')) {
     players[0] = handlePlayerMove(players[0], -1)
   }
-  if (keyHeld(inputs, 'd') && playerCanMove(players[0].state)) {
+  if (keyHeld(inputs, 'd') && playerCanMove(players[0].state) && !keyHeld(inputs, 'a')) {
     players[0] = handlePlayerMove(players[0], 1)
   }
 
-  if (keyHeld(inputs, 'ArrowLeft') && playerCanMove(players[1].state)) {
+  if (keyHeld(inputs, 'ArrowLeft') && playerCanMove(players[1].state) && !keyHeld(inputs, 'ArrowRight')) {
     players[1] = handlePlayerMove(players[1], -1)
   }
-  if (keyHeld(inputs, 'ArrowRight') && playerCanMove(players[1].state)) {
+  if (keyHeld(inputs, 'ArrowRight') && playerCanMove(players[1].state) && !keyHeld(inputs, 'ArrowLeft')) {
     players[1] = handlePlayerMove(players[1], 1)
   }
 
