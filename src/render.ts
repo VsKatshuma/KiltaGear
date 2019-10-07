@@ -137,6 +137,19 @@ characterSelectionLeft.addChild(characterSelectionTextLeft)
 characterSelectionRight.addChild(characterSelectionImagemmKALLL)
 characterSelectionRight.addChild(characterSelectionTextRigth)
 
+const versus = new PIXI.Text("VS.", titleTextStyle)
+versus.anchor.set(0.5, 0.5)
+versus.x = middleX
+versus.y = middleY
+
+const readyToStartTextStyle = new PIXI.TextStyle({
+    fontSize: 30
+})
+const readyToStart = new PIXI.Text('Press any key to start', readyToStartTextStyle)
+readyToStart.anchor.set(0.5)
+readyToStart.x = middleX
+readyToStart.y = middleY + 230
+
 const player1selection = new PIXI.Graphics()
 player1selection.lineStyle(4, 0xFF0000, 1)
 player1selection.moveTo(0, 0)
@@ -236,6 +249,8 @@ function transitionToCharacterSelect(): void {
     app.stage.addChild(characterSelectionBackgroundHorizontal)
     app.stage.addChild(characterSelectionLeft)
     app.stage.addChild(characterSelectionRight)
+    app.stage.addChild(versus)
+    app.stage.addChild(readyToStart)
 }
 
 function transitionToIngame(): void {
