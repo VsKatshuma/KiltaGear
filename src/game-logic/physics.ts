@@ -53,7 +53,7 @@ const nextPlayers = (state: InGameState): InGameState => {
     const nextYSpeed = nextY >= 600 ? 0 : Math.min(18, player.ySpeed + 0.6)
     const nextJumps = player.y < 600 && nextY >= 600 ? player.character.maxJumps : player.jumps
     const nextFramesUntilNeutral = Math.max(0, player.framesUntilNeutral - 1)
-    const nextState = nextPlayerState(player, nextY, nextFramesUntilNeutral)
+    const nextState = nextPlayerState(player.state, nextY, nextFramesUntilNeutral)
     return {
       ...player,
       state: nextState,
