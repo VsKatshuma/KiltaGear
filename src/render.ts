@@ -39,13 +39,46 @@ const titleEsa = PIXI.Sprite.from(titleHoverUrl)
 titleBeam1.anchor.set(0.5, 0.5)
 titleBeam2.anchor.set(0.5, 0.5)
 titleBeam3.anchor.set(0.5, 0.5)
+
+titleBeam1.x, titleBeam2.x, titleBeam3.x = middleX
+titleBeam1.y, titleBeam2.y, titleBeam3.y = middleY
+
+const titleTextStyle = new PIXI.TextStyle({
+    fontFamily: 'Arial',
+    fontSize: 108,
+    fontWeight: 'bold',
+    fill: ['#FF0000', '#FFFFFF', '#FFFF00'],
+    stroke: '#000000',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: '#000000'
+})
+
+const pressAnyKeyTextStyle = new PIXI.TextStyle({
+    fontSize: 30
+})
+
+const titleText = new PIXI.Text('KiltaGear', titleTextStyle)
+titleText.anchor.set(0.5)
+const versionNumber = new PIXI.Text('v0.5', new PIXI.TextStyle({fontSize: 22}))
+versionNumber.x = 195
+versionNumber.y = 45
+const pressAnyKeyText = new PIXI.Text('Press any key to continue', pressAnyKeyTextStyle)
+pressAnyKeyText.anchor.set(0.5)
+pressAnyKeyText.y = 190
+
+const titleContainer = new PIXI.Container()
+titleContainer.x = middleX
+titleContainer.y = middleY
+titleContainer.addChild(titleText)
+titleContainer.addChild(versionNumber)
+titleContainer.addChild(pressAnyKeyText)
+
 app.stage.addChild(titleBeam1)
 app.stage.addChild(titleBeam2)
 app.stage.addChild(titleBeam3)
 app.stage.addChild(titleEsa)
-
-titleBeam1.x, titleBeam2.x, titleBeam3.x = middleX
-titleBeam1.y, titleBeam2.y, titleBeam3.y = middleY
+app.stage.addChild(titleContainer)
 
 // Character selection
 var characterSelectKatshumaUrl = require('../assets/sprites/character-select-katshuma.jpg')
@@ -60,10 +93,49 @@ characterSelectionImageKatshuma.anchor.set(0.5, 0.5)
 characterSelectionImagemmKALLL.anchor.set(0.5, 0.5)
 characterSelectionImageTruemmKALLL.anchor.set(0.5, 0.5)
 
-characterSelectionImageKatshuma.x = middleX - 500
-characterSelectionImageKatshuma.y = middleY
-characterSelectionImagemmKALLL.x = middleX + 500
-characterSelectionImagemmKALLL.y = middleY
+const characterSelectionLeft = new PIXI.Container()
+const characterSelectionRight = new PIXI.Container()
+characterSelectionLeft.x = middleX - 400
+characterSelectionLeft.y = middleY
+characterSelectionRight.x = middleX + 400
+characterSelectionRight.y = middleY
+
+const characterSelectionTextStyleLeft = new PIXI.TextStyle({
+    fontFamily: 'Arial',
+    fontSize: 36,
+    fontWeight: 'bold',
+    fill: ['#FF0000'],
+    stroke: '#000000',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: '#000000',
+    dropShadowAngle: 0,
+    dropShadowDistance: 1
+})
+const characterSelectionTextStyleRight = new PIXI.TextStyle({
+    fontFamily: 'Arial',
+    fontSize: 36,
+    fontWeight: 'bold',
+    fill: ['#FFFF00'],
+    stroke: '#000000',
+    strokeThickness: 4,
+    dropShadow: true,
+    dropShadowColor: '#000000',
+    dropShadowAngle: 0,
+    dropShadowDistance: 1
+})
+
+const characterSelectionTextLeft = new PIXI.Text('Katshuma', characterSelectionTextStyleLeft)
+const characterSelectionTextRigth = new PIXI.Text('mmKALLL', characterSelectionTextStyleRight)
+characterSelectionTextLeft.anchor.set(0.5)
+characterSelectionTextRigth.anchor.set(0.5)
+characterSelectionTextLeft.y = 230
+characterSelectionTextRigth.y = 230
+
+characterSelectionLeft.addChild(characterSelectionImageKatshuma)
+characterSelectionLeft.addChild(characterSelectionTextLeft)
+characterSelectionRight.addChild(characterSelectionImagemmKALLL)
+characterSelectionRight.addChild(characterSelectionTextRigth)
 
 const player1selection = new PIXI.Graphics()
 player1selection.lineStyle(4, 0xFF0000, 1)
@@ -114,13 +186,11 @@ const ingamemmKALLL = PIXI.Sprite.from(ingamemmKALLLUrl)
 
 ingameKatshuma.width = 40
 ingameKatshuma.height = 40
-
-ingamemmKALLL.width = 40
-ingamemmKALLL.height = 40
-
 ingameKatshuma.x = 30
 ingameKatshuma.y = 5
 
+ingamemmKALLL.width = 40
+ingamemmKALLL.height = 40
 ingamemmKALLL.x = 30
 ingamemmKALLL.y = 5
 
@@ -156,15 +226,16 @@ function transitionToTitleScreen(): void {
     app.stage.addChild(titleBeam2)
     app.stage.addChild(titleBeam3)
     app.stage.addChild(titleEsa)
+    app.stage.addChild(titleContainer)
 }
 
 function transitionToCharacterSelect(): void {
-    app.renderer.backgroundColor = 0xFF0000
+    app.renderer.backgroundColor = 0xAA0000
     app.stage.removeChildren()
     app.stage.addChild(characterSelectionBackgroundVertical)
     app.stage.addChild(characterSelectionBackgroundHorizontal)
-    app.stage.addChild(characterSelectionImageKatshuma)
-    app.stage.addChild(characterSelectionImagemmKALLL)
+    app.stage.addChild(characterSelectionLeft)
+    app.stage.addChild(characterSelectionRight)
 }
 
 function transitionToIngame(): void {
