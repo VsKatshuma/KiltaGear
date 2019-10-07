@@ -44,6 +44,7 @@ const nextPlayers = (players: Player[]): Player[] => {
 export const handlePlayerMove = (player: Player, direction: -1 | 1): Player => {
   return {
     ...player,
+    facing: direction === -1 ? 'left' : 'right',
     xSpeed: direction * (player.state === 'airborne' ? player.character.airSpeed : player.character.walkSpeed)
   }
 }

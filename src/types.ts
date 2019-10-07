@@ -53,7 +53,7 @@ export const playerCanSDI = (state: CharacterState): state is SmashDICharacterSt
 export type AttackStrength = 'Light' | 'Special' | 'Meter'
 export type AttackDirection = 'Neutral' | 'Up' | 'Down' | 'Forward' | 'Back'
 export type ActiveAttack = Attack & {
-  player: number,
+  playerSlot: number,
   xDirection: -1 | 1, // 'left', 'right'
 }
 

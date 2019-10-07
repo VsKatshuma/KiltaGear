@@ -72,7 +72,6 @@ window.addEventListener('keydown', (event: KeyboardEvent) => {
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
     keysReleased.push(event.key)
-    //console.log(keys)
     keys[event.key].isDown = false
 })
 
