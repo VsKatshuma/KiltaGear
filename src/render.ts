@@ -392,13 +392,13 @@ export function render(state: GameState): void {
             attack.hitboxes.forEach(hitbox => {
                 if (hitbox.framesUntilActivation <= 0 && hitbox.framesUntilEnd > 0) {
                     if (hitbox.movesWithCharacter) {
-                        if (attack.player === 0) {
+                        if (attack.playerSlot === 0) {
                             hitboxes.drawCircle(
                                 container1.x + (50 * playerScale) + (hitbox.x * playerScale),
                                 container1.y + (50 * playerScale) + (hitbox.y * playerScale),
                                 hitbox.radius * playerScale
                             )
-                        } else if (attack.player === 1) {
+                        } else if (attack.playerSlot === 1) {
                             hitboxes.drawCircle(
                                 container2.x + (50 * playerScale) + (hitbox.x * playerScale),
                                 container2.y + (50 * playerScale) + (hitbox.y * playerScale),

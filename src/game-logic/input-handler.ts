@@ -1,4 +1,4 @@
-import { Player, KeyStatus, InputStatus, InGameState, playerCanMove, playerCanSDI, playerCanAct } from "../types";
+import { Player, KeyStatus, InputStatus, InGameState, playerCanMove, playerCanSDI, playerCanAct, ActiveAttack, AttackStrength, AttackDirection, CharacterState } from "../types";
 import { getAttackString } from "../utilities";
 import { handlePlayerMove, handlePlayerJump } from "./physics";
 
@@ -7,6 +7,7 @@ export enum PlayerInput {
   Right,
   Up,
   Down,
+  Neutral,
   Light,
   Special,
   Meter
@@ -45,51 +46,22 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
               break
             case PlayerInput.Down:
               if (player.state === 'airborne') {
-                player.ySpeed += player.character.weight * 3
+                player.ySpeed += player.character.weight * 10
               }
               break
             case PlayerInput.Light:
-              console.log('light pressed by player', player.playerSlot)
-              if (playerCanAct(player.state)) {
-                console.log('player can act')
-                if (keyHeld(inputs, 'ArrowLeft') || keyHeld(inputs, 'ArrowRight')) {
-                  nextState.activeAttacks.push(
-                    player.character.attacks[
-                        getAttackString(player.state, 'Light', 'Forward')
-                    ]
-                  )
-                } else {
-                  console.log('Neutral attack!')
-                  nextState.activeAttacks.push(
-                    {
-                      ...player.character.attacks[
-                          getAttackString(player.state, 'Light', 'Neutral')
-                      ],
-                      player: player.playerSlot
-                    }
-                  )
-                }
-              }
+              console.log('Light pressed by player', player.playerSlot)
+              nextState.activeAttacks = addActiveAttack('Light', player, inputs, nextState.activeAttacks)
               break
 
             case PlayerInput.Special:
-              if (playerCanAct(player.state)) {
-                nextState.activeAttacks.push(
-                    player.character.attacks[
-                        getAttackString(player.state, 'Special', 'Neutral')
-                    ]
-                )
-              }
+              console.log('Special pressed by player', player.playerSlot)
+              nextState.activeAttacks = addActiveAttack('Special', player, inputs, nextState.activeAttacks)
               break
 
             case PlayerInput.Meter:
-              if (playerCanAct(player.state)) {
-                nextState.activeAttacks.push(
-                    player.character.attacks[
-                        getAttackString(player.state, 'Meter', 'Neutral')
-                    ]
-                )
-              }
+              console.log('Meter pressed by player', player.playerSlot)
+              nextState.activeAttacks = addActiveAttack('Meter', player, inputs, nextState.activeAttacks)
               break
             default:
 
@@ -105,3 +77,36 @@ function keyHeld(inputs: InputStatus, key: string) {
   return inputs && inputs[key] && inputs[key].isDown
 }
 
+function actionToAttackDirection(action: PlayerInput | undefined, facing: 'left' | 'right', state: CharacterState): AttackDirection {
+  switch (action) {
+    case PlayerInput.Left: return facing === 'left' ? 'Forward' : 'Back'
+    case PlayerInput.Right: return facing === 'right' ? 'Forward' : 'Back'
+    case PlayerInput.Down: return 'Down'
+    case PlayerInput.Up: return state === 'airborne' ? 'Up' : 'Neutral'
+    case undefined: return 'Neutral'
+    default:
+      return 'Neutral'
+  }
+}
+
+function addActiveAttack(attackStrength: AttackStrength, player: Player, inputs: InputStatus, activeAttacks: ActiveAttack[]): ActiveAttack[] {
+  if (playerCanAct(player.state)) {
+    const isHoldingLeft =  (player.playerSlot === 0 && keyHeld(inputs, 'a')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowLeft'))
+    const isHoldingRight = (player.playerSlot === 0 && keyHeld(inputs, 'd')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowRight'))
+    const playerDirection = isHoldingLeft ? PlayerInput.Left : (isHoldingRight ? PlayerInput.Right : undefined)
+    const attackDirection = actionToAttackDirection(playerDirection, player.facing, player.state)
+
+    console.log('player can act, ATTACK!!\n  ', getAttackString(player.state, attackStrength, attackDirection))
+
+    return activeAttacks.concat(
+      {
+        ...player.character.attacks[
+            getAttackString(player.state, attackStrength, attackDirection)
+        ],
+        playerSlot: player.playerSlot,
+        xDirection: player.facing === 'left' ? -1 : 1
+      }
+    )
+  }
+  return activeAttacks
+}
