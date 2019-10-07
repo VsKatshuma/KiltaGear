@@ -1,4 +1,4 @@
-import { ActiveAttack, Player, InGameState, Hitbox } from "../types";
+import { ActiveAttack, Player, InGameState, Hitbox, CharacterState } from "../types";
 
 // Called each frame
 export const checkCollisions = (state: InGameState): InGameState => {
@@ -56,16 +56,20 @@ const nextPlayers = (state: InGameState): Player[] => {
 
   // movement, physics, landing
   nextPlayers = nextPlayers.map((player) => {
-    let nextY = Math.min(600, player.y + player.ySpeed)
-    let nextYSpeed = nextY >= 600 ? 0 : Math.min(18, player.ySpeed + 0.6)
-    let nextJumps = player.y < 600 && nextY >= 600 ? player.character.maxJumps : player.jumps
+    const nextY = Math.min(600, player.y + player.ySpeed)
+    const nextYSpeed = nextY >= 600 ? 0 : Math.min(18, player.ySpeed + 0.6)
+    const nextJumps = player.y < 600 && nextY >= 600 ? player.character.maxJumps : player.jumps
+    const nextFramesUntilNeutral = Math.max(0, player.framesUntilNeutral - 1)
+    const nextState = nextPlayerState(player.state, nextY, nextFramesUntilNeutral)
     return {
       ...player,
+      state: nextState,
       x: Math.max(player.character.hurtboxRadius, Math.min(1200 - player.character.hurtboxRadius, player.x + player.xSpeed)),
       y: nextY,
       ySpeed: nextYSpeed,
       xSpeed: Math.abs(player.xSpeed) < 0.3 ? 0 : player.xSpeed * 0.86,
       jumps: nextJumps,
+      framesUntilNeutral: nextFramesUntilNeutral
     }
   })
 
@@ -125,4 +129,14 @@ const handleHitBoxFunctions = (attack: ActiveAttack): void => {
       hitbox.onEnd()
     }
   })
+}
+
+const nextPlayerState = (player: Player, nextY: number, nextFramesUntilNeutral: number): CharacterState => {
+  if ('hitstun') {
+    return 'hitstun'
+  }
+  if (nextY >= 600) {
+
+  }
+  return 'groundborne'
 }
