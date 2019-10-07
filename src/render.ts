@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
 import { GameState } from './types';
+import { SSL_OP_SSLREF2_REUSE_CERT_TYPE_BUG } from 'constants';
 
 var type = 'WebGL'
 if (!PIXI.utils.isWebGLSupported()) {
@@ -7,11 +8,13 @@ if (!PIXI.utils.isWebGLSupported()) {
 }
 
 const app = new PIXI.Application({backgroundColor: 0x7799FF, width: 1200, height: 675})
+const windowWidth = window.innerWidth
+const windowHeight = window.innerHeight
 
 app.renderer.view.style.position = 'absolute'
 app.renderer.view.style.display = 'block'
-app.renderer.autoResize = true
-app.renderer.resize(window.innerWidth, window.innerHeight)
+app.renderer.autoResize = false
+app.renderer.resize(windowWidth, windowHeight)
 
 document.body.appendChild(app.view)
 
@@ -121,13 +124,16 @@ ingameKatshuma.y = 5
 ingamemmKALLL.x = 30
 ingamemmKALLL.y = 5
 
-const player1 = new PIXI.Container()
-const player2 = new PIXI.Container()
+const container1 = new PIXI.Container()
+const container2 = new PIXI.Container()
 
-player1.addChild(characterBody1)
-player1.addChild(ingameKatshuma)
-player2.addChild(characterBody2)
-player2.addChild(ingamemmKALLL)
+container1.pivot.set(0.5)
+container2.pivot.set(0.5)
+
+container1.addChild(characterBody1)
+container1.addChild(ingameKatshuma)
+container2.addChild(characterBody2)
+container2.addChild(ingamemmKALLL)
 
 const hurtboxes = new PIXI.Graphics()
 hurtboxes.alpha = 0.5
@@ -135,10 +141,10 @@ hurtboxes.alpha = 0.5
 // Backgrounds
 var backgroundUrl = require('../assets/sprites/ingame-6.jpg')
 
-const background1 = PIXI.Sprite.from(backgroundUrl)
+const background1 = PIXI.Sprite.from(backgroundUrl) // 2730 (width of original image) / 2.275 = 1200
 
-background1.width = window.innerWidth
-background1.height = window.innerHeight
+const backgroundOriginalWidth = 2730 // background1 width is currently hardcoded to be 2730
+const backgroundOriginalHeight = 1536 // background1 height is currently hardcoded to be 1536
 
 function transitionToTitleScreen(): void {
     app.renderer.backgroundColor = 0x7799FF
@@ -161,8 +167,8 @@ function transitionToCharacterSelect(): void {
 function transitionToIngame(): void {
     app.stage.removeChildren()
     app.stage.addChild(background1)
-    app.stage.addChild(player1)
-    app.stage.addChild(player2)
+    app.stage.addChild(container1)
+    app.stage.addChild(container2)
     app.stage.addChild(hurtboxes)
 }
 
@@ -195,14 +201,57 @@ export function render(state: GameState): void {
             // Draw something at (player.x, player.y)
             // Need to implement player sprites in a smart way first
         })
-        player1.x = state.players[0].x
-        player1.y = state.players[0].y
-        player2.x = state.players[1].x
-        player2.y = state.players[1].y
+        
+        // Camera
+        let cameraLeft = state.players[0].x < state.players[1].x ? state.players[0].x - 200 : state.players[1].x - 200
+        let cameraRight = state.players[0].x > state.players[1].x ? state.players[0].x + 200 : state.players[1].x + 200
+        cameraLeft = cameraLeft < 0 ? 0 : cameraLeft
+        cameraRight = cameraRight > 1200 ? 1200 : cameraRight
+        let characterYDifference = Math.abs(state.players[0].y - state.players[1].y)
+        if (characterYDifference > 0) {
+            cameraLeft -= characterYDifference / 2
+            cameraRight += characterYDifference / 2
+            if (cameraLeft < 0) {
+                cameraRight -= cameraLeft
+                cameraLeft = 0 
+            }
+            if (cameraRight > 1200) {
+                cameraLeft -= cameraRight - 1200
+                cameraRight = 1200
+            }
+            if (cameraLeft < 0) {
+                cameraLeft = 0
+            }
+        }
+        let visibleAreaWidth = cameraRight - cameraLeft
+        let howManyPixelsX = backgroundOriginalWidth * (visibleAreaWidth / 1200)
+        // pikselien määrä, mikä alkuperäisestä taustasta on näkyvissä
+
+        // niin monta pikseliä täytyy mahduttaa tilaan "windowWidth"
+        // saadaan skaala, jolla alkuperäinen width täytyy kertoa
+        let scaleBackground = windowWidth / howManyPixelsX
+        background1.width = backgroundOriginalWidth * scaleBackground
+        background1.height = backgroundOriginalHeight * scaleBackground
+        
+        // cameraLeft / 1200 on kuinka suuri osa background1.widthistä jää kuvan vasemmalle puolelle
+        background1.x = background1.width * (-cameraLeft / 1200)
+        background1.y = windowHeight - background1.height
+
+        // Players
+        let playerScale = background1.width / windowWidth
+        container1.scale.set(playerScale)
+        container2.scale.set(playerScale)
+        let pixelScale = windowWidth / visibleAreaWidth
+        container1.x = ((state.players[0].x - cameraLeft) * pixelScale) - (50 * playerScale)
+        container2.x = ((state.players[1].x - cameraLeft) * pixelScale) - (50 * playerScale)
+        // windowHeight / background1.height kertoo, miten suuri osuus taustakuvan alaosasta on näkyvissä
+        container1.y = ((state.players[0].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight) - (50 * playerScale)
+        container2.y = ((state.players[1].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight) - (50 * playerScale)
+
         hurtboxes.clear()
         hurtboxes.beginFill(0x6688FF)
-        hurtboxes.drawCircle(player1.x + 50, player1.y + 50, state.players[0].character.hurtboxRadius)
-        hurtboxes.drawCircle(player2.x + 50, player2.y + 50, state.players[1].character.hurtboxRadius)
+        hurtboxes.drawCircle(container1.x + (50 * playerScale), container1.y + (50 * playerScale), state.players[0].character.hurtboxRadius * playerScale)
+        hurtboxes.drawCircle(container2.x + (50 * playerScale), container2.y + (50 * playerScale), state.players[1].character.hurtboxRadius * playerScale)
         hurtboxes.endFill()
     }
 }

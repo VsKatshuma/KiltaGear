@@ -36,7 +36,7 @@ const playerOne: Player = {
 const playerTwo: Player = {
     ...playerBase,
     playerSlot: 2,
-    character: True_mmKALLL,
+    character: mmKALLL,
     x: 700,
     y: 450,
     facing: 'left',
@@ -70,7 +70,7 @@ window.addEventListener('keydown', (event: KeyboardEvent) => {
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
     keysReleased.push(event.key)
-    console.log(keys)
+    //console.log(keys)
     keys[event.key].isDown = false
 })
 
