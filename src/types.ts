@@ -52,15 +52,19 @@ export const playerCanSDI = (state: CharacterState): state is SmashDICharacterSt
 
 export type AttackStrength = 'Light' | 'Special' | 'Meter'
 export type AttackDirection = 'Neutral' | 'Up' | 'Down' | 'Forward' | 'Back'
-export type ActiveAttack = Attack & { player: number }
+export type ActiveAttack = Attack & {
+  player: number,
+  xDirection: -1 | 1, // 'left', 'right'
+}
 
 // Character file related typings
 
 export type Attack = {
   hitboxes: Hitbox[],
   projectile: boolean,
+  duration: number, // in frames
   onStart?: () => void,
-  onEnd?: () => void
+  onEnd?: () => void,
 }
 
 
@@ -75,14 +79,14 @@ export type Hitbox = {
   hitstunGrowth: number,
   hitLag: number,
   // characterSpecific: number,
-  relativeToCharacter: boolean,
+  movesWithCharacter: boolean,
   x: number,
   y: number,
   framesUntilActivation: number,
   framesUntilEnd: number,
   // onStart?: () => void,
   onActivation?: () => void,
-  // onHit?: () => void,
+  onHit?: () => void,
   onEnd?: () => void
 }
 

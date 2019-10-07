@@ -391,7 +391,7 @@ export function render(state: GameState): void {
         state.activeAttacks.forEach(attack => {
             attack.hitboxes.forEach(hitbox => {
                 if (hitbox.framesUntilActivation <= 0 && hitbox.framesUntilEnd > 0) {
-                    if (hitbox.relativeToCharacter) {
+                    if (hitbox.movesWithCharacter) {
                         if (attack.player === 0) {
                             hitboxes.drawCircle(
                                 container1.x + (50 * playerScale) + (hitbox.x * playerScale),

@@ -1,4 +1,4 @@
-import { ActiveAttack, Player, InGameState } from "../types";
+import { ActiveAttack, Player, InGameState, Hitbox } from "../types";
 
 // Called each frame
 export const checkCollisions = (state: InGameState): InGameState => {
@@ -9,13 +9,22 @@ export const checkCollisions = (state: InGameState): InGameState => {
 }
 
 const nextPlayers = (players: Player[]): Player[] => {
+  let nextPlayers = players
 
   // TODO: Check for wall/floorbounce
 
-  // TODO: Check for collisions with hitboxes)
+  // TODO: Check for hitlag/landing/hitstun and tick timers
+
+  // Check for collisions with hitboxes
+  nextPlayers = nextPlayers.map((player: Player): Player => {
+    return {
+      ...player,
+      // TODO
+    }
+  })
 
   // movement, physics, landing
-  return players.map((player) => {
+  nextPlayers = nextPlayers.map((player) => {
     let nextY = Math.min(600, player.y + player.ySpeed)
     let nextYSpeed = nextY >= 600 ? 0 : Math.min(18, player.ySpeed + 0.6)
     return {
@@ -28,6 +37,7 @@ const nextPlayers = (players: Player[]): Player[] => {
     }
   })
 
+  return nextPlayers
 }
 
 export const handlePlayerMove = (player: Player, direction: -1 | 1): Player => {
@@ -47,4 +57,39 @@ export const handlePlayerJump = (player): Player => {
     }
   }
   return player
+}
+
+
+// Attack handling
+
+export const updateAttacks = (state: InGameState): InGameState => {
+  const newAttacks = {
+    ...state,
+    activeAttacks: state.activeAttacks.map(
+      (attack: ActiveAttack) => ({
+        ...attack,
+        hitboxes: attack.hitboxes.map((hitbox: Hitbox) => ({
+          ...hitbox,
+          framesUntilActivation: hitbox.framesUntilActivation - 1,
+          framesUntilEnd: hitbox.framesUntilEnd - 1,
+        })).filter((hitbox: Hitbox) => hitbox.framesUntilEnd > 0)
+      })
+    )
+    .filter((attack) => attack.hitboxes.length >= 0)
+  }
+
+  newAttacks.activeAttacks.forEach(handleHitBoxFunctions)
+
+  return newAttacks
+}
+
+const handleHitBoxFunctions = (attack: ActiveAttack): void => {
+  attack.hitboxes.forEach((hitbox: Hitbox) => {
+    if (hitbox.framesUntilActivation === 0 && hitbox.onActivation) {
+      hitbox.onActivation()
+    }
+    if (hitbox.framesUntilEnd === 1 && hitbox.onEnd) {
+      hitbox.onEnd()
+    }
+  })
 }

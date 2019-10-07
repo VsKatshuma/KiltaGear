@@ -33,14 +33,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -58,14 +58,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -83,14 +83,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -108,14 +108,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -133,14 +133,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -158,14 +158,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -183,14 +183,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -208,14 +208,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -233,14 +233,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -258,14 +258,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -283,14 +283,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -308,14 +308,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -333,14 +333,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -358,14 +358,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -383,14 +383,14 @@ export const Katshuma: Character = {
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
-                    relativeToCharacter: true,
+                    movesWithCharacter: true,
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
                     onActivation: () => {},
-                    // onHit: () => {},
+                    onHit: () => {},
                     onEnd: () => {},
                 }
             ])
