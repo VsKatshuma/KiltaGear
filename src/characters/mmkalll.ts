@@ -15,19 +15,17 @@ export const mmKALLL: Character = {
     attacks: {
         LightNeutral: {
             ...generateAttack([
-                { ...createHitbox(4, 12, 5), radius: 123 },
-                { ...createHitbox(12, 20, 10) },
-                { ...createHitbox(19, 40, 50) }
+                { ...createHitbox(4, 12, 5), radius: 50 },
+                { ...createHitbox(12, 20, 10) }
             ]),
-            projectile: true,
+            projectile: false,
         },
         LightForward: {
             ...generateAttack([
                 { ...createHitbox(4, 12, 5), radius: 123 },
-                { ...createHitbox(12, 20, 10), radius: 190 },
-                { ...createHitbox(19, 40, 50), radius: 270 }
+                { ...createHitbox(12, 20, 20), radius: 190 }
             ]),
-            projectile: true,
+            projectile: false,
         },
         LightDown: {
             ...generateAttack([])

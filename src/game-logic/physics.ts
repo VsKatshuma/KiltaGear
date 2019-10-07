@@ -30,11 +30,12 @@ const nextPlayers = (state: InGameState): Player[] => {
       if (attack.player != player.playerSlot) {
         attack.hitboxes.forEach(hitbox => {
           // TODO: Doesn't handle hitboxes that don't move with character
+          console.log('Käsiteltävän hyökkäyksen pelaaja', state.players[attack.player].playerSlot)
           if (Math.sqrt(Math.pow((state.players[attack.player].x + hitbox.x) - player.x, 2) + Math.pow((state.players[attack.player].y + hitbox.y) - player.y, 2)) < hitbox.radius + player.character.hurtboxRadius) {
             hit = true
             damage = hitbox.damage
             let growth = 1 - (player.health / player.character.maxHealth)
-            xKnockback = (hitbox.knockbackX * hitbox.knockbackBase) + (hitbox.knockbackGrowth * growth)
+            xKnockback = ((hitbox.knockbackX * hitbox.knockbackBase) + (hitbox.knockbackGrowth * growth)) * attack.xDirection
             yKnockback = (hitbox.knockbackY * hitbox.knockbackBase) + (hitbox.knockbackGrowth * growth)
             stunDuration = hitbox.hitstunBase + (hitbox.hitstunGrowth * growth)
             removeHitbox(hitbox)
