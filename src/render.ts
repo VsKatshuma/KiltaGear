@@ -327,14 +327,14 @@ export function render(state: GameState): void {
         })
         
         // Camera
-        let cameraLeft = state.players[0].x < state.players[1].x ? state.players[0].x - 200 : state.players[1].x - 200
-        let cameraRight = state.players[0].x > state.players[1].x ? state.players[0].x + 200 : state.players[1].x + 200
+        let cameraLeft = state.players[0].x < state.players[1].x ? state.players[0].x - 300 : state.players[1].x - 300
+        let cameraRight = state.players[0].x > state.players[1].x ? state.players[0].x + 300 : state.players[1].x + 300
         cameraLeft = cameraLeft < 0 ? 0 : cameraLeft
         cameraRight = cameraRight > 1200 ? 1200 : cameraRight
-        let characterYDifference = Math.abs(state.players[0].y - state.players[1].y)
-        if (characterYDifference > 0) {
-            cameraLeft -= characterYDifference / 2
-            cameraRight += characterYDifference / 2
+        let currentMaxCharacterHeight = Math.max(600 - state.players[0].y, 600 - state.players[1].y)
+        if (currentMaxCharacterHeight > 0) {
+            cameraLeft -= currentMaxCharacterHeight / 2
+            cameraRight += currentMaxCharacterHeight / 2
             if (cameraLeft < 0) {
                 cameraRight -= cameraLeft
                 cameraLeft = 0 
