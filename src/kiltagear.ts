@@ -47,8 +47,8 @@ const playerTwo: Player = {
       'ArrowLeft': PlayerInput.Left,
       'ArrowDown': PlayerInput.Down,
       'ArrowRight': PlayerInput.Right,
-      '.': PlayerInput.Light,
-      ',': PlayerInput.Special,
+      ',': PlayerInput.Light,
+      '.': PlayerInput.Special,
       '/': PlayerInput.Meter,
       '-': PlayerInput.Meter,
     }
