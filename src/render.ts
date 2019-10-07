@@ -262,6 +262,9 @@ function transitionToIngame(): void {
 }
 
 let previousScreen = 'title-screen'
+let hover = 0
+let fade = 0
+titleEsa.x = 20
 
 export function render(state: GameState): void {
     if (state.screen === 'title-screen') {
@@ -272,6 +275,10 @@ export function render(state: GameState): void {
         titleBeam1.rotation += 0.005
         titleBeam2.rotation += 0.005
         titleBeam3.rotation += 0.005
+        titleEsa.y = Math.sin(hover) * 40 + 60
+        hover += 0.0225
+        titleEsa.alpha = (Math.sin(fade) + 1.2) / 2.2
+        fade += 0.025
     }
     if (state.screen === 'character-select') {
         if (previousScreen != 'character-select') {
