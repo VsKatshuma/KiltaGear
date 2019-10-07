@@ -1,6 +1,6 @@
 import * as kiltagear from '../kiltagear'
 import { render } from '../render'
-import { ActiveAttack, InputStatus, KeyStatus, GameState, InGameState, Hitbox } from '../types';
+import { ActiveAttack, InputStatus, KeyStatus, GameState, InGameState, Hitbox, Player } from '../types';
 import { handlePlayerInputs } from './input-handler';
 import { updateAttacks, checkCollisions } from './physics';
 
@@ -34,6 +34,10 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       state = updateAttacks(state)
       state = checkCollisions(state)
 
+      if (isGameOver(state)) {
+        return gameOverState
+      }
+
       return state
       break
     case 'character-select':
@@ -64,3 +68,11 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
   return currentState
 }
 
+const isGameOver = (state: InGameState): boolean => {
+  return state.players.find((player: Player) => player.health <= 0) !== undefined
+}
+
+// TODO: Add screen 'game-over'
+const gameOverState: GameState = {
+  screen: 'title-screen'
+}

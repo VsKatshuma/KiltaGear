@@ -106,7 +106,7 @@ export const updateAttacks = (state: InGameState): InGameState => {
         })).filter((hitbox: Hitbox) => hitbox.framesUntilEnd > 0)
       })
     )
-    .filter((attack) => attack.hitboxes.length >= 0)
+    .filter((attack) => attack.hitboxes.length > 0)
   }
 
   newAttacks.activeAttacks.forEach(handleHitBoxFunctions)
