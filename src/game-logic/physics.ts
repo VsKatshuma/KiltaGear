@@ -24,12 +24,12 @@ const nextPlayers = (state: InGameState): InGameState => {
         // TODO: Check if hitbox is active before taking damage from it
         attack.hitboxes.forEach(hitbox => {
           // TODO: Doesn't handle hitboxes that don't move with character
-          if (Math.sqrt(Math.pow((state.players[attack.playerSlot].x + hitbox.x) - player.x, 2) + Math.pow((state.players[attack.playerSlot].y + hitbox.y) - player.y, 2)) < hitbox.radius + player.character.hurtboxRadius) {
+          if (Math.sqrt(Math.pow((state.players[attack.playerSlot].x + hitbox.x * attack.xDirection) - player.x, 2) + Math.pow((state.players[attack.playerSlot].y + hitbox.y) - player.y, 2)) < hitbox.radius + player.character.hurtboxRadius) {
             hit = true
             damage = hitbox.damage
             let growth = 1 - (player.health / player.character.maxHealth)
-            xKnockback = ((hitbox.knockbackX * hitbox.knockbackBase) + (hitbox.knockbackGrowth * growth)) * attack.xDirection
-            yKnockback = (hitbox.knockbackY * hitbox.knockbackBase) + (hitbox.knockbackGrowth * growth)
+            xKnockback = ((hitbox.knockbackX * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))) * attack.xDirection
+            yKnockback = (hitbox.knockbackY * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))
             stunDuration = hitbox.hitstunBase + (hitbox.hitstunGrowth * growth)
             hitbox.hasHit = true
           }
@@ -53,7 +53,7 @@ const nextPlayers = (state: InGameState): InGameState => {
     const nextYSpeed = nextY >= 600 ? 0 : Math.min(18, player.ySpeed + 0.6)
     const nextJumps = player.y < 600 && nextY >= 600 ? player.character.maxJumps : player.jumps
     const nextFramesUntilNeutral = Math.max(0, player.framesUntilNeutral - 1)
-    const nextState = nextPlayerState(player, nextY, nextFramesUntilNeutral)
+    const nextState = nextPlayerState(player.state, nextY, nextFramesUntilNeutral)
     return {
       ...player,
       state: nextState,

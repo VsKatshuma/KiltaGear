@@ -197,15 +197,17 @@ const characterBody2 = PIXI.Sprite.from(characterBaseUrl)
 const ingameKatshuma = PIXI.Sprite.from(ingameKatshumaUrl)
 const ingamemmKALLL = PIXI.Sprite.from(ingamemmKALLLUrl)
 
+ingameKatshuma.anchor.set(0.5)
 ingameKatshuma.width = 40
 ingameKatshuma.height = 40
-ingameKatshuma.x = 30
-ingameKatshuma.y = 5
+ingameKatshuma.x = 50
+ingameKatshuma.y = 25
 
+ingamemmKALLL.anchor.set(0.5)
 ingamemmKALLL.width = 40
 ingamemmKALLL.height = 40
-ingamemmKALLL.x = 30
-ingamemmKALLL.y = 5
+ingamemmKALLL.x = 50
+ingamemmKALLL.y = 25
 
 const container1 = new PIXI.Container()
 const container2 = new PIXI.Container()
@@ -294,6 +296,9 @@ let hover = 0
 let fade = 0
 titleEsa.x = 20
 
+let player1facing = 'right'
+let player2facing = 'right'
+
 export function render(state: GameState): void {
     if (state.screen === 'title-screen') {
         if (previousScreen != 'title-screen') {
@@ -325,6 +330,15 @@ export function render(state: GameState): void {
             // Draw something at (player.x, player.y)
             // Need to implement player sprites in a smart way first
         })
+
+        if (state.players[0].facing != player1facing) {
+            ingameKatshuma.scale.x *= -1
+            player1facing = state.players[0].facing
+        }
+        if (state.players[1].facing != player2facing) {
+            ingamemmKALLL.scale.x *= -1
+            player2facing = state.players[1].facing
+        }
 
         // Camera
         let cameraLeft = state.players[0].x < state.players[1].x ? state.players[0].x - 300 : state.players[1].x - 300
@@ -394,13 +408,13 @@ export function render(state: GameState): void {
                     if (hitbox.movesWithCharacter) {
                         if (attack.playerSlot === 0) {
                             hitboxes.drawCircle(
-                                container1.x + (50 * playerScale) + (hitbox.x * playerScale),
+                                container1.x + (50 * playerScale) + (hitbox.x * attack.xDirection * playerScale),
                                 container1.y + (50 * playerScale) + (hitbox.y * playerScale),
                                 hitbox.radius * playerScale
                             )
                         } else if (attack.playerSlot === 1) {
                             hitboxes.drawCircle(
-                                container2.x + (50 * playerScale) + (hitbox.x * playerScale),
+                                container2.x + (50 * playerScale) + (hitbox.x * attack.xDirection * playerScale),
                                 container2.y + (50 * playerScale) + (hitbox.y * playerScale),
                                 hitbox.radius * playerScale
                             )
@@ -409,7 +423,7 @@ export function render(state: GameState): void {
                         }
                     } else {
                         hitboxes.drawCircle(
-                            ((hitbox.x - cameraLeft) * pixelScale) - (50 * playerScale),
+                            ((hitbox.x * attack.xDirection - cameraLeft) * pixelScale) - (50 * playerScale),
                             ((hitbox.y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight) - (50 * playerScale),
                             hitbox.radius * playerScale
                         )
