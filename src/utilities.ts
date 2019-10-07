@@ -12,7 +12,7 @@ export const createHitbox = (startFrame: number, endFrame: number, strength: num
       knockbackGrowth: 1.3, // increase knockback when opponent on low health
       knockbackX: 0.8,
       knockbackY: 0.2,
-      hitstunBase: 95, // frames
+      hitstunBase: 25, // frames
       hitstunGrowth: 1.1, // increase hitstun when opponent on low health
       hitLag: 5, // frames
       //characterSpecific: 0,

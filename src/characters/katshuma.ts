@@ -24,7 +24,7 @@ export const Katshuma: Character = {
                 {
                     damage: 4,
                     radius: 20,
-                    knockbackBase: 10,
+                    knockbackBase: 6,
                     knockbackGrowth: 2,
                     knockbackX: 0.5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     knockbackY: -1,
@@ -99,7 +99,7 @@ export const Katshuma: Character = {
                 {
                     damage: 4,
                     radius: 20,
-                    knockbackBase: 18,
+                    knockbackBase: 12,
                     knockbackGrowth: 2,
                     knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
                     knockbackY: -1,
