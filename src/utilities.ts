@@ -21,9 +21,9 @@ export const createHitbox = (startFrame: number, endFrame: number, strength: num
       y: 0,
       framesUntilActivation: startFrame,
       framesUntilEnd: endFrame,
-      //onStart: () => {},
+      // onStart: () => {},
       onActivation: () => {},
-      //onHit: () => {},
+      // onHit: () => {},
       onEnd: () => {}
   }
 }

@@ -17,7 +17,7 @@ export type PlayerAction = { playerPort: number, action: PlayerInput }
 export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatus, keysPressed: KeyStatus[], keysReleased: KeyStatus[]): InGameState => {
   const nextState: InGameState = currentState
   const players: Player[] = nextState.players
-  console.log(keyHeld(inputs, 'ArrowLeft'), playerCanMove(players[1].state))
+  // console.log(keyHeld(inputs, 'ArrowLeft'), playerCanMove(players[1].state))
 
   if (keyHeld(inputs, 'a') && playerCanMove(players[0].state)) {
     players[0] = handlePlayerMove(players[0], -1)
@@ -61,9 +61,12 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
                 } else {
                   console.log('Neutral attack!')
                   nextState.activeAttacks.push(
-                      player.character.attacks[
+                    {
+                      ...player.character.attacks[
                           getAttackString(player.state, 'Light', 'Neutral')
-                      ]
+                      ],
+                      player: player.playerSlot
+                    }
                   )
                 }
               }
