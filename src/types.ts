@@ -69,6 +69,13 @@ export type Attack = {
 
 
 export type Hitbox = {
+  hasHit?: boolean,
+  x: number,
+  y: number,
+  movesWithCharacter: boolean, // TODO: assumed to be true, add handling for stationary/projectile hitboxes
+  framesUntilActivation: number,
+  framesUntilEnd: number,
+
   damage: number,
   radius: number,
   knockbackBase: number,
@@ -79,11 +86,6 @@ export type Hitbox = {
   hitstunGrowth: number,
   hitLag: number,
   // characterSpecific: number,
-  movesWithCharacter: boolean, // TODO: assumed to be true, add handling for stationary/projectile hitboxes
-  x: number,
-  y: number,
-  framesUntilActivation: number,
-  framesUntilEnd: number,
   // onStart?: () => void,
   onActivation?: () => void,
   onHit?: () => void,
