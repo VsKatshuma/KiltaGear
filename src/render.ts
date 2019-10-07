@@ -254,6 +254,13 @@ const background1 = PIXI.Sprite.from(backgroundUrl) // 2730 (width of original i
 const backgroundOriginalWidth = 2730 // background1 width is currently hardcoded to be 2730
 const backgroundOriginalHeight = 1536 // background1 height is currently hardcoded to be 1536
 
+// Game ending
+
+const winnerText = new PIXI.Text('Game over!', titleTextStyle)
+winnerText.anchor.set(0.5)
+winnerText.x = middleX
+winnerText.y = middleY
+
 // Gamestate transitions
 function transitionToTitleScreen(): void {
     app.renderer.backgroundColor = 0x7799FF
@@ -445,5 +452,21 @@ export function render(state: GameState): void {
         healthBarRight.beginFill(0x00FF00)
         healthBarRight.drawRect((windowWidth / 2 + windowWidth * 0.04) + (windowWidth * 0.4 * (1 - player2healthRemaining)), 26, windowWidth * 0.4 * player2healthRemaining, 20)
         healthBarRight.endFill()
+    }
+    if (state.screen === 'game-over') {
+        console.log(state.winner)
+        if (previousScreen != 'game-over') {
+            previousScreen = 'game-over'
+            if (state.winner != undefined) {
+                if (state.winner === 0) {
+                    winnerText.text = 'Winner: Katshuma'
+                } else {
+                    winnerText.text = 'Winner: mmKALLL'
+                }
+            } else {
+                winnerText.text = 'Game over!'
+            }
+            app.stage.addChild(winnerText)
+        }
     }
 }

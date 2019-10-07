@@ -35,7 +35,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       state = nextPhysicsState(state)
 
       if (isGameOver(state)) {
-        return gameOverState(currentState.players)
+        return gameOverState(state.players)
       }
 
       return state
@@ -84,7 +84,7 @@ const isGameOver = (state: InGameState): boolean => {
 
 // TODO: Add screen 'game-over'
 const gameOverState = (players: Player[]): GameOverState => {
-  const winner: Player | undefined = players.find(player => player.health <= 0)
+  const winner: Player | undefined = players.find(player => player.health > 0)
   if (winner) {
     const winnerSlot: number = winner.playerSlot
     return {
