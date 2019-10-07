@@ -454,7 +454,6 @@ export function render(state: GameState): void {
         healthBarRight.endFill()
     }
     if (state.screen === 'game-over') {
-        console.log(state.winner)
         if (previousScreen != 'game-over') {
             previousScreen = 'game-over'
             if (state.winner != undefined) {
