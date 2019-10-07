@@ -2,7 +2,7 @@ import { PlayerInput } from "./game-logic/input-handler";
 
 // Game state handling related typings
 
-export type GameState = (TitleScreenState | CharacterSelectionState | InGameState)
+export type GameState = TitleScreenState | CharacterSelectionState | InGameState | GameOverState
 
 export type TitleScreenState = {
   screen: 'title-screen'
@@ -20,6 +20,12 @@ export type InGameState = {
   screen: 'in-game'
   players: Player[],
   activeAttacks: ActiveAttack[],
+}
+
+export type GameOverState = {
+  screen: 'game-over'
+  winner: number | undefined
+  framesUntilTitle: number
 }
 
 export type InputStatus = { [key: string]: KeyStatus }

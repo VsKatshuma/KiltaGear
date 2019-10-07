@@ -1,6 +1,6 @@
 import * as kiltagear from '../kiltagear'
 import { render } from '../render'
-import { ActiveAttack, InputStatus, KeyStatus, GameState, InGameState, Hitbox, Player } from '../types';
+import { ActiveAttack, InputStatus, KeyStatus, GameState, InGameState, Hitbox, Player, GameOverState } from '../types';
 import { handlePlayerInputs } from './input-handler';
 import { updateAttacks, nextPhysicsState } from './physics';
 
@@ -35,7 +35,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       state = nextPhysicsState(state)
 
       if (isGameOver(state)) {
-        return gameOverState
+        return gameOverState(currentState.players)
       }
 
       return state
@@ -62,6 +62,11 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
         }
       }
       break
+    case 'game-over':
+      return {
+        ...currentState,
+        framesUntilTitle: currentState.framesUntilTitle - 1
+      }
     default:
       throw new Error(`unknown game state when pressing key\n  state: ${currentState}\n  key event: ${event}`)
   }
@@ -73,6 +78,20 @@ const isGameOver = (state: InGameState): boolean => {
 }
 
 // TODO: Add screen 'game-over'
-const gameOverState: GameState = {
-  screen: 'title-screen'
+const gameOverState = (players: Player[]): GameOverState => {
+  const winner: Player | undefined = players.find(player => player.health <= 0)
+  if (winner) {
+    const winnerSlot: number = winner.playerSlot
+    return {
+      screen: 'game-over',
+      winner: winnerSlot,
+      framesUntilTitle: 180
+    }
+  }
+  return {
+    screen: 'game-over',
+    winner: undefined,
+    framesUntilTitle: 140
+  }
 }
+
