@@ -79,7 +79,7 @@ export type Hitbox = {
   hitstunGrowth: number,
   hitLag: number,
   // characterSpecific: number,
-  movesWithCharacter: boolean,
+  movesWithCharacter: boolean, // TODO: assumed to be true, add handling for stationary/projectile hitboxes
   x: number,
   y: number,
   framesUntilActivation: number,
