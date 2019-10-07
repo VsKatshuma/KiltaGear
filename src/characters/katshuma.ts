@@ -38,9 +38,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -63,9 +63,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -88,9 +88,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -113,9 +113,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -138,9 +138,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -163,9 +163,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -188,9 +188,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -213,9 +213,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -238,9 +238,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -263,9 +263,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -288,9 +288,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -313,9 +313,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -338,9 +338,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -363,9 +363,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])
@@ -388,9 +388,9 @@ export const Katshuma: Character = {
                     y: 5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
-                    onStart: () => {},
+                    // onStart: () => {},
                     onActivation: () => {},
-                    onHit: () => {},
+                    // onHit: () => {},
                     onEnd: () => {},
                 }
             ])

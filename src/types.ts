@@ -80,9 +80,9 @@ export type Hitbox = {
   y: number,
   framesUntilActivation: number,
   framesUntilEnd: number,
-  onStart?: () => void,
+  // onStart?: () => void,
   onActivation?: () => void,
-  onHit?: () => void,
+  // onHit?: () => void,
   onEnd?: () => void
 }
 
