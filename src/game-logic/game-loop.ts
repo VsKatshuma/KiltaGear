@@ -33,6 +33,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       state = handlePlayerInputs(state, inputs, keysPressed, keysReleased)
       state = updateAttacks(state)
       state = checkCollisions(state)
+      console.log(state.activeAttacks)
 
       return state
       break

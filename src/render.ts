@@ -325,7 +325,7 @@ export function render(state: GameState): void {
             // Draw something at (player.x, player.y)
             // Need to implement player sprites in a smart way first
         })
-        
+
         // Camera
         let cameraLeft = state.players[0].x < state.players[1].x ? state.players[0].x - 300 : state.players[1].x - 300
         let cameraRight = state.players[0].x > state.players[1].x ? state.players[0].x + 300 : state.players[1].x + 300
@@ -337,7 +337,7 @@ export function render(state: GameState): void {
             cameraRight += currentMaxCharacterHeight / 2
             if (cameraLeft < 0) {
                 cameraRight -= cameraLeft
-                cameraLeft = 0 
+                cameraLeft = 0
             }
             if (cameraRight > 1200) {
                 cameraLeft -= cameraRight - 1200
@@ -350,17 +350,17 @@ export function render(state: GameState): void {
         let visibleAreaWidth = cameraRight - cameraLeft
         let howManyPixelsX = backgroundOriginalWidth * (visibleAreaWidth / 1200)
         // pikselien määrä, mikä alkuperäisestä taustasta on näkyvissä
-        
+
         // niin monta pikseliä täytyy mahduttaa tilaan "windowWidth"
         // saadaan skaala, jolla alkuperäinen width täytyy kertoa
         let scaleBackground = windowWidth / howManyPixelsX
         background1.width = backgroundOriginalWidth * scaleBackground
         background1.height = backgroundOriginalHeight * scaleBackground
-        
+
         // cameraLeft / 1200 on kuinka suuri osa background1.widthistä jää kuvan vasemmalle puolelle
         background1.x = background1.width * (-cameraLeft / 1200)
         background1.y = windowHeight - background1.height
-        
+
         // Players
         let playerScale = background1.width / windowWidth
         container1.scale.set(playerScale)
@@ -371,7 +371,7 @@ export function render(state: GameState): void {
         // windowHeight / background1.height kertoo, miten suuri osuus taustakuvan alaosasta on näkyvissä
         container1.y = ((state.players[0].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight) - (50 * playerScale)
         container2.y = ((state.players[1].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight) - (50 * playerScale)
-        
+
         hurtboxes.clear()
         hurtboxes.beginFill(0x6688FF)
         hurtboxes.drawCircle(
@@ -385,7 +385,7 @@ export function render(state: GameState): void {
             state.players[1].character.hurtboxRadius * playerScale
         )
         hurtboxes.endFill()
-        
+
         hitboxes.clear()
         hitboxes.beginFill(0xDD0000)
         state.activeAttacks.forEach(attack => {
@@ -433,4 +433,3 @@ export function render(state: GameState): void {
         healthBarRight.endFill()
     }
 }
-            
