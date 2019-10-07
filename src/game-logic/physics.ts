@@ -28,9 +28,9 @@ const nextPlayers = (state: InGameState): Player[] => {
     let stunDuration: number = 0
     state.activeAttacks.forEach(attack => {
       if (attack.playerSlot != player.playerSlot) {
+        // TODO: Check if hitbox is active before taking damage from it
         attack.hitboxes.forEach(hitbox => {
           // TODO: Doesn't handle hitboxes that don't move with character
-          console.log('Käsiteltävän hyökkäyksen pelaaja', state.players[attack.playerSlot].playerSlot)
           if (Math.sqrt(Math.pow((state.players[attack.playerSlot].x + hitbox.x) - player.x, 2) + Math.pow((state.players[attack.playerSlot].y + hitbox.y) - player.y, 2)) < hitbox.radius + player.character.hurtboxRadius) {
             hit = true
             damage = hitbox.damage
@@ -131,12 +131,12 @@ const handleHitBoxFunctions = (attack: ActiveAttack): void => {
   })
 }
 
-const nextPlayerState = (player: Player, nextY: number, nextFramesUntilNeutral: number): CharacterState => {
-  if ('hitstun') {
+const nextPlayerState = (state: CharacterState, nextY: number, nextFramesUntilNeutral: number): CharacterState => {
+  if (state === 'hitstun' && nextFramesUntilNeutral > 0) {
     return 'hitstun'
+  } else if (nextY < 600) {
+    return 'airborne'
+  } else {
+    return 'groundborne'
   }
-  if (nextY >= 600) {
-
-  }
-  return 'groundborne'
 }
