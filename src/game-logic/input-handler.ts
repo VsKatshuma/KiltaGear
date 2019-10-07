@@ -41,7 +41,7 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
           switch (input[1]) {
             case PlayerInput.Up:
               console.log('JUMP!!!')
-              players[player.playerSlot - 1] = handlePlayerJump(player)
+              players[player.playerSlot] = handlePlayerJump(player)
               break
             case PlayerInput.Down:
               if (player.state === 'airborne') {
@@ -49,14 +49,17 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
               }
               break
             case PlayerInput.Light:
+              console.log('light pressed by player', player.playerSlot)
               if (playerCanAct(player.state)) {
+                console.log('player can act')
                 if (keyHeld(inputs, 'ArrowLeft') || keyHeld(inputs, 'ArrowRight')) {
                   nextState.activeAttacks.push(
                     player.character.attacks[
                         getAttackString(player.state, 'Light', 'Forward')
                     ]
-                )
+                  )
                 } else {
+                  console.log('Neutral attack!')
                   nextState.activeAttacks.push(
                       player.character.attacks[
                           getAttackString(player.state, 'Light', 'Neutral')

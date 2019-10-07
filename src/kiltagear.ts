@@ -17,7 +17,7 @@ const playerBase: PlayerBase = {
 
 const playerOne: Player = {
     ...playerBase,
-    playerSlot: 1,
+    playerSlot: 0,
     character: Katshuma,
     health: Katshuma.maxHealth,
     x: 500,
@@ -36,7 +36,7 @@ const playerOne: Player = {
 
 const playerTwo: Player = {
     ...playerBase,
-    playerSlot: 2,
+    playerSlot: 1,
     character: mmKALLL,
     health: mmKALLL.maxHealth,
     x: 700,
