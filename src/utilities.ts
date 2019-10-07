@@ -8,7 +8,7 @@ export const createHitbox = (startFrame: number, endFrame: number, strength: num
   return {
       damage: strength * 1.5,
       radius: strength * 3,
-      knockbackBase: strength * 20,
+      knockbackBase: strength,
       knockbackGrowth: 1.3, // increase knockback when opponent on low health
       knockbackX: 0.8,
       knockbackY: 0.2,

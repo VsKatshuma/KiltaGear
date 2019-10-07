@@ -15,8 +15,7 @@ export const Katshuma: Character = {
         LightNeutral: {
             ...generateAttack([
                 { ...createHitbox(4, 12, 5), radius: 123 },
-                { ...createHitbox(12, 20, 10) },
-                { ...createHitbox(19, 40, 50) }
+                { ...createHitbox(12, 20, 10) }
             ]),
             projectile: false
         },
@@ -25,11 +24,11 @@ export const Katshuma: Character = {
                 {
                     damage: 4,
                     radius: 20,
-                    knockbackBase: 1,
+                    knockbackBase: 5,
                     knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
+                    knockbackX: 0.5, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    knockbackY: -1,
+                    hitstunBase: 20,
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
@@ -48,19 +47,19 @@ export const Katshuma: Character = {
         LightDown: {
             ...generateAttack([
                 {
-                    damage: 4,
+                    damage: 6,
                     radius: 20,
-                    knockbackBase: 1,
+                    knockbackBase: 15,
                     knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
+                    knockbackX: 1, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    knockbackY: 1,
+                    hitstunBase: 20,
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
                     movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
+                    x: 30, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    y: 30,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
@@ -73,19 +72,19 @@ export const Katshuma: Character = {
         airLightNeutral: {
             ...generateAttack([
                 {
-                    damage: 4,
+                    damage: 9,
                     radius: 20,
                     knockbackBase: 1,
                     knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
+                    knockbackX: 1, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    knockbackY: -1,
+                    hitstunBase: 20,
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
                     movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
+                    x: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    y: -5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
@@ -100,17 +99,40 @@ export const Katshuma: Character = {
                 {
                     damage: 4,
                     radius: 20,
-                    knockbackBase: 1,
+                    knockbackBase: 18,
                     knockbackGrowth: 1,
                     knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
+                    knockbackY: -1,
+                    hitstunBase: 10,
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
                     movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
+                    x: 10, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    y: -50,
+                    framesUntilActivation: 0,
+                    framesUntilEnd: 40,
+                    // onStart: () => {},
+                    onActivation: () => {},
+                    onHit: () => {},
+                    onEnd: () => {},
+                }
+            ]),
+            ...generateAttack([
+                {
+                    damage: 4,
+                    radius: 20,
+                    knockbackBase: 18,
+                    knockbackGrowth: 1,
+                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    knockbackY: -1,
+                    hitstunBase: 10,
+                    hitstunGrowth: 1,
+                    hitLag: 30,
+                    // characterSpecific: ,
+                    movesWithCharacter: true,
+                    x: -10, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    y: -50,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
@@ -123,19 +145,19 @@ export const Katshuma: Character = {
         airLightDown: {
             ...generateAttack([
                 {
-                    damage: 4,
-                    radius: 20,
-                    knockbackBase: 1,
+                    damage: 10,
+                    radius: 30,
+                    knockbackBase: 30,
                     knockbackGrowth: 1,
                     knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
+                    knockbackY: 1,
+                    hitstunBase: 10,
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
                     movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
+                    x: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    y: 50,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
@@ -148,19 +170,19 @@ export const Katshuma: Character = {
         airLightForward: {
             ...generateAttack([
                 {
-                    damage: 4,
-                    radius: 20,
-                    knockbackBase: 1,
+                    damage: 5,
+                    radius: 10,
+                    knockbackBase: 10,
                     knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
+                    knockbackX: 1, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    knockbackY: -0.2,
+                    hitstunBase: 10,
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
                     movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
+                    x: 15, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    y: -5,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
@@ -173,19 +195,19 @@ export const Katshuma: Character = {
         airLightBack: {
             ...generateAttack([
                 {
-                    damage: 4,
+                    damage: 8,
                     radius: 20,
-                    knockbackBase: 1,
+                    knockbackBase: 30,
                     knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
+                    knockbackX: 1, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    knockbackY: -0.4,
+                    hitstunBase: 25,
                     hitstunGrowth: 1,
                     hitLag: 30,
                     // characterSpecific: ,
                     movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
+                    x: 30, // NEEDS TO TAKE FACING INTO ACCOUNT
+                    y: 0,
                     framesUntilActivation: 0,
                     framesUntilEnd: 40,
                     // onStart: () => {},
