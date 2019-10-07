@@ -1,18 +1,11 @@
 import { ActiveAttack, Player, InGameState, Hitbox, CharacterState } from "../types";
 
 // Called each frame
-export const checkCollisions = (state: InGameState): InGameState => {
-  return {
-    ...state,
-    players: nextPlayers(state)
-  }
+export const nextPhysicsState = (state: InGameState): InGameState => {
+  return nextPlayers(state)
 }
 
-const removeHitbox = (hitbox: Hitbox): void => {
-  // TODO: Hitbox connected, deactivate hitbox
-}
-
-const nextPlayers = (state: InGameState): Player[] => {
+const nextPlayers = (state: InGameState): InGameState => {
   let nextPlayers = state.players
 
   // TODO: Check for wall/floorbounce
@@ -38,7 +31,7 @@ const nextPlayers = (state: InGameState): Player[] => {
             xKnockback = ((hitbox.knockbackX * hitbox.knockbackBase) + (hitbox.knockbackGrowth * growth)) * attack.xDirection
             yKnockback = (hitbox.knockbackY * hitbox.knockbackBase) + (hitbox.knockbackGrowth * growth)
             stunDuration = hitbox.hitstunBase + (hitbox.hitstunGrowth * growth)
-            removeHitbox(hitbox)
+            hitbox.hasHit = true
           }
         })
       }
@@ -60,7 +53,7 @@ const nextPlayers = (state: InGameState): Player[] => {
     const nextYSpeed = nextY >= 600 ? 0 : Math.min(18, player.ySpeed + 0.6)
     const nextJumps = player.y < 600 && nextY >= 600 ? player.character.maxJumps : player.jumps
     const nextFramesUntilNeutral = Math.max(0, player.framesUntilNeutral - 1)
-    const nextState = nextPlayerState(player.state, nextY, nextFramesUntilNeutral)
+    const nextState = nextPlayerState(player, nextY, nextFramesUntilNeutral)
     return {
       ...player,
       state: nextState,
@@ -73,7 +66,10 @@ const nextPlayers = (state: InGameState): Player[] => {
     }
   })
 
-  return nextPlayers
+  return {
+    ...state,
+    players: nextPlayers
+  }
 }
 
 export const handlePlayerMove = (player: Player, direction: -1 | 1): Player => {
@@ -113,6 +109,7 @@ export const updateAttacks = (state: InGameState): InGameState => {
       })
     )
     .filter((attack) => attack.hitboxes.length > 0)
+    .filter(isAttackUnused) // Remove attacks after one of their hitboxes has hit
   }
 
   newAttacks.activeAttacks.forEach(handleHitBoxFunctions)
@@ -129,6 +126,11 @@ const handleHitBoxFunctions = (attack: ActiveAttack): void => {
       hitbox.onEnd()
     }
   })
+}
+
+const isAttackUnused = (attack: ActiveAttack): boolean => {
+  // findIndex returns -1 if no used hitbox is found
+  return -1 === attack.hitboxes.findIndex((hitbox: Hitbox) => hitbox.hasHit === true)
 }
 
 const nextPlayerState = (player: Player, nextY: number, nextFramesUntilNeutral: number): CharacterState => {

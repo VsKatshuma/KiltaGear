@@ -2,7 +2,7 @@ import * as kiltagear from '../kiltagear'
 import { render } from '../render'
 import { ActiveAttack, InputStatus, KeyStatus, GameState, InGameState, Hitbox, Player } from '../types';
 import { handlePlayerInputs } from './input-handler';
-import { updateAttacks, checkCollisions } from './physics';
+import { updateAttacks, nextPhysicsState } from './physics';
 
 // As a developer, I want this file to be indented with 2 spaces. -- Esa
 
@@ -32,7 +32,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       let state = currentState
       state = handlePlayerInputs(state, inputs, keysPressed, keysReleased)
       state = updateAttacks(state)
-      state = checkCollisions(state)
+      state = nextPhysicsState(state)
 
       if (isGameOver(state)) {
         return gameOverState
