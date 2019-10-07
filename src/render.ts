@@ -138,6 +138,9 @@ container2.addChild(ingamemmKALLL)
 const hurtboxes = new PIXI.Graphics()
 hurtboxes.alpha = 0.5
 
+const hitboxes = new PIXI.Graphics()
+hitboxes.alpha = 0.5
+
 // Backgrounds
 var backgroundUrl = require('../assets/sprites/ingame-6.jpg')
 
@@ -226,7 +229,7 @@ export function render(state: GameState): void {
         let visibleAreaWidth = cameraRight - cameraLeft
         let howManyPixelsX = backgroundOriginalWidth * (visibleAreaWidth / 1200)
         // pikselien määrä, mikä alkuperäisestä taustasta on näkyvissä
-
+        
         // niin monta pikseliä täytyy mahduttaa tilaan "windowWidth"
         // saadaan skaala, jolla alkuperäinen width täytyy kertoa
         let scaleBackground = windowWidth / howManyPixelsX
@@ -236,7 +239,7 @@ export function render(state: GameState): void {
         // cameraLeft / 1200 on kuinka suuri osa background1.widthistä jää kuvan vasemmalle puolelle
         background1.x = background1.width * (-cameraLeft / 1200)
         background1.y = windowHeight - background1.height
-
+        
         // Players
         let playerScale = background1.width / windowWidth
         container1.scale.set(playerScale)
@@ -247,11 +250,53 @@ export function render(state: GameState): void {
         // windowHeight / background1.height kertoo, miten suuri osuus taustakuvan alaosasta on näkyvissä
         container1.y = ((state.players[0].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight) - (50 * playerScale)
         container2.y = ((state.players[1].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight) - (50 * playerScale)
-
+        
         hurtboxes.clear()
         hurtboxes.beginFill(0x6688FF)
-        hurtboxes.drawCircle(container1.x + (50 * playerScale), container1.y + (50 * playerScale), state.players[0].character.hurtboxRadius * playerScale)
-        hurtboxes.drawCircle(container2.x + (50 * playerScale), container2.y + (50 * playerScale), state.players[1].character.hurtboxRadius * playerScale)
+        hurtboxes.drawCircle(
+            container1.x + (50 * playerScale),
+            container1.y + (50 * playerScale),
+            state.players[0].character.hurtboxRadius * playerScale
+        )
+        hurtboxes.drawCircle(
+            container2.x + (50 * playerScale),
+            container2.y + (50 * playerScale),
+            state.players[1].character.hurtboxRadius * playerScale
+        )
         hurtboxes.endFill()
+        
+        hitboxes.clear()
+        hitboxes.beginFill(0xDD0000)
+        state.activeAttacks.forEach(attack => {
+            attack.hitboxes.forEach(hitbox => {
+                if (hitbox.framesUntilActivation <= 0) {
+                    if (hitbox.relativeToCharacter) {
+                        if (attack.player === 1) {
+                            hitboxes.drawCircle(
+                                container1.x + (50 * playerScale) + (hitbox.x * playerScale),
+                                container1.y + (50 * playerScale) + (hitbox.y * playerScale),
+                                hitbox.radius * playerScale
+                            )
+                        } else if (attack.player === 2) {
+                            hitboxes.drawCircle(
+                                container2.x + (50 * playerScale) + (hitbox.x * playerScale),
+                                container2.y + (50 * playerScale) + (hitbox.y * playerScale),
+                                hitbox.radius * playerScale
+                            )
+                        } else {
+                            console.log('Renreding hitboxes is not implemented for more than 2 players')
+                        }
+                    } else {
+                        hitboxes.drawCircle(
+                            ((hitbox.x - cameraLeft) * pixelScale) - (50 * playerScale),
+                            ((hitbox.y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight) - (50 * playerScale),
+                            hitbox.radius * playerScale
+                        )
+                    }
+                }
+            })
+        })
+        hitboxes.endFill()
     }
 }
+            
