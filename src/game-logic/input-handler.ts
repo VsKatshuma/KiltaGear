@@ -77,12 +77,13 @@ function keyHeld(inputs: InputStatus, key: string) {
   return inputs && inputs[key] && inputs[key].isDown
 }
 
-function actionToAttackDirection(action: PlayerInput | undefined, facing: 'left' | 'right', state: CharacterState): AttackDirection {
+function actionToAttackDirection(action: PlayerInput, facing: 'left' | 'right', state: CharacterState): AttackDirection {
   switch (action) {
     case PlayerInput.Left: return facing === 'left' ? 'Forward' : 'Back'
     case PlayerInput.Right: return facing === 'right' ? 'Forward' : 'Back'
     case PlayerInput.Down: return 'Down'
     case PlayerInput.Up: return state === 'airborne' ? 'Up' : 'Neutral'
+    case PlayerInput.Neutral: return 'Neutral'
     case undefined: return 'Neutral'
     default:
       return 'Neutral'
@@ -93,7 +94,13 @@ function addActiveAttack(attackStrength: AttackStrength, player: Player, inputs:
   if (playerCanAct(player.state)) {
     const isHoldingLeft =  (player.playerSlot === 0 && keyHeld(inputs, 'a')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowLeft'))
     const isHoldingRight = (player.playerSlot === 0 && keyHeld(inputs, 'd')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowRight'))
-    const playerDirection = isHoldingLeft ? PlayerInput.Left : (isHoldingRight ? PlayerInput.Right : undefined)
+    const isHoldingDown =  (player.playerSlot === 0 && keyHeld(inputs, 's')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowDown'))
+    const isHoldingUp =    (player.playerSlot === 0 && keyHeld(inputs, 'w')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowUp'))
+    const playerDirection = isHoldingLeft ? PlayerInput.Left :
+                            (isHoldingRight ? PlayerInput.Right :
+                            (isHoldingDown ? PlayerInput.Down :
+                            (isHoldingUp ? PlayerInput.Up :
+                            PlayerInput.Neutral)))
     const attackDirection = actionToAttackDirection(playerDirection, player.facing, player.state)
 
     console.log('player can act, ATTACK!!\n  ', getAttackString(player.state, attackStrength, attackDirection))
