@@ -63,6 +63,11 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       }
       break
     case 'game-over':
+      if (currentState.framesUntilTitle <= 0) {
+        return {
+          screen: 'title-screen'
+        }
+      }
       return {
         ...currentState,
         framesUntilTitle: currentState.framesUntilTitle - 1
