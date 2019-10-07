@@ -1,6 +1,6 @@
 import * as kiltagear from '../kiltagear'
 import { render } from '../render'
-import { Player, ActiveAttack, InputStatus, KeyStatus, GameState } from '../types';
+import { ActiveAttack, InputStatus, KeyStatus, GameState, InGameState, Hitbox } from '../types';
 import { handlePlayerInputs } from './input-handler';
 import { checkCollisions } from './physics';
 
@@ -31,6 +31,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
     case 'in-game':
       let state = currentState
       state = handlePlayerInputs(state, inputs, keysPressed, keysReleased)
+      state = updateAttacks(state)
       state = checkCollisions(state)
 
       return state
@@ -63,3 +64,34 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
   return currentState
 }
 
+const updateAttacks = (state: InGameState): InGameState => {
+  const newAttacks = {
+    ...state,
+    activeAttacks: state.activeAttacks.map(
+      (attack: ActiveAttack) => ({
+        ...attack,
+        hitboxes: attack.hitboxes.map((hitbox: Hitbox) => ({
+          ...hitbox,
+          framesUntilActivation: hitbox.framesUntilActivation - 1,
+          framesUntilEnd: hitbox.framesUntilEnd - 1,
+        })).filter((hitbox: Hitbox) => hitbox.framesUntilEnd > 0)
+      })
+    )
+    .filter((attack) => attack.hitboxes.length >= 0)
+  }
+
+  newAttacks.activeAttacks.forEach(handleHitBoxFunctions)
+
+  return newAttacks
+}
+
+const handleHitBoxFunctions = (attack: ActiveAttack): void => {
+  attack.hitboxes.forEach((hitbox: Hitbox) => {
+    if (hitbox.framesUntilActivation === 0 && hitbox.onActivation) {
+      hitbox.onActivation()
+    }
+    if (hitbox.framesUntilEnd === 1 && hitbox.onEnd) {
+      hitbox.onEnd()
+    }
+  })
+}
