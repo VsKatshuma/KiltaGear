@@ -9,7 +9,8 @@
         "node": ">=10.15.0"
     },
     "scripts": {
-        "start": "sh -c 'node_modules/.bin/tsc --noEmit' && sh -c 'node_modules/.bin/parcel index.html'",
+        "start": "sh -c 'node_modules/.bin/tsc --noEmit' && sh -c 'node_modules/.bin/parcel index.html --open'",
+        "build": "sh -c 'node_modules/.bin/tsc --noEmit' && sh -c 'node_modules/.bin/parcel build index.html'",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {

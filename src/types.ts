@@ -1,38 +1,87 @@
+import { PlayerInput } from "./game-logic/input-handler";
 
 // Game state handling related typings
 
-export type GameScreen = 'title-screen' | 'character-select' | 'in-game' // Don't rename to GameState, it will confuse gameloop.ts
+export type GameState = TitleScreenState | CharacterSelectionState | InGameState | GameOverState
+
+export type TitleScreenState = {
+  screen: 'title-screen'
+}
+
+export type CharacterSelectionState = {
+  screen: 'character-select'
+  characterSelection: {
+    x: number,
+    y: number
+  }[]
+}
+
+export type InGameState = {
+  screen: 'in-game'
+  players: Player[],
+  activeAttacks: ActiveAttack[],
+}
+
+export type GameOverState = {
+  screen: 'game-over'
+  winner: number | undefined
+  framesUntilTitle: number
+}
 
 export type InputStatus = { [key: string]: KeyStatus }
 
 export type KeyStatus = {
+  keyName: string
   isDown: boolean
-  lastPressed?: number
+  lastPressed: number
 }
 
 // Character status related typings
 
 export type NeutralCharacterState = 'groundborne' | 'airborne'
-export type BouncingCharacterState = 'wallbounce' | 'floorbounce'
-export type NoActionCharacterState = BouncingCharacterState | 'landing' | 'hitlag' | 'hitstun'
+export type SmashDICharacterState = 'wallbouncing' | 'floorbouncing' | 'hitlag'
+export type NoActionCharacterState = SmashDICharacterState | 'attacking' | 'landing' | 'hitstun'
 
 export type CharacterState = NeutralCharacterState | NoActionCharacterState
 
+export const playerCanAct = (state: CharacterState): state is NeutralCharacterState => {
+  return state === 'airborne' || state === 'groundborne'
+}
+
+export const playerCanMove = (state: CharacterState): state is NeutralCharacterState => {
+  return playerCanAct(state)
+}
+
+export const playerCanSDI = (state: CharacterState): state is SmashDICharacterState => {
+  return state === 'wallbouncing' || state === 'floorbouncing' || state === 'hitlag'
+}
+
 export type AttackStrength = 'Light' | 'Special' | 'Meter'
 export type AttackDirection = 'Neutral' | 'Up' | 'Down' | 'Forward' | 'Back'
-export type ActiveAttack = Attack & { player: number }
+export type ActiveAttack = Attack & {
+  playerSlot: number,
+  xDirection: -1 | 1, // 'left', 'right'
+}
 
 // Character file related typings
 
 export type Attack = {
   hitboxes: Hitbox[],
   projectile: boolean,
+  duration: number, // in frames
   onStart?: () => void,
-  onEnd?: () => void
+  onEnd?: () => void,
 }
 
 
 export type Hitbox = {
+  hasHit?: boolean,
+  x: number,
+  y: number,
+  movesWithCharacter: boolean, // TODO: assumed to be true, add handling for stationary/projectile hitboxes
+  framesUntilActivation: number,
+  framesUntilEnd: number,
+
   damage: number,
   radius: number,
   knockbackBase: number,
@@ -43,12 +92,7 @@ export type Hitbox = {
   hitstunGrowth: number,
   hitLag: number,
   // characterSpecific: number,
-  relativeToCharacter: boolean,
-  x: number,
-  y: number,
-  framesUntilActivation: number,
-  framesUntilEnd: number,
-  onStart?: () => void,
+  // onStart?: () => void,
   onActivation?: () => void,
   onHit?: () => void,
   onEnd?: () => void
@@ -57,10 +101,11 @@ export type Hitbox = {
 export type Character = {
   name: string,
   id: string,
-  health: number,
+  maxHealth: number,
   walkSpeed: number,
   airSpeed: number,
   weight: number,
+  maxJumps: number,
   jumpStrength: number,
   hurtboxRadius: number,
   attacks: Partial<{
@@ -104,12 +149,15 @@ export type PlayerBase = {
   ySpeed: number,
   framesUntilNeutral: number,
   meter: number,
+  jumps: number,
 }
 
 export type Player = PlayerBase & {
-  playerPort: number
+  playerSlot: number
+  playerInputs: { [key: string]: PlayerInput }
   character: Character,
   x: number,
   y: number,
   facing: 'left' | 'right',
+  health: number,
 }
