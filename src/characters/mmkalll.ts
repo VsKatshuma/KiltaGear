@@ -22,7 +22,7 @@ export const mmKALLL: Character = {
         },
         LightForward: {
             ...generateAttack([
-                { ...createHitbox(12, 20, 20), radius: 190 }
+                { ...createHitbox(12, 20, 10), radius: 100 }
             ]),
             projectile: false,
         },

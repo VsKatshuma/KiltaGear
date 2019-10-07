@@ -150,6 +150,15 @@ readyToStart.anchor.set(0.5)
 readyToStart.x = middleX
 readyToStart.y = middleY + 230
 
+const instructionsLeft = new PIXI.Text('WASD to move, C to attack', readyToStartTextStyle)
+const instructionsRight = new PIXI.Text('Arrow keys to move, , to attack', readyToStartTextStyle)
+instructionsLeft.anchor.set(0.5)
+instructionsRight.anchor.set(0.5)
+instructionsLeft.x = middleX - 400
+instructionsLeft.y = middleY + 260
+instructionsRight.x = middleX + 400
+instructionsRight.y = middleY + 260
+
 const player1selection = new PIXI.Graphics()
 player1selection.lineStyle(4, 0xFF0000, 1)
 player1selection.moveTo(0, 0)
@@ -281,6 +290,8 @@ function transitionToCharacterSelect(): void {
     app.stage.addChild(characterSelectionRight)
     app.stage.addChild(versus)
     app.stage.addChild(readyToStart)
+    app.stage.addChild(instructionsLeft)
+    app.stage.addChild(instructionsRight)
 }
 
 function transitionToIngame(): void {

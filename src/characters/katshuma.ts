@@ -218,204 +218,25 @@ export const Katshuma: Character = {
             ])
         },
         SpecialNeutral: {
-            ...generateAttack([
-                {
-                    damage: 4,
-                    radius: 20,
-                    knockbackBase: 1,
-                    knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
-                    hitstunGrowth: 1,
-                    hitLag: 30,
-                    // characterSpecific: ,
-                    movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
-                    framesUntilActivation: 0,
-                    framesUntilEnd: 40,
-                    // onStart: () => {},
-                    onActivation: () => {},
-                    onHit: () => {},
-                    onEnd: () => {},
-                }
-            ])
-        },
-        SpecialForward: {
-            ...generateAttack([
-                {
-                    damage: 4,
-                    radius: 20,
-                    knockbackBase: 1,
-                    knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
-                    hitstunGrowth: 1,
-                    hitLag: 30,
-                    // characterSpecific: ,
-                    movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
-                    framesUntilActivation: 0,
-                    framesUntilEnd: 40,
-                    // onStart: () => {},
-                    onActivation: () => {},
-                    onHit: () => {},
-                    onEnd: () => {},
-                }
-            ])
+            ...generateAttack([])
         },
         SpecialDown: {
-            ...generateAttack([
-                {
-                    damage: 4,
-                    radius: 20,
-                    knockbackBase: 1,
-                    knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
-                    hitstunGrowth: 1,
-                    hitLag: 30,
-                    // characterSpecific: ,
-                    movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
-                    framesUntilActivation: 0,
-                    framesUntilEnd: 40,
-                    // onStart: () => {},
-                    onActivation: () => {},
-                    onHit: () => {},
-                    onEnd: () => {},
-                }
-            ])
+            ...generateAttack([])
         },
         airSpecialNeutral: {
-            ...generateAttack([
-                {
-                    damage: 4,
-                    radius: 20,
-                    knockbackBase: 1,
-                    knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
-                    hitstunGrowth: 1,
-                    hitLag: 30,
-                    // characterSpecific: ,
-                    movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
-                    framesUntilActivation: 0,
-                    framesUntilEnd: 40,
-                    // onStart: () => {},
-                    onActivation: () => {},
-                    onHit: () => {},
-                    onEnd: () => {},
-                }
-            ])
+            ...generateAttack([])
         },
         airSpecialUp: {
-            ...generateAttack([
-                {
-                    damage: 4,
-                    radius: 20,
-                    knockbackBase: 1,
-                    knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
-                    hitstunGrowth: 1,
-                    hitLag: 30,
-                    // characterSpecific: ,
-                    movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
-                    framesUntilActivation: 0,
-                    framesUntilEnd: 40,
-                    // onStart: () => {},
-                    onActivation: () => {},
-                    onHit: () => {},
-                    onEnd: () => {},
-                }
-            ])
+            ...generateAttack([])
         },
         airSpecialDown: {
-            ...generateAttack([
-                {
-                    damage: 4,
-                    radius: 20,
-                    knockbackBase: 1,
-                    knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
-                    hitstunGrowth: 1,
-                    hitLag: 30,
-                    // characterSpecific: ,
-                    movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
-                    framesUntilActivation: 0,
-                    framesUntilEnd: 40,
-                    // onStart: () => {},
-                    onActivation: () => {},
-                    onHit: () => {},
-                    onEnd: () => {},
-                }
-            ])
+            ...generateAttack([])
         },
         airSpecialForward: {
-            ...generateAttack([
-                {
-                    damage: 4,
-                    radius: 20,
-                    knockbackBase: 1,
-                    knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
-                    hitstunGrowth: 1,
-                    hitLag: 30,
-                    // characterSpecific: ,
-                    movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
-                    framesUntilActivation: 0,
-                    framesUntilEnd: 40,
-                    // onStart: () => {},
-                    onActivation: () => {},
-                    onHit: () => {},
-                    onEnd: () => {},
-                }
-            ])
+            ...generateAttack([])
         },
         airSpecialBack: {
-            ...generateAttack([
-                {
-                    damage: 4,
-                    radius: 20,
-                    knockbackBase: 1,
-                    knockbackGrowth: 1,
-                    knockbackX: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    knockbackY: -5,
-                    hitstunBase: 1,
-                    hitstunGrowth: 1,
-                    hitLag: 30,
-                    // characterSpecific: ,
-                    movesWithCharacter: true,
-                    x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
-                    y: 5,
-                    framesUntilActivation: 0,
-                    framesUntilEnd: 40,
-                    // onStart: () => {},
-                    onActivation: () => {},
-                    onHit: () => {},
-                    onEnd: () => {},
-                }
-            ])
+            ...generateAttack([])
         },
         MeterNeutral: {
             ...generateAttack([])
