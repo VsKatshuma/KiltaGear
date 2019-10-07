@@ -1,15 +1,21 @@
 import { ActiveAttack, Player, InGameState } from "../types";
 
+// Called each frame
 export const checkCollisions = (state: InGameState): InGameState => {
-  let players: Player[] = state.players
-  const activeAttacks: ActiveAttack[] = state.activeAttacks
+  return {
+    ...state,
+    players: nextPlayers(state.players)
+  }
+}
 
-  // activeAttacks
+const nextPlayers = (players: Player[]): Player[] => {
 
   // TODO: Check for wall/floorbounce
 
+  // TODO: Check for collisions with hitboxes
+
   // movement, physics, landing
-  players = players.map((player) => {
+  return players.map((player) => {
     return {
       ...player,
       x: Math.max(player.character.hurtboxRadius, Math.min(1200 - player.character.hurtboxRadius, player.x + player.xSpeed)),
@@ -20,7 +26,6 @@ export const checkCollisions = (state: InGameState): InGameState => {
     }
   })
 
-  return { ...state, players: players }
 }
 
 export const handlePlayerMove = (player: Player, direction: -1 | 1): Player => {
