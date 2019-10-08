@@ -25,10 +25,10 @@ const characterSelectionColumns = 5
 const characterSelectionRows = 1*/
 
 // Title screen
-var titleBeam1Url = require('title-2.png')
-var titleBeam2Url = require('title-3.png')
-var titleBeam3Url = require('title-4.png')
-var titleHoverUrl = require('title.png')
+var titleBeam1Url = require('../assets/sprites/title-2.png')
+var titleBeam2Url = require('../assets/sprites/title-3.png')
+var titleBeam3Url = require('../assets/sprites/title-4.png')
+var titleHoverUrl = require('../assets/sprites/title.png')
 
 const titleBeam1 = PIXI.Sprite.from(titleBeam1Url)
 const titleBeam2 = PIXI.Sprite.from(titleBeam2Url)
@@ -80,9 +80,9 @@ app.stage.addChild(titleEsa)
 app.stage.addChild(titleContainer)
 
 // Character selection
-var characterSelectKatshumaUrl = require('character-select-katshuma.jpg')
-var characterSelectmmKALLLUrl = require('character-select-mmkalll.jpg')
-var characterSelectTruemmKALLLUrl = require('character-select-true-mmkalll.jpg')
+var characterSelectKatshumaUrl = require('../assets/sprites/character-select-katshuma.jpg')
+var characterSelectmmKALLLUrl = require('../assets/sprites/character-select-mmkalll.jpg')
+var characterSelectTruemmKALLLUrl = require('../assets/sprites/character-select-true-mmkalll.jpg')
 
 const characterSelectionImageKatshuma = PIXI.Sprite.from(characterSelectKatshumaUrl)
 const characterSelectionImagemmKALLL = PIXI.Sprite.from(characterSelectmmKALLLUrl)
@@ -196,9 +196,9 @@ for (var y = -64; y < app.renderer.height; y += 64) {
 }
 
 // In-game characters
-var characterBaseUrl = require('character.png')
-var ingameKatshumaUrl = require('in-game-katshuma.jpg')
-var ingamemmKALLLUrl = require('in-game-mmkalll.jpg')
+var characterBaseUrl = require('../assets/sprites/character.png')
+var ingameKatshumaUrl = require('../assets/sprites/in-game-katshuma.jpg')
+var ingamemmKALLLUrl = require('../assets/sprites/in-game-mmkalll.jpg')
 
 const characterBody1 = PIXI.Sprite.from(characterBaseUrl)
 const characterBody2 = PIXI.Sprite.from(characterBaseUrl)
@@ -255,7 +255,7 @@ healthBarRight.drawRect(windowWidth / 2 + windowWidth * 0.04, 26, windowWidth * 
 healthBarRight.endFill()
 
 // Backgrounds
-var backgroundUrl = require('ingame-6.jpg')
+var backgroundUrl = require('../assets/sprites/ingame-6.jpg')
 
 const background1 = PIXI.Sprite.from(backgroundUrl) // 2730 (width of original image) / 2.275 = 1200
 
