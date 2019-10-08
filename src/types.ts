@@ -2,14 +2,16 @@ import { PlayerInput } from "./game-logic/input-handler";
 
 // Game state handling related typings
 
-export type GameState = TitleScreenState | CharacterSelectionState | InGameState | GameOverState
+export type GameState = (TitleScreenState | CharacterSelectionState | InGameState | GameOverState)
 
 export type TitleScreenState = {
   screen: 'title-screen'
+  musicPlaying: boolean
 }
 
 export type CharacterSelectionState = {
   screen: 'character-select'
+  musicPlaying: boolean
   characterSelection: {
     x: number,
     y: number
@@ -18,12 +20,14 @@ export type CharacterSelectionState = {
 
 export type InGameState = {
   screen: 'in-game'
+  musicPlaying: boolean
   players: Player[],
   activeAttacks: ActiveAttack[],
 }
 
 export type GameOverState = {
   screen: 'game-over'
+  musicPlaying: boolean
   winner: number | undefined
   framesUntilTitle: number
 }

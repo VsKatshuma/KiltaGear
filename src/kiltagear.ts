@@ -71,8 +71,8 @@ window.addEventListener('keydown', (event: KeyboardEvent) => {
 })
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
-    keysReleased.push(event.key)
     keys[event.key].isDown = false
+    keysReleased.push(event.key)
 })
 
 startGameLoop()

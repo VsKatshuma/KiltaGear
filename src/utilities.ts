@@ -1,5 +1,20 @@
 import { NeutralCharacterState, AttackStrength, AttackDirection, Hitbox, Attack } from './types'
 
+export const playBGM = (filename: string): void => {
+  // const file = require(filename)
+  const track = new Audio(filename)
+  track.loop = true
+  track.volume = 0.3
+  track.onload = () => { track.play() }
+}
+
+const sounds = [new Audio('damageslash.wav')]
+sounds.forEach(snd => snd.volume = 0.2)
+
+export const playHitSound = (): void => {
+  sounds[0].play()
+}
+
 export const getAttackString = (state: NeutralCharacterState, attack: AttackStrength, direction: AttackDirection): string => {
   return `${state === 'groundborne' ? '' : 'air'}${attack}${direction}`
 }

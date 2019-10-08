@@ -1,4 +1,5 @@
 import { ActiveAttack, Player, InGameState, Hitbox, CharacterState } from "../types";
+import { playHitSound } from "../utilities";
 
 // Called each frame
 export const nextPhysicsState = (state: InGameState): InGameState => {
@@ -32,6 +33,8 @@ const nextPlayers = (state: InGameState): InGameState => {
             yKnockback = (hitbox.knockbackY * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))
             stunDuration = hitbox.hitstunBase + (hitbox.hitstunGrowth * growth)
             hitbox.hasHit = true
+
+            playHitSound()
           }
         })
       }
