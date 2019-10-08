@@ -23,7 +23,7 @@ export const createHitbox = (startFrame: number, endFrame: number, strength: num
   return {
       damage: strength * 0.75,
       radius: 10 + strength * 4,
-      knockbackBase: 8 + 0.7 * strength,
+      knockbackBase: 13 + 0.7 * strength,
       knockbackGrowth: 1.3, // increase knockback when opponent on low health
       knockbackX: 1,
       knockbackY: -0.6,
@@ -40,6 +40,31 @@ export const createHitbox = (startFrame: number, endFrame: number, strength: num
       onActivation: () => {},
       onHit: () => {},
       onEnd: () => {}
+  }
+}
+
+export const createRandomHitbox = (variance: number = 15, baseStrength: number = Math.random() * 15, damage: number = Math.random() * variance): Hitbox => {
+  const r = (value) => Math.random() * value
+  return {
+    damage: damage,
+    radius: 5 + 2 * baseStrength + 5 * r(variance),
+    knockbackBase: 4 + baseStrength + 2 * r(variance),
+    knockbackGrowth: 1 + 0.1 * r(variance), // increase knockback when opponent on low health
+    knockbackX: 0.77,
+    knockbackY: -0.77,
+    hitstunBase: 25, // frames
+    hitstunGrowth: 1.1, // increase hitstun when opponent on low health
+    hitLag: baseStrength + 0.3 * r(variance), // frames
+    //characterSpecific: 0,
+    movesWithCharacter: true,
+    x: 40 + 8 * r(variance) - 8 * r(variance),
+    y: 0 + 8 * r(variance) - 8 * r(variance),
+    framesUntilActivation: variance * 1.4,
+    framesUntilEnd: variance * 2.5,
+    // onStart: () => {},
+    onActivation: () => {},
+    onHit: () => {},
+    onEnd: () => {}
   }
 }
 
