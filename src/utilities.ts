@@ -19,27 +19,36 @@ export const getAttackString = (state: NeutralCharacterState, attack: AttackStre
   return `${state === 'groundborne' ? '' : 'air'}${attack}${direction}`
 }
 
-export const createHitbox = (startFrame: number, endFrame: number, strength: number = 4): Hitbox => {
+export const isHitboxActive = (hitbox: Hitbox): boolean => {
+  return hitbox.framesUntilActivation <= 0 &&
+    hitbox.framesUntilActivation + hitbox.duration > 0 // framesUntilActivation is decreased even after active
+}
+
+export const hasHitboxEnded = (hitbox: Hitbox): boolean => {
+  return hitbox.hasHit || hitbox.framesUntilActivation + hitbox.duration <= 0 // framesUntilActivation is decreased even after active
+}
+
+export const createHitbox = (startFrame: number, duration: number, strength: number = 4): Hitbox => {
   return {
-      damage: strength * 0.75,
-      radius: 10 + strength * 4,
-      knockbackBase: 13 + 0.7 * strength,
-      knockbackGrowth: 1.3, // increase knockback when opponent on low health
-      knockbackX: 1,
-      knockbackY: -0.6,
-      hitstunBase: 25, // frames
-      hitstunGrowth: 1.1, // increase hitstun when opponent on low health
-      hitLag: 5, // frames
-      //characterSpecific: 0,
-      movesWithCharacter: true,
-      x: 30,
-      y: 0,
-      framesUntilActivation: startFrame,
-      framesUntilEnd: endFrame,
-      // onStart: () => {},
-      onActivation: () => {},
-      onHit: () => {},
-      onEnd: () => {}
+    damage: strength * 0.75,
+    radius: 10 + strength * 4,
+    knockbackBase: 13 + 0.7 * strength,
+    knockbackGrowth: 1.3, // increase knockback when opponent on low health
+    knockbackX: 1,
+    knockbackY: -0.6,
+    hitstunBase: 25, // frames
+    hitstunGrowth: 1.1, // increase hitstun when opponent on low health
+    hitLag: 5, // frames
+    //characterSpecific: 0,
+    movesWithCharacter: true,
+    x: 30,
+    y: 0,
+    framesUntilActivation: startFrame,
+    duration: duration,
+    // onStart: () => {},
+    onActivation: () => {},
+    onHit: () => {},
+    onEnd: () => {}
   }
 }
 
@@ -60,7 +69,7 @@ export const createRandomHitbox = (variance: number = 15, baseStrength: number =
     x: 40 + 8 * r(variance) - 8 * r(variance),
     y: 0 + 8 * r(variance) - 8 * r(variance),
     framesUntilActivation: variance * 1.4,
-    framesUntilEnd: variance * 2.5,
+    duration: variance * 2.5,
     // onStart: () => {},
     onActivation: () => {},
     onHit: () => {},

@@ -36,7 +36,7 @@ export const Katshuma: Character = {
                     x: 5, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 5,
                     framesUntilActivation: 0,
-                    framesUntilEnd: 40,
+                    duration: 40,
                     // onStart: () => {},
                     onActivation: () => {},
                     onHit: () => {},
@@ -61,7 +61,7 @@ export const Katshuma: Character = {
                     x: 30, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 30,
                     framesUntilActivation: 0,
-                    framesUntilEnd: 40,
+                    duration: 40,
                     // onStart: () => {},
                     onActivation: () => {},
                     onHit: () => {},
@@ -86,7 +86,7 @@ export const Katshuma: Character = {
                     x: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: -5,
                     framesUntilActivation: 0,
-                    framesUntilEnd: 40,
+                    duration: 40,
                     // onStart: () => {},
                     onActivation: () => {},
                     onHit: () => {},
@@ -111,7 +111,7 @@ export const Katshuma: Character = {
                     x: 10, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: -50,
                     framesUntilActivation: 0,
-                    framesUntilEnd: 40,
+                    duration: 40,
                     // onStart: () => {},
                     onActivation: () => {},
                     onHit: () => {},
@@ -134,7 +134,7 @@ export const Katshuma: Character = {
                     x: -10, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: -50,
                     framesUntilActivation: 0,
-                    framesUntilEnd: 40,
+                    duration: 40,
                     // onStart: () => {},
                     onActivation: () => {},
                     onHit: () => {},
@@ -159,7 +159,7 @@ export const Katshuma: Character = {
                     x: 0, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 50,
                     framesUntilActivation: 0,
-                    framesUntilEnd: 40,
+                    duration: 40,
                     // onStart: () => {},
                     onActivation: () => {},
                     onHit: () => {},
@@ -184,7 +184,7 @@ export const Katshuma: Character = {
                     x: 15, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: -5,
                     framesUntilActivation: 0,
-                    framesUntilEnd: 40,
+                    duration: 40,
                     // onStart: () => {},
                     onActivation: () => {},
                     onHit: () => {},
@@ -209,7 +209,7 @@ export const Katshuma: Character = {
                     x: 30, // NEEDS TO TAKE FACING INTO ACCOUNT
                     y: 0,
                     framesUntilActivation: 0,
-                    framesUntilEnd: 40,
+                    duration: 40,
                     // onStart: () => {},
                     onActivation: () => {},
                     onHit: () => {},

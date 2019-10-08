@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
 import { GameState } from './types';
+import { hasHitboxEnded, isHitboxActive } from './utilities';
 
 var type = 'WebGL'
 if (!PIXI.utils.isWebGLSupported()) {
@@ -421,7 +422,7 @@ export function render(state: GameState): void {
         hitboxes.beginFill(0xDD0000)
         state.activeAttacks.forEach(attack => {
             attack.hitboxes.forEach(hitbox => {
-                if (hitbox.framesUntilActivation <= 0 && hitbox.framesUntilEnd > 0) {
+                if (isHitboxActive(hitbox)) {
                     if (hitbox.movesWithCharacter) {
                         if (attack.playerSlot === 0) {
                             hitboxes.drawCircle(

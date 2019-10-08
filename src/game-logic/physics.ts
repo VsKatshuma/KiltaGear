@@ -1,5 +1,5 @@
 import { ActiveAttack, Player, InGameState, Hitbox, CharacterState } from "../types";
-import { playHitSound } from "../utilities";
+import { playHitSound, isHitboxActive, hasHitboxEnded } from "../utilities";
 
 // Called each frame
 export const nextPhysicsState = (state: InGameState): InGameState => {
@@ -113,13 +113,12 @@ export const updateAttacks = (state: InGameState): InGameState => {
   const newAttacks = {
     ...state,
     activeAttacks: state.activeAttacks.map(
-      (attack: ActiveAttack) => ({
+      (attack: ActiveAttack): ActiveAttack => ({
         ...attack,
-        hitboxes: attack.hitboxes.map((hitbox: Hitbox) => ({
+        hitboxes: attack.hitboxes.map((hitbox: Hitbox): Hitbox => ({
           ...hitbox,
           framesUntilActivation: hitbox.framesUntilActivation - 1,
-          framesUntilEnd: hitbox.framesUntilEnd - 1,
-        })).filter((hitbox: Hitbox) => hitbox.framesUntilEnd > 0)
+        })).filter((hitbox: Hitbox) => !hasHitboxEnded(hitbox))
       })
     )
     .filter((attack) => attack.hitboxes.length > 0)
@@ -136,7 +135,7 @@ const handleHitBoxFunctions = (attack: ActiveAttack): void => {
     if (hitbox.framesUntilActivation === 0 && hitbox.onActivation) {
       hitbox.onActivation()
     }
-    if (hitbox.framesUntilEnd === 1 && hitbox.onEnd) {
+    if (hitbox.duration === 1 && hitbox.onEnd) {
       hitbox.onEnd()
     }
   })
