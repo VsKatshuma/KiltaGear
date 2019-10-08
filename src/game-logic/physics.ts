@@ -51,19 +51,30 @@ const nextPlayers = (state: InGameState): InGameState => {
   })
 
   // movement, physics, landing
-  nextPlayers = nextPlayers.map((player) => {
+  nextPlayers = nextPlayers.map((player): Player => {
+
+    const minX = player.character.hurtboxRadius
+    const maxX = 1200 - player.character.hurtboxRadius
+    const nextX = Math.max(minX, Math.min(maxX, player.x + player.xSpeed))
+    const nextXSpeed =
+        (player.state === 'hitstun') ?
+            player.xSpeed * 0.975 *
+                ((nextX === minX || nextX === maxX) ? -1 : 1)
+            : Math.abs(player.xSpeed) < 0.3 ? 0 : player.xSpeed * 0.86
+
     const nextY = Math.min(600, player.y + player.ySpeed)
     const nextYSpeed = nextY >= 600 ? 0 : Math.min(18, player.ySpeed + 0.6)
     const nextJumps = player.y < 600 && nextY >= 600 ? player.character.maxJumps : player.jumps
     const nextFramesUntilNeutral = Math.max(0, player.framesUntilNeutral - 1)
     const nextState = nextPlayerState(player.state, nextY, nextFramesUntilNeutral)
+
     return {
       ...player,
       state: nextState,
-      x: Math.max(player.character.hurtboxRadius, Math.min(1200 - player.character.hurtboxRadius, player.x + player.xSpeed)),
+      x: nextX,
       y: nextY,
+      xSpeed: nextXSpeed,
       ySpeed: nextYSpeed,
-      xSpeed: Math.abs(player.xSpeed) < 0.3 ? 0 : player.xSpeed * 0.86,
       jumps: nextJumps,
       framesUntilNeutral: nextFramesUntilNeutral
     }
