@@ -23,8 +23,8 @@ Then you should be able to run the game with `parcel index.html`.
 ### Releasing to itch.io
 
 - Delete dist directory `rm -rf dist` *carefully*
-- Run `parcel build index.html assets/sprites/*`
+- Run `parcel index.html assets/sprites/*` *production build will not work with itch* (can't always resolve hashed filenames to assets)
 - Rename newly made dist directory to release-0.x
 - In release-0.x, remove slash from kiltagear.js path in index.html
-- In kiltagear.xxxxxxxx.js, replace all as regex: `"\.\./assets/sprites/` -> `"./assets/sprites/`, `exports="/` -> `exports="`
+- In kiltagear.xxxxxxxx.js, replace all upper/root directory access. ../ as ./ and exports="/..." as exports="...".  As regex: `"\.\./assets/sprites/` -> `"./assets/sprites/`, `exports="/` -> `exports="`
 - Zip the release directory, check that the filename has no spaces, and upload zip to itch.io
