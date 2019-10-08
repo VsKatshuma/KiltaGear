@@ -78,7 +78,7 @@ const nextPlayers = (state: InGameState): InGameState => {
 export const handlePlayerMove = (player: Player, direction: -1 | 1): Player => {
   return {
     ...player,
-    facing: direction === -1 ? 'left' : 'right',
+    facing: player.state === 'groundborne' ? (direction === -1 ? 'left' : 'right') : player.facing,
     xSpeed: direction * (player.state === 'airborne' ? player.character.airSpeed : player.character.walkSpeed)
   }
 }

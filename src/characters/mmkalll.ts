@@ -15,45 +15,61 @@ export const mmKALLL: Character = {
     attacks: {
         LightNeutral: {
             ...generateAttack([
-                { ...createHitbox(4, 12, 5), radius: 50 },
-                { ...createHitbox(12, 20, 10) }
+                { ...createHitbox(4, 6, 3) },
+                { ...createHitbox(12, 20, 6)  }
             ]),
             projectile: false,
         },
         LightForward: {
             ...generateAttack([
-                { ...createHitbox(12, 20, 10), radius: 100 }
+                { ...createHitbox(20, 30, 13) }
             ]),
             projectile: false,
         },
         LightDown: {
             ...generateAttack([
-                { ...createHitbox(12, 20, 20), radius: 10 }
+                { ...createHitbox(9, 14, 5), radius: 10, x: 80 }
             ])
         },
         airLightNeutral: {
             ...generateAttack([
-                { ...createHitbox(12, 20, 20), radius: 25 }
+                { ...createHitbox(9, 16, 6) },
+                { ...createHitbox(45, 55, 11) },
+                { ...createHitbox(90, 110, 3), radius: 70 }
             ])
         },
         airLightUp: {
             ...generateAttack([
-                { ...createHitbox(12, 20, 50), radius: 50 }
+                { ...createHitbox(11, 30, 14), y: -50 }
             ])
         },
         airLightDown: {
             ...generateAttack([
-                { ...createHitbox(12, 20, 50), radius: 100 }
+                { ...createHitbox(30, 50, 22) }
             ])
         },
         airLightForward: {
             ...generateAttack([
-                { ...createHitbox(12, 20, 5), radius: 30 }
+                { ...createHitbox(4, 40, 5), radius: 30 }
             ])
         },
         airLightBack: {
             ...generateAttack([
-                { ...createHitbox(12, 20, 10), radius: 190 }
+                { ...createHitbox(4, 10, 6), radius: 15,   x: -10 },
+                { ...createHitbox(11, 20, 6), radius: 15,  x: -30 },
+                { ...createHitbox(18, 30, 6), radius: 15,  x: -50 },
+                { ...createHitbox(25, 40, 6), radius: 15,  x: -70 },
+                { ...createHitbox(31, 50, 6), radius: 15,  x: -90 },
+                { ...createHitbox(35, 60, 6), radius: 15,  x: -10 },
+                { ...createHitbox(41, 70, 6), radius: 15,  x: -30 },
+                { ...createHitbox(47, 80, 6), radius: 15,  x: -50 },
+                { ...createHitbox(54, 90, 6), radius: 15,  x: -70 },
+                { ...createHitbox(60, 100, 6), radius: 15, x: -90 },
+                { ...createHitbox(66, 110, 6), radius: 15, x: -10 },
+                { ...createHitbox(71, 120, 6), radius: 15, x: -30 },
+                { ...createHitbox(77, 130, 6), radius: 15, x: -50 },
+                { ...createHitbox(85, 140, 6), radius: 15, x: -70 },
+                { ...createHitbox(91, 150, 6), radius: 15, x: -90 },
             ])
         },
         SpecialNeutral: {

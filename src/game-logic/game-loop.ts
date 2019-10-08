@@ -58,7 +58,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       // Change to character select
       if (keysPressed.length > 0) {
         if (currentState.musicPlaying === false) {
-          playBGM('../assets/audio/gametal-midnight-carnival.mp3')
+          playBGM('gametal-midnight-carnival.mp3')
         }
         return {
           screen: 'character-select',
