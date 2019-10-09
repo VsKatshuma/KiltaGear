@@ -1,10 +1,8 @@
 import * as kiltagear from '../kiltagear'
 import { render } from '../render'
-import { ActiveAttack, InputStatus, KeyStatus, GameState, InGameState, Hitbox, Player, GameOverState } from '../types';
+import { InputStatus, KeyStatus, GameState, InGameState, Hitbox, Player, GameOverState } from '../types';
 import { handlePlayerInputs } from './input-handler';
 import { updateAttacks, nextPhysicsState } from './physics';
-import { loadavg } from 'os';
-import { playBGM } from '../utilities';
 
 // As a developer, I want this file to be indented with 2 spaces. -- Esa
 
@@ -58,7 +56,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       // Change to character select
       if (keysPressed.length > 0) {
         if (currentState.musicPlaying === false) {
-          playBGM('gametal-midnight-carnival.mp3')
+          currentState.musicPlaying = true
         }
         return {
           screen: 'character-select',
