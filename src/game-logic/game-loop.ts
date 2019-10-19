@@ -3,6 +3,7 @@ import { render } from '../render'
 import { InputStatus, KeyStatus, GameState, InGameState, Hitbox, Player, GameOverState } from '../types';
 import { handlePlayerInputs } from './input-handler';
 import { updateAttacks, nextPhysicsState } from './physics';
+import { playMusic } from '../utilities';
 
 // As a developer, I want this file to be indented with 2 spaces. -- Esa
 
@@ -57,6 +58,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       if (keysPressed.length > 0) {
         if (currentState.musicPlaying === false) {
           currentState.musicPlaying = true
+          playMusic()
         }
         return {
           screen: 'character-select',

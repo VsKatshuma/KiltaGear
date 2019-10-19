@@ -4,9 +4,15 @@ const damageslashUrl = require('./assets/audio/damageslash.wav')
 const sounds = [new Audio(damageslashUrl)]
 sounds.forEach(snd => snd.volume = 0.2)
 
-// const midnightCarnivalUrl = require('./assets/audio/gametal-midnight-carnival.mp3')
-// const track = new Audio(midnightCarnivalUrl)
-// track.onload = () => { track.volume = 0.3; track.loop = true; track.play(); console.log('Start playing music') }
+const midnightCarnivalUrl = require('./assets/audio/gametal-midnight-carnival.mp3')
+const track = new Audio(midnightCarnivalUrl)
+
+export const playMusic = (): void => {
+  track.volume = 0.3
+  track.loop = true
+  track.play()
+  console.log('Start playing music')
+}
 
 
 export const playHitSound = (): void => {
