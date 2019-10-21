@@ -14,6 +14,13 @@ export const playMusic = (): void => {
   console.log('Start playing music')
 }
 
+export const getMusicVolume = (): number => {
+  return track.volume
+}
+
+export const setMusicVolume = (volume: number): void => {
+  track.volume = volume
+}
 
 export const playHitSound = (): void => {
   sounds[0].play()
