@@ -53,7 +53,7 @@ export const playerCanAct = (state: CharacterState): state is NeutralCharacterSt
 }
 
 export const playerCanMove = (state: CharacterState): state is NeutralCharacterState => {
-  return playerCanAct(state)
+  return playerCanAct(state) || state === 'attacking'
 }
 
 export const playerCanSDI = (state: CharacterState): state is SmashDICharacterState => {

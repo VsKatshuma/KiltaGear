@@ -26,6 +26,7 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
     setMusicVolume(newVolume)
   }
 
+  // Player 1 horizontal movement
   if (keyHeld(inputs, 'a') && playerCanMove(players[0].state) && !keyHeld(inputs, 'd')) {
     players[0] = handlePlayerMove(players[0], -1)
   }
@@ -33,6 +34,7 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
     players[0] = handlePlayerMove(players[0], 1)
   }
 
+  // Player 2 horizontal movement
   if (keyHeld(inputs, 'ArrowLeft') && playerCanMove(players[1].state) && !keyHeld(inputs, 'ArrowRight')) {
     players[1] = handlePlayerMove(players[1], -1)
   }
