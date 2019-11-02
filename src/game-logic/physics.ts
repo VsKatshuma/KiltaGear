@@ -1,4 +1,4 @@
-import { ActiveAttack, Player, InGameState, Hitbox, CharacterState } from "../types";
+import { ActiveAttack, Player, InGameState, Hitbox, CharacterState, NeutralCharacterState, playerCanAct } from "../types";
 import { playHitSound, isHitboxActive, hasHitboxEnded } from "../utilities";
 
 // Called each frame
@@ -147,9 +147,17 @@ const isAttackUnused = (attack: ActiveAttack): boolean => {
 }
 
 const nextPlayerState = (state: CharacterState, nextY: number, nextFramesUntilNeutral: number): CharacterState => {
-  if (state === 'hitstun' && nextFramesUntilNeutral > 0) {
-    return 'hitstun'
-  } else if (nextY < 600) {
+  // nextFramesUntilNeutral > 0, need to spend time in lag state
+  if (nextFramesUntilNeutral > 0 && !playerCanAct(state)) {
+    return state
+  }
+
+  // Return to neutral after nextFramesUntilNeutral === 0
+  return nextNeutralState(nextY)
+}
+
+const nextNeutralState = (nextY: number): NeutralCharacterState => {
+  if (nextY < 600) {
     return 'airborne'
   } else {
     return 'groundborne'
