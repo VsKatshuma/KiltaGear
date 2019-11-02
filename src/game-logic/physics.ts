@@ -50,7 +50,7 @@ const nextPlayers = (state: InGameState): InGameState => {
     }
   })
 
-  // movement, physics, landing
+  // movement, physics, landing, state updates
   nextPlayers = nextPlayers.map((player): Player => {
 
     const minX = player.character.hurtboxRadius
@@ -59,8 +59,8 @@ const nextPlayers = (state: InGameState): InGameState => {
     const nextXSpeed =
         (player.state === 'hitstun') ?
             player.xSpeed * 0.975 *
-                ((nextX === minX || nextX === maxX) ? -1 : 1)
-            : Math.abs(player.xSpeed) < 0.3 ? 0 : player.xSpeed * 0.86
+                ((nextX === minX || nextX === maxX) ? -1 : 1) // reverse speed on wall hit
+            : Math.abs(player.xSpeed) < 0.3 ? 0 : player.xSpeed * 0.86 // more friction when moving normally
 
     const nextY = Math.min(600, player.y + player.ySpeed)
     const nextYSpeed = nextY >= 600 ? 0 : Math.min(18, player.ySpeed + 0.6)
