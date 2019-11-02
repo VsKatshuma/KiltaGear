@@ -150,14 +150,14 @@ readyToStart.anchor.set(0.5)
 readyToStart.x = middleX
 readyToStart.y = middleY + 230
 
-const instructionsLeft = new PIXI.Text('WASD to move, C to attack', readyToStartTextStyle)
-const instructionsRight = new PIXI.Text('Arrow keys to move, , to attack', readyToStartTextStyle)
+const instructionsLeft = new PIXI.Text('Move: WASD\nAttack: C', readyToStartTextStyle)
+const instructionsRight = new PIXI.Text('Move: Arrow keys\nAttack: Comma (,)', readyToStartTextStyle)
 instructionsLeft.anchor.set(0.5)
 instructionsRight.anchor.set(0.5)
 instructionsLeft.x = middleX - 400
-instructionsLeft.y = middleY + 260
+instructionsLeft.y = middleY + 290
 instructionsRight.x = middleX + 400
-instructionsRight.y = middleY + 260
+instructionsRight.y = middleY + 290
 
 const player1selection = new PIXI.Graphics()
 player1selection.lineStyle(4, 0xFF0000, 1)
