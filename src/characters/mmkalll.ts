@@ -8,17 +8,17 @@ export const mmKALLL: Character = {
     maxHealth: 100,
     walkSpeed: 5,
     airSpeed: 8,
-    weight: 1,
+    weight: 1, // Multiplier relative to mmKALLL
     maxJumps: 2,
-    jumpStrength: 1,
-    hurtboxRadius: 20,
+    jumpStrength: 1, // Multiplier relative to mmKALLL
+    hurtboxRadius: 20, // Sprites are 40x100
     attacks: {
         LightNeutral: {
             ...generateAttack([
                 { ...createHitbox(4, 3, 3) },
-                { ...createHitbox(12, 8, 6)  }
+                { ...createHitbox(12, 8, 6) }
             ]),
-            projectile: false,
+            projectile: false, // You can override any property of generateAttack by adding it after the ... spread
         },
         LightForward: {
             ...generateAttack([
@@ -29,7 +29,7 @@ export const mmKALLL: Character = {
         },
         LightDown: {
             ...generateAttack([
-                { ...createHitbox(9, 6, 5), radius: 10, x: 80 }
+                { ...createHitbox(9, 6, 5), radius: 10, x: 80 } // Override also works on hitboxes
             ])
         },
         airLightNeutral: {
@@ -54,6 +54,7 @@ export const mmKALLL: Character = {
                 { ...createHitbox(4, 40, 5), radius: 30 }
             ])
         },
+        // An attack can also have many hitboxes with different timings
         airLightBack: {
             ...generateAttack([
                 { ...createHitbox(4, 10, 6), radius: 15,   x: -10 },
@@ -74,6 +75,7 @@ export const mmKALLL: Character = {
             ]),
             duration: 40
         },
+        // Special and meter attacks can be made, but nothing's special about them yet (2019-11-01)
         SpecialNeutral: {
             ...generateAttack([])
         },
