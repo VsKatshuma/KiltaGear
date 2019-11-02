@@ -25,6 +25,7 @@ export const mmKALLL: Character = {
                 { ...createHitbox(20, 10, 13) }
             ]),
             projectile: false,
+            duration: 35,
         },
         LightDown: {
             ...generateAttack([
@@ -70,7 +71,8 @@ export const mmKALLL: Character = {
                 { ...createHitbox(110, 10, 6), radius: 15, x: -50 },
                 { ...createHitbox(120, 10, 6), radius: 15, x: -70 },
                 { ...createHitbox(130, 10, 6), radius: 15, x: -90 },
-            ])
+            ]),
+            duration: 40
         },
         SpecialNeutral: {
             ...generateAttack([])
