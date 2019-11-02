@@ -51,7 +51,7 @@ const nextPlayers = (state: InGameState): InGameState => {
   })
 
   // movement, physics, landing, state updates
-  nextPlayers = nextPlayers.map((player): Player => {
+  nextPlayers = nextPlayers.map((player: Player): Player => {
 
     const minX = player.character.hurtboxRadius
     const maxX = 1200 - player.character.hurtboxRadius
@@ -62,8 +62,8 @@ const nextPlayers = (state: InGameState): InGameState => {
                 ((nextX === minX || nextX === maxX) ? -1 : 1) // reverse speed on wall hit
             : Math.abs(player.xSpeed) < 0.3 ? 0 : player.xSpeed * 0.86 // more friction when moving normally
 
-    const nextY = Math.min(600, player.y + player.ySpeed)
-    const nextYSpeed = nextY >= 600 ? 0 : Math.min(18, player.ySpeed + 0.6)
+    const nextY = Math.min(600, player.y - player.ySpeed) // Reversed Y axis; helps a lot elsewhere
+    const nextYSpeed = nextY >= 600 ? 0 : Math.max(-18, player.ySpeed - (0.6 * player.character.weight)) // Gravity if in air
     const nextJumps = player.y < 600 && nextY >= 600 ? player.character.maxJumps : player.jumps
     const nextFramesUntilNeutral = Math.max(0, player.framesUntilNeutral - 1)
     const nextState = nextPlayerState(player.state, nextY, nextFramesUntilNeutral)
@@ -94,14 +94,21 @@ export const handlePlayerMove = (player: Player, direction: -1 | 1): Player => {
   }
 }
 
-export const handlePlayerJump = (player): Player => {
+export const handlePlayerJump = (player: Player): Player => {
   if (player.jumps > 0) {
     console.log('now we really JUMP')
     return {
       ...player,
       jumps: player.jumps - 1,
-      ySpeed: player.character.jumpStrength * -16 // positive y is downwards
+      ySpeed: player.character.jumpStrength * 16
     }
+  }
+  return player
+}
+
+export const handlePlayerFastFall = (player: Player): Player => {
+  if (player.state === 'airborne') {
+    player.ySpeed += player.character.weight * -8.8 // Increase gravity immediately regardless of jumps left
   }
   return player
 }

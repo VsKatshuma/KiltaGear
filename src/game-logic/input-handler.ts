@@ -1,6 +1,6 @@
 import { Player, KeyStatus, InputStatus, InGameState, playerCanMove, playerCanSDI, playerCanAct, ActiveAttack, AttackStrength, AttackDirection, CharacterState, Attack } from "../types";
 import { getAttackString, setMusicVolume, getMusicVolume } from "../utilities";
-import { handlePlayerMove, handlePlayerJump } from "./physics";
+import { handlePlayerMove, handlePlayerJump, handlePlayerFastFall } from "./physics";
 
 export enum PlayerInput {
   Left,
@@ -54,9 +54,7 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
               break
 
             case PlayerInput.Down:
-              if (player.state === 'airborne') {
-                player.ySpeed += player.character.weight * 10
-              }
+              players[player.playerSlot] = handlePlayerFastFall(player)
               break
 
             case PlayerInput.Light:
