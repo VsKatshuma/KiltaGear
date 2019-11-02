@@ -1,5 +1,5 @@
-import { Player, KeyStatus, InputStatus, InGameState, playerCanMove, playerCanSDI, playerCanAct, ActiveAttack, AttackStrength, AttackDirection, CharacterState } from "../types";
-import { getAttackString } from "../utilities";
+import { Player, KeyStatus, InputStatus, InGameState, playerCanMove, playerCanSDI, playerCanAct, ActiveAttack, AttackStrength, AttackDirection, CharacterState, Attack } from "../types";
+import { getAttackString, setMusicVolume, getMusicVolume } from "../utilities";
 import { handlePlayerMove, handlePlayerJump } from "./physics";
 
 export enum PlayerInput {
@@ -52,25 +52,25 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
               console.log('JUMP!!!')
               players[player.playerSlot] = handlePlayerJump(player)
               break
+
             case PlayerInput.Down:
               if (player.state === 'airborne') {
                 player.ySpeed += player.character.weight * 10
               }
               break
+
             case PlayerInput.Light:
-              console.log('Light pressed by player', player.playerSlot)
-              nextState.activeAttacks = addActiveAttack('Light', player, inputs, nextState.activeAttacks)
+              nextState.activeAttacks = handleAttack('Light', player, inputs, nextState.activeAttacks)
               break
 
             case PlayerInput.Special:
-              console.log('Special pressed by player', player.playerSlot)
-              nextState.activeAttacks = addActiveAttack('Special', player, inputs, nextState.activeAttacks)
+              nextState.activeAttacks = handleAttack('Special', player, inputs, nextState.activeAttacks)
               break
 
             case PlayerInput.Meter:
-              console.log('Meter pressed by player', player.playerSlot)
-              nextState.activeAttacks = addActiveAttack('Meter', player, inputs, nextState.activeAttacks)
+              nextState.activeAttacks = handleAttack('Meter', player, inputs, nextState.activeAttacks)
               break
+
             default:
 
           }
@@ -79,6 +79,19 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
   })
 
   return { ...nextState, players: players }
+}
+
+function handleAttack(inputName: AttackStrength, player: Player, inputs: InputStatus, activeAttacks: ActiveAttack[]): ActiveAttack[] {
+  console.log(`${inputName} pressed by player ${player.playerSlot}`)
+  if (playerCanAct(player.state)) {
+    const attack: ActiveAttack | undefined = getAttackFromInput(inputName, player, inputs, activeAttacks)
+    if (attack) {
+      activeAttacks = addActiveAttack(attack, activeAttacks)
+      player.state = 'attacking'
+      player.framesUntilNeutral = attack.duration
+    }
+  }
+  return activeAttacks
 }
 
 function keyHeld(inputs: InputStatus, key: string) {
@@ -98,7 +111,7 @@ function actionToAttackDirection(action: PlayerInput, facing: 'left' | 'right', 
   }
 }
 
-function addActiveAttack(attackStrength: AttackStrength, player: Player, inputs: InputStatus, activeAttacks: ActiveAttack[]): ActiveAttack[] {
+function getAttackFromInput(attackStrength: AttackStrength, player: Player, inputs: InputStatus, activeAttacks: ActiveAttack[]): ActiveAttack | undefined {
   if (playerCanAct(player.state)) {
     const isHoldingLeft =  (player.playerSlot === 0 && keyHeld(inputs, 'a')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowLeft'))
     const isHoldingRight = (player.playerSlot === 0 && keyHeld(inputs, 'd')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowRight'))
@@ -113,15 +126,22 @@ function addActiveAttack(attackStrength: AttackStrength, player: Player, inputs:
 
     console.log('player can act, ATTACK!!\n  ', getAttackString(player.state, attackStrength, attackDirection))
 
-    return activeAttacks.concat(
-      {
-        ...player.character.attacks[
-            getAttackString(player.state, attackStrength, attackDirection)
-        ],
+    const attack: Attack | undefined = player.character.attacks[
+      getAttackString(player.state, attackStrength, attackDirection)
+    ]
+
+    if (attack) {
+      return {
+        ...attack,
         playerSlot: player.playerSlot,
         xDirection: player.facing === 'left' ? -1 : 1
       }
-    )
+    }
   }
-  return activeAttacks
+
+  return undefined
+}
+
+function addActiveAttack(attack: ActiveAttack, activeAttacks: ActiveAttack[]): ActiveAttack[] {
+  return activeAttacks.concat(attack)
 }
