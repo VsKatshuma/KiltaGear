@@ -36,7 +36,7 @@ built/
 dist*.zip
 dist*/
 release/
-release-*.zip
+release*.zip
 
 # Dependency directories
 node_modules/
