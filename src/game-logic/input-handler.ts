@@ -18,7 +18,6 @@ export type PlayerAction = { playerPort: number, action: PlayerInput }
 export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatus, keysPressed: KeyStatus[], keysReleased: KeyStatus[]): InGameState => {
   const nextState: InGameState = currentState
   const players: Player[] = nextState.players
-  // console.log(keyHeld(inputs, 'ArrowLeft'), playerCanMove(players[1].state))
 
   // // mute/unmute music
   // if (keysPressed.find(input => input.keyName === 'm')) {
@@ -49,7 +48,6 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
         if (input) {
           switch (input[1]) {
             case PlayerInput.Up:
-              console.log('JUMP!!!')
               players[player.playerSlot] = handlePlayerJump(player)
               break
 

@@ -9,7 +9,7 @@ export const nextPhysicsState = (state: InGameState): InGameState => {
 const nextPlayers = (state: InGameState): InGameState => {
   let nextPlayers = state.players
 
-  // TODO: Check for wall/floorbounce
+  // TODO: Check for floorbounce
 
   // TODO: Check for hitlag/landing/hitstun and tick timers
 
@@ -20,26 +20,29 @@ const nextPlayers = (state: InGameState): InGameState => {
     let xKnockback: number = 0
     let yKnockback: number = 0
     let stunDuration: number = 0
-    state.activeAttacks.forEach(attack => {
-      if (attack.playerSlot != player.playerSlot) {
-        // TODO: Check if hitbox is active before taking damage from it
-        attack.hitboxes.forEach(hitbox => {
-          // TODO: Doesn't handle hitboxes that don't move with character
-          if (Math.sqrt(Math.pow((state.players[attack.playerSlot].x + hitbox.x * attack.xDirection) - player.x, 2) + Math.pow((state.players[attack.playerSlot].y + hitbox.y) - player.y, 2)) < hitbox.radius + player.character.hurtboxRadius) {
-            hit = true
-            damage = hitbox.damage
-            let growth = 1 - (player.health / player.character.maxHealth)
-            xKnockback = ((hitbox.knockbackX * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))) * attack.xDirection
-            yKnockback = (hitbox.knockbackY * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))
-            stunDuration = hitbox.hitstunBase + (hitbox.hitstunGrowth * growth)
-            hitbox.hasHit = true
 
-            playHitSound()
+    state.activeAttacks.forEach((attack: ActiveAttack) => {
+      if (attack.playerSlot != player.playerSlot) {
+
+        attack.hitboxes.forEach((hitbox: Hitbox) => {
+          if (isHitboxActive(hitbox)) {
+            // TODO: Handle hitboxes that don't move with character
+            if (Math.sqrt(Math.pow((state.players[attack.playerSlot].x + hitbox.x * attack.xDirection) - player.x, 2) + Math.pow((state.players[attack.playerSlot].y + hitbox.y) - player.y, 2)) < hitbox.radius + player.character.hurtboxRadius) {
+              hit = true
+              damage = hitbox.damage
+              const growth = 1 - (player.health / player.character.maxHealth)
+              xKnockback = ((hitbox.knockbackX * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))) * attack.xDirection
+              yKnockback = (hitbox.knockbackY * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))
+              stunDuration = hitbox.hitstunBase + (hitbox.hitstunGrowth * growth)
+
+              hitbox.hasHit = true
+              playHitSound()
+            }
           }
         })
       }
     })
-    // TODO: Refactor this later to take into account getting hit by multiple hitboxes at once
+
     return {
       ...player,
       health: hit ? player.health - damage: player.health,

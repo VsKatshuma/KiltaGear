@@ -77,7 +77,6 @@ export type Attack = {
   onEnd?: () => void,
 }
 
-
 export type Hitbox = {
   hasHit?: boolean,
   x: number,
