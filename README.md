@@ -1,6 +1,8 @@
 # KiltaGear
 A 2D fighting game presented by NiemiSmäsh.
 
+Play now at https://mmkalll.itch.io/kiltagear
+
 ### Installation
 
 1. Have `yarn` and Node.js 10.15.0 or newer installed (see https://yarnpkg.com/lang/en/docs/install/).
