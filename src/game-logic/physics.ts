@@ -99,7 +99,6 @@ export const handlePlayerMove = (player: Player, direction: -1 | 1): Player => {
 
 export const handlePlayerJump = (player: Player): Player => {
   if (player.jumps > 0) {
-    console.log('now we really JUMP')
     return {
       ...player,
       jumps: player.jumps - 1,

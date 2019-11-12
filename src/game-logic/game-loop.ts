@@ -23,7 +23,6 @@ export const startGameLoop = () => {
 
 // Functional loop: return next state from current state and inputs
 const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
-  // console.log('advance frame:\n  currentState:', currentState, '\n  inputs: ', inputs)
 
   const keysPressed: KeyStatus[] = kiltagear.keysPressed.map((key: string) => kiltagear.keys[key])
   const keysReleased: KeyStatus[] = kiltagear.keysReleased.map((key: string) => kiltagear.keys[key])
@@ -54,7 +53,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       }
       break
     case 'title-screen':
-      // Change to character select
+      // Change to character select when any key is pressed
       if (keysPressed.length > 0) {
         if (currentState.musicPlaying === false) {
           currentState.musicPlaying = true

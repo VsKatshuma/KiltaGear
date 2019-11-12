@@ -11,7 +11,6 @@ export const playMusic = (): void => {
   track.volume = 0.3
   track.loop = true
   track.play()
-  console.log('Start playing music')
 }
 
 export const getMusicVolume = (): number => {

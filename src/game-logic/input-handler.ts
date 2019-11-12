@@ -78,7 +78,6 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
 }
 
 function handleAttack(inputName: AttackStrength, player: Player, inputs: InputStatus, activeAttacks: ActiveAttack[]): ActiveAttack[] {
-  console.log(`${inputName} pressed by player ${player.playerSlot}`)
   if (playerCanAct(player.state)) {
     const attack: ActiveAttack | undefined = getAttackFromInput(inputName, player, inputs, activeAttacks)
     if (attack) {
@@ -119,8 +118,6 @@ function getAttackFromInput(attackStrength: AttackStrength, player: Player, inpu
                             (isHoldingUp ? PlayerInput.Up :
                             PlayerInput.Neutral)))
     const attackDirection = actionToAttackDirection(playerDirection, player.facing, player.state)
-
-    console.log('player can act, ATTACK!!\n  ', getAttackString(player.state, attackStrength, attackDirection))
 
     const attack: Attack | undefined = player.character.attacks[
       getAttackString(player.state, attackStrength, attackDirection)
