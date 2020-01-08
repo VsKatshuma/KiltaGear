@@ -1,5 +1,5 @@
 # KiltaGear
-A 2D fighting game presented by NiemiSmäsh. A playable version of the game is available at https://mmkalll.itch.io/kiltagear.
+A 2D fighting game presented by NiemiSmäsh. A playable version of the game is hosted at https://mmkalll.itch.io/kiltagear.
 
 ### Installation
 
