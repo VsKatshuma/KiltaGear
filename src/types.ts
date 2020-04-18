@@ -65,6 +65,7 @@ export type AttackDirection = 'Neutral' | 'Up' | 'Down' | 'Forward' | 'Back'
 export type ActiveAttack = Attack & {
   playerSlot: number,
   xDirection: -1 | 1, // 'left', 'right'
+  currentFrame: number,
 }
 
 // Character file related typings
@@ -151,6 +152,7 @@ export type PlayerBase = {
   state: CharacterState,
   xSpeed: number,
   ySpeed: number,
+  hitlagRemaining: number,
   framesUntilNeutral: number,
   meter: number,
   jumps: number,

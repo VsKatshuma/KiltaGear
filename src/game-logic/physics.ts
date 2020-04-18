@@ -1,5 +1,5 @@
-import { ActiveAttack, Player, InGameState, Hitbox, CharacterState, NeutralCharacterState, playerCanAct } from "../types";
-import { playHitSound, isHitboxActive, hasHitboxEnded } from "../utilities";
+import { ActiveAttack, Player, InGameState, Hitbox, CharacterState, NeutralCharacterState, playerCanAct, GameState, playerCanMove } from "../types";
+import { playHitSound, isHitboxActive, hasHitboxEnded, hasAttackEnded } from "../utilities";
 
 // Called each frame
 export const nextPhysicsState = (state: InGameState): InGameState => {
@@ -19,15 +19,20 @@ const nextPlayers = (state: InGameState): InGameState => {
     let damage: number = 0
     let xKnockback: number = 0
     let yKnockback: number = 0
+    let hitlagRemaining: number = player.hitlagRemaining
     let stunDuration: number = 0
 
     state.activeAttacks.forEach((attack: ActiveAttack) => {
-      if (attack.playerSlot != player.playerSlot) {
-
+      if (attack.playerSlot !== player.playerSlot) {
         attack.hitboxes.forEach((hitbox: Hitbox) => {
           if (isHitboxActive(hitbox)) {
             // TODO: Handle hitboxes that don't move with character
-            if (Math.sqrt(Math.pow((state.players[attack.playerSlot].x + hitbox.x * attack.xDirection) - player.x, 2) + Math.pow((state.players[attack.playerSlot].y + hitbox.y) - player.y, 2)) < hitbox.radius + player.character.hurtboxRadius) {
+            // Calculate hit if hitbox overlaps with hurtbox
+            if (Math.sqrt(
+                    Math.pow((state.players[attack.playerSlot].x + hitbox.x * attack.xDirection) - player.x, 2)
+                  + Math.pow((state.players[attack.playerSlot].y + hitbox.y) - player.y, 2)
+                )
+                < hitbox.radius + player.character.hurtboxRadius) {
               hit = true
               damage = hitbox.damage
               const growth = 1 - (player.health / player.character.maxHealth)
@@ -37,6 +42,13 @@ const nextPlayers = (state: InGameState): InGameState => {
 
               hitbox.hasHit = true
               playHitSound()
+              hitbox.onHit && hitbox.onHit(state, attack)
+
+              // Assign hitlag to both players
+              player.state = 'hitlag'
+              nextPlayers[attack.playerSlot].state = 'hitlag'
+              hitlagRemaining = Math.max(hitbox.hitLag, hitlagRemaining)
+              nextPlayers[attack.playerSlot].hitlagRemaining = Math.max(hitbox.hitLag, nextPlayers[attack.playerSlot].hitlagRemaining)
             }
           }
         })
@@ -45,9 +57,10 @@ const nextPlayers = (state: InGameState): InGameState => {
 
     return {
       ...player,
-      health: hit ? player.health - damage: player.health,
+      health: hit ? player.health - damage : player.health,
       xSpeed: hit ? xKnockback : player.xSpeed,
       ySpeed: hit ? yKnockback : player.ySpeed,
+      hitlagRemaining: hitlagRemaining,
       framesUntilNeutral: hit ? stunDuration : player.framesUntilNeutral,
       state: hit ? 'hitstun' : player.state
     }
@@ -55,32 +68,30 @@ const nextPlayers = (state: InGameState): InGameState => {
 
   // movement, physics, landing, state updates
   nextPlayers = nextPlayers.map((player: Player): Player => {
+    let nextPlayer = { ...player }
 
-    const minX = player.character.hurtboxRadius
-    const maxX = 1200 - player.character.hurtboxRadius
-    const nextX = Math.max(minX, Math.min(maxX, player.x + player.xSpeed))
-    const nextXSpeed =
-        (player.state === 'hitstun') ?
-            player.xSpeed * 0.975 *
-                ((nextX === minX || nextX === maxX) ? -1 : 1) // reverse speed on wall hit
-            : Math.abs(player.xSpeed) < 0.3 ? 0 : player.xSpeed * 0.86 // more friction when moving normally
+    // position and speeds
+    if (nextPlayer.state !== 'hitlag') {
+      const minX = player.character.hurtboxRadius
+      const maxX = 1200 - player.character.hurtboxRadius
 
-    const nextY = Math.min(600, player.y - player.ySpeed) // Reversed Y axis; helps a lot elsewhere
-    const nextYSpeed = nextY >= 600 ? 0 : Math.max(-18, player.ySpeed - (0.6 * player.character.weight)) // Gravity if in air
-    const nextJumps = player.y < 600 && nextY >= 600 ? player.character.maxJumps : player.jumps
-    const nextFramesUntilNeutral = Math.max(0, player.framesUntilNeutral - 1)
-    const nextState = nextPlayerState(player.state, nextY, nextFramesUntilNeutral)
+      nextPlayer.x = Math.max(minX, Math.min(maxX, player.x + player.xSpeed))
+      nextPlayer.xSpeed =
+          (player.state === 'hitstun') ?
+              player.xSpeed * 0.975 *
+                  ((nextPlayer.x <= minX || nextPlayer.x >= maxX) ? -1 : 1) // reverse speed on wall hit
+              : Math.abs(player.xSpeed) < 0.3 ? 0 : player.xSpeed * 0.86 // more friction when not in hitstun
 
-    return {
-      ...player,
-      state: nextState,
-      x: nextX,
-      y: nextY,
-      xSpeed: nextXSpeed,
-      ySpeed: nextYSpeed,
-      jumps: nextJumps,
-      framesUntilNeutral: nextFramesUntilNeutral
+      nextPlayer.y = Math.min(600, player.y - player.ySpeed) // Reversed Y axis; helps a lot elsewhere
+      nextPlayer.ySpeed = nextPlayer.y >= 600 ? 0 : Math.max(-18, player.ySpeed - (0.6 * player.character.weight)) // Gravity if in air
+      nextPlayer.jumps = player.y < 600 && nextPlayer.y >= 600 ? player.character.maxJumps : player.jumps // Refresh jumps if landed
+
+      // Landing lag could be: if (player.y < 600 && nextPlayer.y >= 600) nextPlayer.hitlagRemaining += 2
+      // TODO: Add hitlag on floor/groundbounce
     }
+
+    nextPlayer = handlePlayerState(nextPlayer)
+    return nextPlayer
   })
 
   return {
@@ -171,16 +182,27 @@ const handleHitBoxFunctions = (state: InGameState, attack: ActiveAttack): InGame
   return newState
 }
 
+// Hitlag/hitstun and state update
+const handlePlayerState = (player: Player): Player => {
+  const nextPlayer = { ...player }
+  nextPlayer.hitlagRemaining = Math.max(0, nextPlayer.hitlagRemaining - 1)
+  nextPlayer.framesUntilNeutral = player.state === 'hitlag' ?
+      player.framesUntilNeutral
+      : Math.max(0, player.framesUntilNeutral - 1)
+  nextPlayer.state = nextPlayerState(nextPlayer.state, nextPlayer.y, nextPlayer.hitlagRemaining, nextPlayer.framesUntilNeutral)
+  return nextPlayer
 }
 
-const isAttackUnused = (attack: ActiveAttack): boolean => {
-  // findIndex returns -1 if no used hitbox is found
-  return -1 === attack.hitboxes.findIndex((hitbox: Hitbox) => hitbox.hasHit === true)
-}
+const nextPlayerState = (state: CharacterState, nextY: number, nextHitlagRemaining: number, nextFramesUntilNeutral: number): CharacterState => {
+  if (nextHitlagRemaining > 0) {
+    return 'hitlag'
+  }
 
-const nextPlayerState = (state: CharacterState, nextY: number, nextFramesUntilNeutral: number): CharacterState => {
-  // nextFramesUntilNeutral > 0, need to spend time in lag state
+  // need to spend time in lag state if nextFramesUntilNeutral > 0
   if (nextFramesUntilNeutral > 0 && !playerCanAct(state)) {
+    if (state === 'hitlag') {
+      return 'hitstun'
+    }
     return state
   }
 
@@ -188,7 +210,7 @@ const nextPlayerState = (state: CharacterState, nextY: number, nextFramesUntilNe
   return nextNeutralState(nextY)
 }
 
-const nextNeutralState = (nextY: number): NeutralCharacterState => {
+export const nextNeutralState = (nextY: number): NeutralCharacterState => {
   if (nextY < 600) {
     return 'airborne'
   } else {
