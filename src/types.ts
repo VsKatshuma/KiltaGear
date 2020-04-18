@@ -71,10 +71,13 @@ export type ActiveAttack = Attack & {
 
 export type Attack = {
   hitboxes: Hitbox[],
-  projectile: boolean,
-  duration: number, // in frames
-  onStart?: () => void,
-  onEnd?: () => void,
+  projectile: boolean, // TODO: Implement projectiles
+  duration: number, // How long to prevent player from moving, in frames
+  endWhenHitboxConnects: boolean,
+  endWhenHitboxesEnded: boolean,
+  endAfterDurationEnded: boolean,
+  onStart?: (state: InGameState, attack: ActiveAttack) => InGameState,
+  onEnd?: (state: InGameState, attack: ActiveAttack) => InGameState,
 }
 
 export type Hitbox = {
@@ -93,11 +96,10 @@ export type Hitbox = {
   hitstunBase: number,
   hitstunGrowth: number,
   hitLag: number,
-  // characterSpecific: number,
-  // onStart?: () => void,
-  onActivation?: () => void,
-  onHit?: () => void,
-  onEnd?: () => void
+  // characterSpecific: any,
+  onActivation?: (state: InGameState, attack: ActiveAttack) => InGameState,
+  onHit?: (state: InGameState, attack: ActiveAttack) => InGameState,
+  onEnd?: (state: InGameState, attack: ActiveAttack) => InGameState
 }
 
 export type Character = {
