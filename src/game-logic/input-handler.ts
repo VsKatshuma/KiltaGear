@@ -1,5 +1,5 @@
 import { Player, KeyStatus, InputStatus, InGameState, playerCanMove, playerCanSDI, playerCanAct, ActiveAttack, AttackStrength, AttackDirection, CharacterState, Attack } from "../types";
-import { getAttackString, setMusicVolume, getMusicVolume } from "../utilities";
+import { getAttackString } from "../utilities";
 import { handlePlayerMove, handlePlayerJump, handlePlayerFastFall } from "./physics";
 
 export enum PlayerInput {
@@ -77,9 +77,10 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
   return { ...nextState, players: players }
 }
 
+// Mutate passed player and state to add a new attack based on the input
 function handleAttack(inputName: AttackStrength, player: Player, inputs: InputStatus, activeAttacks: ActiveAttack[]): ActiveAttack[] {
   if (playerCanAct(player.state)) {
-    const attack: ActiveAttack | undefined = getAttackFromInput(inputName, player, inputs, activeAttacks)
+    const attack: ActiveAttack | undefined = getAttackFromInput(inputName, player, inputs)
     if (attack) {
       activeAttacks = addActiveAttack(attack, activeAttacks)
       player.state = 'attacking'
@@ -106,7 +107,7 @@ function actionToAttackDirection(action: PlayerInput, facing: 'left' | 'right', 
   }
 }
 
-function getAttackFromInput(attackStrength: AttackStrength, player: Player, inputs: InputStatus, activeAttacks: ActiveAttack[]): ActiveAttack | undefined {
+function getAttackFromInput(attackStrength: AttackStrength, player: Player, inputs: InputStatus): ActiveAttack | undefined {
   if (playerCanAct(player.state)) {
     const isHoldingLeft =  (player.playerSlot === 0 && keyHeld(inputs, 'a')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowLeft'))
     const isHoldingRight = (player.playerSlot === 0 && keyHeld(inputs, 'd')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowRight'))
@@ -127,7 +128,8 @@ function getAttackFromInput(attackStrength: AttackStrength, player: Player, inpu
       return {
         ...attack,
         playerSlot: player.playerSlot,
-        xDirection: player.facing === 'left' ? -1 : 1
+        xDirection: player.facing === 'left' ? -1 : 1,
+        currentFrame: 0
       }
     }
   }

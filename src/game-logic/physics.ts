@@ -135,6 +135,15 @@ export const updateAttacks = (state: InGameState): InGameState => {
       )
   }
 
+  // Handle onStart for all new attacks
+  newState.activeAttacks
+      .filter(attack => attack.currentFrame === 1)
+      .forEach(attack => {
+        if (attack.onStart) {
+          newState = attack.onStart(newState, attack)
+        }
+      })
+
   // Handle onEnd for all removed attacks
   state.activeAttacks
       .filter(attack => hasAttackEnded(attack))
