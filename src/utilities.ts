@@ -35,7 +35,18 @@ export const isHitboxActive = (hitbox: Hitbox): boolean => {
 }
 
 export const hasHitboxEnded = (hitbox: Hitbox): boolean => {
-  return hitbox.hasHit || hitbox.framesUntilActivation + hitbox.duration <= 0 // framesUntilActivation is decreased even after active
+  return hitbox.framesUntilActivation + hitbox.duration <= 0 // framesUntilActivation is decreased even after active
+}
+
+export const hasAttackHit = (attack: ActiveAttack): boolean => {
+  // findIndex returns -1 if no used hitbox is found
+  return -1 !== attack.hitboxes.findIndex((hitbox: Hitbox) => hitbox.hasHit === true)
+}
+
+export const hasAttackEnded = (attack: ActiveAttack): boolean => {
+  return attack.endWhenHitboxConnects && hasAttackHit(attack)
+      || attack.endWhenHitboxesEnded && attack.hitboxes.length === 0
+      || attack.endAfterDurationEnded && attack.currentFrame >= attack.duration
 }
 
 export const createHitbox = (startFrame: number, duration: number, strength: number = 4): Hitbox => {
