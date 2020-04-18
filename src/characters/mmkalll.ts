@@ -1,6 +1,25 @@
-import { Character } from "../types";
+import { Character, Attack } from "../types";
 import { generateAttack, createHitbox } from "../utilities";
 
+export const heal: Attack = {
+    ...generateAttack([]),
+    duration: 60,
+    endWhenHitboxConnects: false,
+    endWhenHitboxesEnded: false,
+    endAfterDurationEnded: true,
+    onStart: (state, attack) => {
+        state.players[attack.playerSlot].state = 'hitlag'
+        state.players[attack.playerSlot].hitlagRemaining = 60
+        return state
+    },
+    onEnd: (state, attack) => {
+        const player = state.players[attack.playerSlot]
+        state.players[attack.playerSlot].state = 'attacking'
+        state.players[attack.playerSlot].framesUntilNeutral = 20
+        state.players[attack.playerSlot].health = Math.min(player.health + 20, player.character.maxHealth)
+        return state
+    }
+}
 
 export const mmKALLL: Character = {
     name: 'mmKALLL',
@@ -75,7 +94,8 @@ export const mmKALLL: Character = {
             ]),
             duration: 40
         },
-        // Special and meter attacks can be made, but nothing's special about them yet (2019-11-01)
+
+        // Special moves
         SpecialNeutral: {
             ...generateAttack([])
         },
@@ -100,29 +120,15 @@ export const mmKALLL: Character = {
         airSpecialBack: {
             ...generateAttack([])
         },
-        MeterNeutral: {
-            ...generateAttack([])
-        },
-        MeterForward: {
-            ...generateAttack([])
-        },
-        MeterDown: {
-            ...generateAttack([])
-        },
-        airMeterNeutral: {
-            ...generateAttack([])
-        },
-        airMeterUp: {
-            ...generateAttack([])
-        },
-        airMeterDown: {
-            ...generateAttack([])
-        },
-        airMeterForward: {
-            ...generateAttack([])
-        },
-        airMeterBack: {
-            ...generateAttack([])
-        }
+
+        // Meter moves
+        MeterNeutral: heal,
+        MeterForward: heal,
+        MeterDown: heal,
+        airMeterNeutral: heal,
+        airMeterUp: heal,
+        airMeterDown: heal,
+        airMeterForward: heal,
+        airMeterBack: heal,
     }
 }

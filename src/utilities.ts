@@ -48,17 +48,16 @@ export const createHitbox = (startFrame: number, duration: number, strength: num
     knockbackY: 0.5,
     hitstunBase: 25, // frames
     hitstunGrowth: 1.1, // increase hitstun when opponent on low health
-    hitLag: 5, // frames
+    hitLag: 6, // frames
     //characterSpecific: 0,
     movesWithCharacter: true,
     x: 30,
     y: 0,
     framesUntilActivation: startFrame,
     duration: duration,
-    // onStart: () => {},
-    onActivation: () => {},
-    onHit: () => {},
-    onEnd: () => {}
+    onActivation: (state) => { return state },
+    onHit: (state) => { return state },
+    onEnd: (state) => { return state }
   }
 }
 
@@ -80,19 +79,21 @@ export const createRandomHitbox = (variance: number = 15, baseStrength: number =
     y: 0 + 8 * r(variance) - 8 * r(variance),
     framesUntilActivation: variance * 1.4,
     duration: variance * 2.5,
-    // onStart: () => {},
-    onActivation: () => {},
-    onHit: () => {},
-    onEnd: () => {}
+    onActivation: (state) => { return state },
+    onHit: (state) => { return state },
+    onEnd: (state) => { return state }
   }
 }
 
-export const generateAttack = (hitboxes: Hitbox[], duration: number = 20): Attack => {
+export const generateAttack = (hitboxes: Hitbox[]): Attack => {
   return {
       hitboxes: hitboxes,
       projectile: false,
-      duration: duration,
-      onStart: () => {},
-      onEnd: () => {}
+      duration: 35,
+      endWhenHitboxConnects: false,
+      endWhenHitboxesEnded: true,
+      endAfterDurationEnded: false,
+      onStart: (state, attack) => { return state },
+      onEnd: (state, attack) => { return state }
   }
 }
