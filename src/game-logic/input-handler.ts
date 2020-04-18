@@ -19,12 +19,6 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
   const nextState: InGameState = currentState
   const players: Player[] = nextState.players
 
-  // // mute/unmute music
-  // if (keysPressed.find(input => input.keyName === 'm')) {
-  //   const newVolume = getMusicVolume() !== 0 ? 0 : 0.3
-  //   setMusicVolume(newVolume)
-  // }
-
   // Player 1 horizontal movement
   if (keyHeld(inputs, 'a') && playerCanMove(players[0].state) && !keyHeld(inputs, 'd')) {
     players[0] = handlePlayerMove(players[0], -1)

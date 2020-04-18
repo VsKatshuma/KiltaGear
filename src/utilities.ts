@@ -21,6 +21,11 @@ export const setMusicVolume = (volume: number): void => {
   track.volume = volume
 }
 
+export const toggleMusicMuted = (): void => {
+    const newVolume = getMusicVolume() !== 0 ? 0 : 0.3
+    setMusicVolume(newVolume)
+}
+
 export const playHitSound = (): void => {
   sounds[0].play()
 }
