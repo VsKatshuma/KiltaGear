@@ -5,7 +5,7 @@ Play now at https://mmkalll.itch.io/kiltagear!
 
 ![真・mmKALLL](src/assets/sprites/original-true-mmkalll.jpg?raw=true "True mmKALLL")
 
-### Installation on local machine
+### Installing on local machine
 
 1. Have `yarn` and Node.js 10.15.0 or newer installed (see https://yarnpkg.com/lang/en/docs/install/).
 2. Run `yarn` to install local dependencies.
@@ -24,14 +24,14 @@ On Windows platforms, some users may need to install TypeScript and Parcel local
 
 Then you should be able to run the game with `parcel index.html`.
 
-### Memo on releasing to itch.io
+#### Upload notes
 
 - Delete release directory `rm -rf release` *careful here*
 - Run `yarn build`
 - Zip the release directory, rename it to `release-0.x.x`, upload zip to itch.io
 - Congratulate yourself on a successful release!
 
-#### Old release method notes
+#### Old upload notes
 
 - Delete dist directory `rm -rf dist` *carefully*
 - Run `parcel index.html assets/sprites/*` *production build will not work with itch* (can't always resolve hashed filenames to assets)
