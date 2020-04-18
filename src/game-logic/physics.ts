@@ -119,35 +119,49 @@ export const handlePlayerFastFall = (player: Player): Player => {
 // Attack handling
 
 export const updateAttacks = (state: InGameState): InGameState => {
-  const newAttacks = {
+  let newState = {
     ...state,
-    activeAttacks: state.activeAttacks.map(
-      (attack: ActiveAttack): ActiveAttack => ({
-        ...attack,
-        hitboxes: attack.hitboxes.map((hitbox: Hitbox): Hitbox => ({
-          ...hitbox,
-          framesUntilActivation: hitbox.framesUntilActivation - 1,
-        })).filter((hitbox: Hitbox) => !hasHitboxEnded(hitbox))
-      })
-    )
-    .filter((attack) => attack.hitboxes.length > 0)
-    .filter(isAttackUnused) // Remove attacks after one of their hitboxes has hit
+    activeAttacks: state.activeAttacks
+      .filter(attack => !hasAttackEnded(attack)) // Only pass attacks that have not ended to the next frame
+      .map(
+        (attack: ActiveAttack): ActiveAttack => ({
+          ...attack,
+          currentFrame: attack.currentFrame + 1,
+          hitboxes: attack.hitboxes.map((hitbox: Hitbox): Hitbox => ({
+            ...hitbox,
+            framesUntilActivation: hitbox.framesUntilActivation - 1,
+          })).filter((hitbox: Hitbox) => !hasHitboxEnded(hitbox))
+        })
+      )
   }
 
-  newAttacks.activeAttacks.forEach(handleHitBoxFunctions)
+  // Handle onEnd for all removed attacks
+  state.activeAttacks
+      .filter(attack => hasAttackEnded(attack))
+      .forEach(attack => {
+        if (attack.onEnd) {
+          newState = attack.onEnd(newState, attack)
+        }
+      })
 
-  return newAttacks
+  newState.activeAttacks.forEach(attack => { newState = handleHitBoxFunctions(newState, attack) })
+
+  return newState
 }
 
-const handleHitBoxFunctions = (attack: ActiveAttack): void => {
+const handleHitBoxFunctions = (state: InGameState, attack: ActiveAttack): InGameState => {
+  let newState = state
   attack.hitboxes.forEach((hitbox: Hitbox) => {
     if (hitbox.framesUntilActivation === 0 && hitbox.onActivation) {
-      hitbox.onActivation()
+      newState = hitbox.onActivation(newState, attack)
     }
-    if (hitbox.duration === 1 && hitbox.onEnd) {
-      hitbox.onEnd()
+    if (hasHitboxEnded(hitbox) && hitbox.onEnd) {
+      newState = hitbox.onEnd(newState, attack)
     }
   })
+  return newState
+}
+
 }
 
 const isAttackUnused = (attack: ActiveAttack): boolean => {
