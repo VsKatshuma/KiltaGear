@@ -71,91 +71,10 @@ window.addEventListener('keydown', (event: KeyboardEvent) => {
 })
 
 window.addEventListener('keyup', (event: KeyboardEvent) => {
-    keysReleased.push(event.key)
-    keys[event.key].isDown = false
+    if (keys[event.key]) {
+        keys[event.key].isDown = false
+        keysReleased.push(event.key)
+    }
 })
 
 startGameLoop()
-
-/*
-function keyboard(value: string) {
-  let key: any = {}
-  key.value = value
-  key.isDown = false
-  key.isUp = true
-  key.press = undefined
-  key.release = undefined
-
-  key.downHandler = (event: KeyboardEvent) => {
-    if (event.key === key.value) {
-      //if (key.isUp && key.press) key.press()
-      if (key.press) key.press()
-      key.isDown = true
-      key.isUp = false
-      event.preventDefault()
-    }
-  }
-
-  key.upHandler = (event: KeyboardEvent) => {
-    if (event.key === key.value) {
-      if (key.isDown && key.release) key.release()
-      key.isDown = false
-      key.isUp = true
-      event.preventDefault()
-    }
-  }
-
-  //Attach event listeners
-  const downListener = key.downHandler.bind(key)
-  const upListener = key.upHandler.bind(key)
-
-  window.addEventListener(
-    'keydown', downListener, false
-  )
-  window.addEventListener(
-    'keyup', upListener, false
-  )
-
-  // Detach event listeners
-  key.unsubscribe = () => {
-    window.removeEventListener('keydown', downListener)
-    window.removeEventListener('keyup', upListener)
-  }
-
-  return key
-}
-
-let characterSelectionA = keyboard('a')
-characterSelectionA.press = () => {
-  player1selection.x -= 64
-}
-let characterSelectionD = keyboard('d')
-characterSelectionD.press = () => {
-  player1selection.x += 64
-}
-let characterSelectionW = keyboard('w')
-characterSelectionW.press = () => {
-  player1selection.y -= 64
-}
-let characterSelectionS = keyboard('s')
-characterSelectionS.press = () => {
-  player1selection.y += 64
-}
-
-let characterSelectionLeft = keyboard('ArrowLeft')
-characterSelectionLeft.press = () => {
-  player2selection.x -= 64
-}
-let characterSelectionRight = keyboard('ArrowRight')
-characterSelectionRight.press = () => {
-  player2selection.x += 64
-}
-let characterSelectionUp = keyboard('ArrowUp')
-characterSelectionUp.press = () => {
-  player2selection.y -= 64
-}
-let characterSelectionDown = keyboard('ArrowDown')
-characterSelectionDown.press = () => {
-  player2selection.y += 64
-}
-*/

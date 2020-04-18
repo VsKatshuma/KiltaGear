@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 import { GameState } from './types';
-import { SSL_OP_SSLREF2_REUSE_CERT_TYPE_BUG } from 'constants';
+import { hasHitboxEnded, isHitboxActive } from './utilities';
 
 var type = 'WebGL'
 if (!PIXI.utils.isWebGLSupported()) {
@@ -25,11 +25,11 @@ const middleY = app.renderer.height / 2
 const characterSelectionColumns = 5
 const characterSelectionRows = 1*/
 
-// Title screen
-var titleBeam1Url = require('../assets/sprites/title-2.png')
-var titleBeam2Url = require('../assets/sprites/title-3.png')
-var titleBeam3Url = require('../assets/sprites/title-4.png')
-var titleHoverUrl = require('../assets/sprites/title.png')
+// Title screen assets
+var titleBeam1Url = require('./assets/sprites/title-2.png')
+var titleBeam2Url = require('./assets/sprites/title-3.png')
+var titleBeam3Url = require('./assets/sprites/title-4.png')
+var titleHoverUrl = require('./assets/sprites/title.png')
 
 const titleBeam1 = PIXI.Sprite.from(titleBeam1Url)
 const titleBeam2 = PIXI.Sprite.from(titleBeam2Url)
@@ -70,20 +70,12 @@ pressAnyKeyText.y = 190
 const titleContainer = new PIXI.Container()
 titleContainer.x = middleX
 titleContainer.y = middleY
-titleContainer.addChild(titleText)
-titleContainer.addChild(versionNumber)
-titleContainer.addChild(pressAnyKeyText)
-
-app.stage.addChild(titleBeam1)
-app.stage.addChild(titleBeam2)
-app.stage.addChild(titleBeam3)
-app.stage.addChild(titleEsa)
-app.stage.addChild(titleContainer)
+titleContainer.addChild(titleText, versionNumber, pressAnyKeyText)
 
 // Character selection
-var characterSelectKatshumaUrl = require('../assets/sprites/character-select-katshuma.jpg')
-var characterSelectmmKALLLUrl = require('../assets/sprites/character-select-mmkalll.jpg')
-var characterSelectTruemmKALLLUrl = require('../assets/sprites/character-select-true-mmkalll.jpg')
+var characterSelectKatshumaUrl = require('./assets/sprites/character-select-katshuma.jpg')
+var characterSelectmmKALLLUrl = require('./assets/sprites/character-select-mmkalll.jpg')
+var characterSelectTruemmKALLLUrl = require('./assets/sprites/character-select-true-mmkalll.jpg')
 
 const characterSelectionImageKatshuma = PIXI.Sprite.from(characterSelectKatshumaUrl)
 const characterSelectionImagemmKALLL = PIXI.Sprite.from(characterSelectmmKALLLUrl)
@@ -107,10 +99,7 @@ const characterSelectionTextStyleLeft = new PIXI.TextStyle({
     fill: ['#FF0000'],
     stroke: '#000000',
     strokeThickness: 4,
-    dropShadow: true,
-    dropShadowColor: '#000000',
-    dropShadowAngle: 0,
-    dropShadowDistance: 1
+    dropShadow: true, dropShadowColor: '#000000', dropShadowAngle: 0, dropShadowDistance: 1
 })
 const characterSelectionTextStyleRight = new PIXI.TextStyle({
     fontFamily: 'Arial',
@@ -119,10 +108,7 @@ const characterSelectionTextStyleRight = new PIXI.TextStyle({
     fill: ['#FFFF00'],
     stroke: '#000000',
     strokeThickness: 4,
-    dropShadow: true,
-    dropShadowColor: '#000000',
-    dropShadowAngle: 0,
-    dropShadowDistance: 1
+    dropShadow: true, dropShadowColor: '#000000', dropShadowAngle: 0, dropShadowDistance: 1
 })
 
 const characterSelectionTextLeft = new PIXI.Text('Katshuma', characterSelectionTextStyleLeft)
@@ -150,14 +136,14 @@ readyToStart.anchor.set(0.5)
 readyToStart.x = middleX
 readyToStart.y = middleY + 230
 
-const instructionsLeft = new PIXI.Text('WASD to move, C to attack', readyToStartTextStyle)
-const instructionsRight = new PIXI.Text('Arrow keys to move, , to attack', readyToStartTextStyle)
+const instructionsLeft = new PIXI.Text('Move: WASD\nAttack: C', readyToStartTextStyle)
+const instructionsRight = new PIXI.Text('Move: Arrow keys\nAttack: Comma (,)', readyToStartTextStyle)
 instructionsLeft.anchor.set(0.5)
 instructionsRight.anchor.set(0.5)
 instructionsLeft.x = middleX - 400
-instructionsLeft.y = middleY + 260
+instructionsLeft.y = middleY + 290
 instructionsRight.x = middleX + 400
-instructionsRight.y = middleY + 260
+instructionsRight.y = middleY + 290
 
 const player1selection = new PIXI.Graphics()
 player1selection.lineStyle(4, 0xFF0000, 1)
@@ -197,14 +183,16 @@ for (var y = -64; y < app.renderer.height; y += 64) {
 }
 
 // In-game characters
-var characterBaseUrl = require('../assets/sprites/character.png')
-var ingameKatshumaUrl = require('../assets/sprites/in-game-katshuma.jpg')
-var ingamemmKALLLUrl = require('../assets/sprites/in-game-mmkalll.jpg')
+var characterBaseUrl = require('./assets/sprites/character.png')
+var ingameKatshumaUrl = require('./assets/sprites/in-game-katshuma.jpg')
+var ingamemmKALLLUrl = require('./assets/sprites/in-game-mmkalll.jpg')
 
 const characterBody1 = PIXI.Sprite.from(characterBaseUrl)
 const characterBody2 = PIXI.Sprite.from(characterBaseUrl)
 const ingameKatshuma = PIXI.Sprite.from(ingameKatshumaUrl)
 const ingamemmKALLL = PIXI.Sprite.from(ingamemmKALLLUrl)
+characterBody1.x = 0
+characterBody1.y = 0
 
 ingameKatshuma.anchor.set(0.5)
 ingameKatshuma.width = 40
@@ -218,16 +206,13 @@ ingamemmKALLL.height = 40
 ingamemmKALLL.x = 50
 ingamemmKALLL.y = 25
 
+// Containers that group the character body and in-game sprite
 const container1 = new PIXI.Container()
 const container2 = new PIXI.Container()
-
-container1.pivot.set(0.5)
-container2.pivot.set(0.5)
-
-container1.addChild(characterBody1)
-container1.addChild(ingameKatshuma)
-container2.addChild(characterBody2)
-container2.addChild(ingamemmKALLL)
+container1.addChild(characterBody1, ingameKatshuma)
+container2.addChild(characterBody2, ingamemmKALLL)
+container1.pivot.set(50)
+container2.pivot.set(50)
 
 // Gameplay features
 const hurtboxes = new PIXI.Graphics()
@@ -256,15 +241,14 @@ healthBarRight.drawRect(windowWidth / 2 + windowWidth * 0.04, 26, windowWidth * 
 healthBarRight.endFill()
 
 // Backgrounds
-var backgroundUrl = require('../assets/sprites/ingame-6.jpg')
+var backgroundUrl = require('./assets/sprites/ingame-6.jpg')
 
 const background1 = PIXI.Sprite.from(backgroundUrl) // 2730 (width of original image) / 2.275 = 1200
 
-const backgroundOriginalWidth = 2730 // background1 width is currently hardcoded to be 2730
-const backgroundOriginalHeight = 1536 // background1 height is currently hardcoded to be 1536
+const backgroundOriginalWidth = 2730 // background1 image width is hardcoded here to be 2730
+const backgroundOriginalHeight = 1536 // background1 image height is hardcoded here to be 1536
 
-// Game ending
-
+// Game over
 const winnerText = new PIXI.Text('Game over!', titleTextStyle)
 winnerText.anchor.set(0.5)
 winnerText.x = middleX
@@ -274,11 +258,7 @@ winnerText.y = middleY
 function transitionToTitleScreen(): void {
     app.renderer.backgroundColor = 0x7799FF
     app.stage.removeChildren()
-    app.stage.addChild(titleBeam1)
-    app.stage.addChild(titleBeam2)
-    app.stage.addChild(titleBeam3)
-    app.stage.addChild(titleEsa)
-    app.stage.addChild(titleContainer)
+    app.stage.addChild(titleBeam1, titleBeam2, titleBeam3, titleEsa, titleContainer)
 }
 
 function transitionToCharacterSelect(): void {
@@ -288,28 +268,20 @@ function transitionToCharacterSelect(): void {
     app.stage.addChild(characterSelectionBackgroundHorizontal)
     app.stage.addChild(characterSelectionLeft)
     app.stage.addChild(characterSelectionRight)
-    app.stage.addChild(versus)
-    app.stage.addChild(readyToStart)
-    app.stage.addChild(instructionsLeft)
-    app.stage.addChild(instructionsRight)
+    app.stage.addChild(versus, readyToStart, instructionsLeft, instructionsRight)
 }
 
 function transitionToIngame(): void {
     app.stage.removeChildren()
-    app.stage.addChild(background1)
-    app.stage.addChild(container1)
-    app.stage.addChild(container2)
-    app.stage.addChild(hurtboxes)
-    app.stage.addChild(hitboxes)
-    app.stage.addChild(healthBarLeftBackground)
-    app.stage.addChild(healthBarLeft)
+    app.stage.addChild(background1, container1, container2)
+    app.stage.addChild(hurtboxes, hitboxes)
+    app.stage.addChild(healthBarLeftBackground, healthBarLeft)
     app.stage.addChild(meterLeft)
-    app.stage.addChild(healthBarRightBackground)
-    app.stage.addChild(healthBarRight)
+    app.stage.addChild(healthBarRightBackground, healthBarRight)
     app.stage.addChild(meterRight)
 }
 
-let previousScreen = 'title-screen'
+let previousScreen = ''
 let hover = 0
 let fade = 0
 titleEsa.x = 20
@@ -398,51 +370,73 @@ export function render(state: GameState): void {
         container1.scale.set(playerScale)
         container2.scale.set(playerScale)
         let pixelScale = windowWidth / visibleAreaWidth
-        container1.x = ((state.players[0].x - cameraLeft) * pixelScale) - (50 * playerScale)
-        container2.x = ((state.players[1].x - cameraLeft) * pixelScale) - (50 * playerScale)
+        container1.x = ((state.players[0].x - cameraLeft) * pixelScale)
+        container2.x = ((state.players[1].x - cameraLeft) * pixelScale)
         // windowHeight / background1.height kertoo, miten suuri osuus taustakuvan alaosasta on näkyvissä
-        container1.y = ((state.players[0].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight) - (50 * playerScale)
-        container2.y = ((state.players[1].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight) - (50 * playerScale)
+        container1.y = ((state.players[0].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight)
+        container2.y = ((state.players[1].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight)
+        
+        // Player rotation in hitstun
+        if (state.players[0].state == 'hitstun') {
+            if (player1facing == 'left') {
+                container1.angle += 15
+            } else {
+                container1.angle -= 15
+            }
+        } else {
+            container1.angle = 0
+        }
+        if (state.players[1].state == 'hitstun') {
+            if (player2facing == 'left') {
+                container2.angle += 15
+            } else {
+                container2.angle -= 15
+            }
+        } else {
+            container2.angle = 0
+        }
 
+        // Draw hurtboxes
         hurtboxes.clear()
         hurtboxes.beginFill(0x6688FF)
         hurtboxes.drawCircle(
-            container1.x + (50 * playerScale),
-            container1.y + (50 * playerScale),
+            container1.x,
+            container1.y,
             state.players[0].character.hurtboxRadius * playerScale
         )
         hurtboxes.drawCircle(
-            container2.x + (50 * playerScale),
-            container2.y + (50 * playerScale),
+            container2.x,
+            container2.y,
             state.players[1].character.hurtboxRadius * playerScale
         )
         hurtboxes.endFill()
 
+        // Draw hitboxes
         hitboxes.clear()
         hitboxes.beginFill(0xDD0000)
         state.activeAttacks.forEach(attack => {
             attack.hitboxes.forEach(hitbox => {
-                if (hitbox.framesUntilActivation <= 0 && hitbox.framesUntilEnd > 0) {
+                if (isHitboxActive(hitbox)) {
                     if (hitbox.movesWithCharacter) {
                         if (attack.playerSlot === 0) {
                             hitboxes.drawCircle(
-                                container1.x + (50 * playerScale) + (hitbox.x * attack.xDirection * playerScale),
-                                container1.y + (50 * playerScale) + (hitbox.y * playerScale),
+                                container1.x + (hitbox.x * attack.xDirection * playerScale),
+                                container1.y + (hitbox.y * playerScale),
                                 hitbox.radius * playerScale
                             )
                         } else if (attack.playerSlot === 1) {
                             hitboxes.drawCircle(
-                                container2.x + (50 * playerScale) + (hitbox.x * attack.xDirection * playerScale),
-                                container2.y + (50 * playerScale) + (hitbox.y * playerScale),
+                                container2.x + (hitbox.x * attack.xDirection * playerScale),
+                                container2.y + (hitbox.y * playerScale),
                                 hitbox.radius * playerScale
                             )
                         } else {
                             console.log('Rendering hitboxes is not implemented for more than 2 players')
                         }
-                    } else {
+                    } else { // TODO: Make sure this draws hitboxes in the right place
                         hitboxes.drawCircle(
-                            ((hitbox.x * attack.xDirection - cameraLeft) * pixelScale) - (50 * playerScale),
-                            ((hitbox.y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight) - (50 * playerScale),
+                            ((hitbox.x - cameraLeft) * pixelScale),
+                            ((hitbox.y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight),
                             hitbox.radius * playerScale
                         )
                     }
@@ -455,13 +449,13 @@ export function render(state: GameState): void {
         healthBarLeft.clear()
         healthBarLeft.beginFill(0x00FF00)
 
-        let player1healthRemaining = state.players[0].health / state.players[0].character.maxHealth
-        let player2healthRemaining = state.players[1].health / state.players[1].character.maxHealth
-        healthBarLeft.drawRect((windowWidth * 0.06) + (windowWidth * 0.4 * (1 - player1healthRemaining)), 26, windowWidth * 0.4 * player1healthRemaining, 20)
+        let player1HealthRemaining = state.players[0].health / state.players[0].character.maxHealth
+        let player2HealthRemaining = state.players[1].health / state.players[1].character.maxHealth
+        healthBarLeft.drawRect((windowWidth * 0.06) + (windowWidth * 0.4 * (1 - player1HealthRemaining)), 26, windowWidth * 0.4 * player1HealthRemaining, 20)
         healthBarLeft.endFill()
         healthBarRight.clear()
         healthBarRight.beginFill(0x00FF00)
-        healthBarRight.drawRect((windowWidth / 2 + windowWidth * 0.04) + (windowWidth * 0.4 * (1 - player2healthRemaining)), 26, windowWidth * 0.4 * player2healthRemaining, 20)
+        healthBarRight.drawRect((windowWidth / 2 + windowWidth * 0.04) + (windowWidth * 0.4 * (1 - player2HealthRemaining)), 26, windowWidth * 0.4 * player2HealthRemaining, 20)
         healthBarRight.endFill()
     }
     if (state.screen === 'game-over') {

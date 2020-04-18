@@ -33,7 +33,10 @@ bower_components
 build/
 dist/
 built/
-dist.zip
+dist*.zip
+dist*/
+release/
+release*.zip
 
 # Dependency directories
 node_modules/

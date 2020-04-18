@@ -2,14 +2,16 @@ import { PlayerInput } from "./game-logic/input-handler";
 
 // Game state handling related typings
 
-export type GameState = TitleScreenState | CharacterSelectionState | InGameState | GameOverState
+export type GameState = (TitleScreenState | CharacterSelectionState | InGameState | GameOverState)
 
 export type TitleScreenState = {
   screen: 'title-screen'
+  musicPlaying: boolean
 }
 
 export type CharacterSelectionState = {
   screen: 'character-select'
+  musicPlaying: boolean
   characterSelection: {
     x: number,
     y: number
@@ -18,12 +20,14 @@ export type CharacterSelectionState = {
 
 export type InGameState = {
   screen: 'in-game'
+  musicPlaying: boolean
   players: Player[],
   activeAttacks: ActiveAttack[],
 }
 
 export type GameOverState = {
   screen: 'game-over'
+  musicPlaying: boolean
   winner: number | undefined
   framesUntilTitle: number
 }
@@ -49,7 +53,7 @@ export const playerCanAct = (state: CharacterState): state is NeutralCharacterSt
 }
 
 export const playerCanMove = (state: CharacterState): state is NeutralCharacterState => {
-  return playerCanAct(state)
+  return playerCanAct(state) || state === 'attacking'
 }
 
 export const playerCanSDI = (state: CharacterState): state is SmashDICharacterState => {
@@ -73,15 +77,13 @@ export type Attack = {
   onEnd?: () => void,
 }
 
-
 export type Hitbox = {
   hasHit?: boolean,
   x: number,
   y: number,
   movesWithCharacter: boolean, // TODO: assumed to be true, add handling for stationary/projectile hitboxes
   framesUntilActivation: number,
-  framesUntilEnd: number,
-
+  duration: number,
   damage: number,
   radius: number,
   knockbackBase: number,
