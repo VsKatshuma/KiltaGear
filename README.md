@@ -1,11 +1,11 @@
 # KiltaGear
-Playable version hosted at https://mmkalll.itch.io/kiltagear.
-
 KiltaGear is a 2D fighting game presented by NiemiSmäsh.
 
-Play now at https://mmkalll.itch.io/kiltagear
+Play now at https://mmkalll.itch.io/kiltagear!
 
-### Installation
+![真・mmKALLL](src/assets/sprites/original-true-mmkalll.jpg?raw=true "True mmKALLL")
+
+### Installation on local machine
 
 1. Have `yarn` and Node.js 10.15.0 or newer installed (see https://yarnpkg.com/lang/en/docs/install/).
 2. Run `yarn` to install local dependencies.
@@ -24,7 +24,7 @@ On Windows platforms, some users may need to install TypeScript and Parcel local
 
 Then you should be able to run the game with `parcel index.html`.
 
-### Releasing to itch.io
+### Memo on releasing to itch.io
 
 - Delete release directory `rm -rf release` *careful here*
 - Run `yarn build`
