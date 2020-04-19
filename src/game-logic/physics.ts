@@ -32,7 +32,7 @@ const nextPlayers = (state: InGameState): InGameState => {
               hit = true
               damage = hitbox.damage
               const growth = 1 - (player.health / player.character.maxHealth)
-              xKnockback = ((hitbox.knockbackX * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))) * attack.xDirection
+              xKnockback = ((hitbox.knockbackX * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))) * attack.xDirection * attack.xMultiplierOnHit
               yKnockback = (hitbox.knockbackY * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))
               stunDuration = hitbox.hitstunBase + (hitbox.hitstunGrowth * growth)
 
