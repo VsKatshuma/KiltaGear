@@ -94,8 +94,8 @@ export const createHitbox = (startFrame: number, duration: number, strength: num
     hitstunBase: 25, // frames
     hitstunGrowth: 1.1, // increase hitstun when opponent on low health
     hitLag: 6, // frames
+    ignoreOwnerHitlag: false,
     //characterSpecific: 0,
-    movesWithCharacter: true,
     x: 30,
     y: 0,
     framesUntilActivation: startFrame,
@@ -119,7 +119,6 @@ export const createRandomHitbox = (variance: number = 15, baseStrength: number =
     hitstunGrowth: 1.1, // increase hitstun when opponent on low health
     hitLag: baseStrength + 0.3 * r(variance), // frames
     //characterSpecific: 0,
-    movesWithCharacter: true,
     x: 40 + 8 * r(variance) - 8 * r(variance),
     y: 0 + 8 * r(variance) - 8 * r(variance),
     framesUntilActivation: variance * 1.4,
@@ -132,8 +131,14 @@ export const createRandomHitbox = (variance: number = 15, baseStrength: number =
 
 export const generateAttack = (hitboxes: Hitbox[]): Attack => {
   return {
+      x: 0, // Relative to player
+      y: 0, // Relative to player
+      xSpeed: 0,
+      ySpeed: 0,
+      usesWorldCoordinates: false, // Ignore player position when creating the hitbox
+      movesWithPlayer: true, // Attack location is recalculated as the player moves
+
       hitboxes: hitboxes,
-      projectile: false,
       duration: 35,
       meterCost: 0,
       endWhenHitboxConnects: false,

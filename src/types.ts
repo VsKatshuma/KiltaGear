@@ -58,40 +58,6 @@ export type ActiveAttack = Attack & {
 
 // Character file related typings
 
-export type Attack = {
-  hitboxes: Hitbox[],
-  projectile: boolean, // TODO: Implement projectiles
-  duration: number, // How long to prevent player from moving, in frames
-  meterCost: number,
-  endWhenHitboxConnects: boolean,
-  endWhenHitboxesEnded: boolean,
-  endAfterDurationEnded: boolean,
-  onStart?: (state: InGameState, attack: ActiveAttack) => InGameState,
-  onEnd?: (state: InGameState, attack: ActiveAttack) => InGameState,
-}
-
-export type Hitbox = {
-  hasHit?: boolean,
-  x: number,
-  y: number,
-  movesWithCharacter: boolean, // TODO: assumed to be true, add handling for stationary/projectile hitboxes
-  framesUntilActivation: number,
-  duration: number,
-  damage: number,
-  radius: number,
-  knockbackBase: number,
-  knockbackGrowth: number,
-  knockbackX: number,
-  knockbackY: number,
-  hitstunBase: number,
-  hitstunGrowth: number,
-  hitLag: number,
-  // characterSpecific: any,
-  onActivation?: (state: InGameState, attack: ActiveAttack) => InGameState,
-  onHit?: (state: InGameState, attack: ActiveAttack) => InGameState,
-  onEnd?: (state: InGameState, attack: ActiveAttack) => InGameState
-}
-
 export type Character = {
   name: string,
   id: string,
@@ -140,6 +106,51 @@ export type Character = {
     airMeterForward: Attack,
     airMeterBack: Attack,
   }>
+}
+
+export type Attack = {
+  x: number, // Relative to player
+  y: number, // Relative to player
+  xSpeed: number,
+  ySpeed: number,
+  usesWorldCoordinates: boolean, // Ignore player position when creating the hitbox
+  movesWithPlayer: boolean, // Attack location is recalculated as the player moves
+
+  hitboxes: Hitbox[],
+  duration: number, // How long to prevent player from moving, in frames
+  meterCost: number,
+  endWhenHitboxConnects: boolean,
+  endWhenHitboxesEnded: boolean,
+  endAfterDurationEnded: boolean,
+  customImage?: PIXI.Sprite,
+  onStart?: (state: InGameState, attack: ActiveAttack) => InGameState,
+  onEnd?: (state: InGameState, attack: ActiveAttack) => InGameState,
+}
+
+// Attack related typings
+
+export type Hitbox = {
+  hasHit?: boolean,
+  x: number, // Relative to the parent attack
+  y: number, // Relative to the parent attack
+  framesUntilActivation: number,
+  duration: number,
+  damage: number,
+  radius: number,
+  knockbackBase: number,
+  knockbackGrowth: number,
+  knockbackX: number,
+  knockbackY: number,
+  hitstunBase: number,
+  hitstunGrowth: number,
+  hitLag: number,
+  ignoreOwnerHitlag: boolean,
+  // characterSpecific: any,
+  customParticles?: PIXI.Sprite[], // Additional particles shown during the lifetime of the hitbox
+  customHitEffect?: PIXI.Sprite[], // Additional particles on hit, overrides the default particles
+  onActivation?: (state: InGameState, attack: ActiveAttack) => InGameState,
+  onHit?: (state: InGameState, attack: ActiveAttack) => InGameState,
+  onEnd?: (state: InGameState, attack: ActiveAttack) => InGameState
 }
 
 // In-game player related typings
