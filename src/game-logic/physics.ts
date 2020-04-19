@@ -3,14 +3,28 @@ import { playHitSound, isHitboxActive, hasHitboxEnded, hasAttackEnded, playerCan
 
 // Called each frame
 export const nextPhysicsState = (state: InGameState): InGameState => {
-  return nextPlayers(state)
+  return updatePlayers(state)
 }
 
-const nextPlayers = (state: InGameState): InGameState => {
-  let nextPlayers = state.players
+const updatePlayers = (state: InGameState): InGameState => {
+  let nextPlayers = { ...state.players }
+
+  // movement, physics, landing, state updates
+  nextPlayers = handleCollisions(nextPlayers, state)
+  nextPlayers = handlePhysics(nextPlayers)
+  nextPlayers = handleStateUpdates(nextPlayers)
+
+  return {
+    ...state,
+    players: nextPlayers
+  }
+}
+
+// Check for collisions with hitboxes
+const handleCollisions = (players: Player[], state: InGameState): Player[] => {
+  let nextPlayers = { ...players }
   let playerSlotsWithConnectedAttacks: number[] = []
 
-  // Check for collisions with hitboxes
   nextPlayers = nextPlayers.map((player: Player): Player => {
     let hit: boolean = false
     let hitAttack: ActiveAttack | undefined
@@ -80,8 +94,11 @@ const nextPlayers = (state: InGameState): InGameState => {
     }
   })
 
-  // movement, physics, landing, state updates
-  nextPlayers = nextPlayers.map((player: Player): Player => {
+  return nextPlayers
+}
+
+const handlePhysics = (players: Player[]): Player[] => {
+  return players.map((player: Player): Player => {
     let nextPlayer = { ...player }
 
     // position and speeds
@@ -104,14 +121,12 @@ const nextPlayers = (state: InGameState): InGameState => {
       // TODO: Add hitlag on floor/groundbounce
     }
 
-    nextPlayer = handlePlayerState(nextPlayer)
     return nextPlayer
   })
+}
 
-  return {
-    ...state,
-    players: nextPlayers
-  }
+const handleStateUpdates = (players: Player[]): Player[] => {
+  return players.map(player => handlePlayerState(player))
 }
 
 export const handlePlayerMove = (player: Player, direction: -1 | 1, previousState: InGameState): Player => {
@@ -216,17 +231,13 @@ const handlePlayerState = (player: Player): Player => {
 }
 
 const playerState = (player: Player): CharacterState => {
-  // need to spend time in lag state if nextFramesUntilNeutral > 0
+  // Need to spend time in lag state if nextFramesUntilNeutral > 0
   if (player.framesUntilNeutral > 0 && !playerCanAct(player)) {
     return player.state
   }
 
   // Return to neutral after nextFramesUntilNeutral === 0
-  return nextNeutralState(player.y)
-}
-
-export const nextNeutralState = (nextY: number): NeutralCharacterState => {
-  if (nextY < 600) {
+  if (player.y < 600) {
     return 'airborne'
   } else {
     return 'groundborne'
