@@ -51,8 +51,6 @@ export type AttackStrength = 'Light' | 'Special' | 'Meter'
 export type AttackDirection = 'Neutral' | 'Up' | 'Down' | 'Forward' | 'Back'
 export type ActiveAttack = Attack & {
   playerSlot: number,
-  xDirection: -1 | 1, // 'left', 'right'
-  xMultiplierOnHit: -1 | 1, // used to reverse knockback when airBack move hits
   currentFrame: number,
 }
 
@@ -108,17 +106,30 @@ export type Character = {
   }>
 }
 
-export type Attack = {
-  x: number, // Relative to player
-  y: number, // Relative to player
+type CoordinateSettings = StaticCoordinates | WorldCoordinates | RelativeToPlayer
+
+type StaticCoordinates = {
+  // Only one or neither of these should be true, both at same time is undefined behavior
+  createUsingWorldCoordinates: false, // Ignore player position when creating the hitbox
+  movesWithPlayer: false,             // Attack location is recalculated as the player moves
+}
+type WorldCoordinates = {
+  createUsingWorldCoordinates: true,
+  movesWithPlayer: false,
+}
+type RelativeToPlayer = {
+  createUsingWorldCoordinates: false,
+  movesWithPlayer: true,
+}
+
+export type Attack = CoordinateSettings & {
+  x: number, // Check if it's relative to player or in world coordinates using utilities.isAttackRelativeToPlayer
+  y: number,
   xSpeed: number,
   ySpeed: number,
-  usesWorldCoordinates: boolean, // Ignore player position when creating the hitbox
-  movesWithPlayer: boolean, // Attack location is recalculated as the player moves
-
-  hitboxes: Hitbox[],
   duration: number, // How long to prevent player from moving, in frames
   meterCost: number,
+  hitboxes: Hitbox[],
   endWhenHitboxConnects: boolean,
   endWhenHitboxesEnded: boolean,
   endAfterDurationEnded: boolean,

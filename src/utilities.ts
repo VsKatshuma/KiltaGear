@@ -39,10 +39,6 @@ export const playHitSound = (): void => {
   sounds[0].play()
 }
 
-export const getAttackString = (player: Player, attack: AttackStrength, direction: AttackDirection): string => {
-  return playerCanAct(player) ? `${player.state === 'airborne' ? 'air' : ''}${attack}${direction}` : ''
-}
-
 // State handling and checks
 
 export const playerCanAct = (player: Player): boolean => {
@@ -81,9 +77,19 @@ export const hasAttackEnded = (attack: ActiveAttack): boolean => {
       || attack.endAfterDurationEnded && attack.currentFrame >= attack.duration
 }
 
+// Helpers for using attack data easily
+
+export const getAttackString = (player: Player, attack: AttackStrength, direction: AttackDirection): string => {
+  return playerCanAct(player) ? `${player.state === 'airborne' ? 'air' : ''}${attack}${direction}` : ''
+}
+
+export const isAttackRelativeToPlayer = (attack: Attack): boolean => {
+  return attack.movesWithPlayer && !attack.createUsingWorldCoordinates
+}
+
 // Attack generation in character files
 
-export const createHitbox = (startFrame: number, duration: number, strength: number = 4): Hitbox => {
+export const createHitbox = (startFrame: number, duration: number, strength: number = 6): Hitbox => {
   return {
     damage: strength * 0.75,
     radius: 10 + strength * 4,
@@ -118,6 +124,7 @@ export const createRandomHitbox = (variance: number = 15, baseStrength: number =
     hitstunBase: 25, // frames
     hitstunGrowth: 1.1, // increase hitstun when opponent on low health
     hitLag: baseStrength + 0.3 * r(variance), // frames
+    ignoreOwnerHitlag: false,
     //characterSpecific: 0,
     x: 40 + 8 * r(variance) - 8 * r(variance),
     y: 0 + 8 * r(variance) - 8 * r(variance),
@@ -131,11 +138,13 @@ export const createRandomHitbox = (variance: number = 15, baseStrength: number =
 
 export const generateAttack = (hitboxes: Hitbox[]): Attack => {
   return {
-      x: 0, // Relative to player
-      y: 0, // Relative to player
+      x: 0,
+      y: 0,
       xSpeed: 0,
       ySpeed: 0,
-      usesWorldCoordinates: false, // Ignore player position when creating the hitbox
+
+      // Only one or neither of these should be true, setting both to true is undefined behavior.
+      createUsingWorldCoordinates: false, // Ignore player position when creating the hitbox
       movesWithPlayer: true, // Attack location is recalculated as the player moves
 
       hitboxes: hitboxes,
@@ -146,5 +155,15 @@ export const generateAttack = (hitboxes: Hitbox[]): Attack => {
       endAfterDurationEnded: false,
       onStart: (state, attack) => { return state },
       onEnd: (state, attack) => { return state }
+  }
+}
+
+export const generateProjectile = (hitboxes: Hitbox[]): Attack => {
+  return {
+    ...generateAttack(hitboxes),
+    movesWithPlayer: false,
+    endWhenHitboxConnects: true,
+    xSpeed: 2.5,
+    hitboxes: hitboxes.map(hitbox => ({ ...hitbox, ignoreOwnerHitlag: true })),
   }
 }
