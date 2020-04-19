@@ -1,5 +1,5 @@
 import { Character, Attack, Player } from "../types";
-import { generateAttack, createHitbox, gainMeter } from "../utilities";
+import { generateAttack, createHitbox, gainMeter, generateProjectile } from "../utilities";
 
 export const heal: Attack = {
     ...generateAttack([]),
@@ -17,6 +17,18 @@ export const heal: Attack = {
         state.players[attack.playerSlot].health = Math.min(player.health + 10, player.character.maxHealth)
         return state
     }
+}
+
+export const hadoken: Attack = {
+    ...generateProjectile([
+        { ...createHitbox(30, 180, 8) }
+    ]),
+    onStart: (state, attack) => {
+        state.players[attack.playerSlot].hitlagRemaining = 30
+        return state
+    },
+    x: -55,
+    meterCost: 10
 }
 
 export const mmKALLL: Character = {
@@ -42,13 +54,12 @@ export const mmKALLL: Character = {
                 { ...createHitbox(4, 3, 3) },
                 { ...createHitbox(12, 8, 6) }
             ]),
-            projectile: false, // You can override any property of generateAttack by adding it after the ... spread
+            duration: 22, // You can override any property of generateAttack by adding it after the ... spread
         },
         LightForward: {
             ...generateAttack([
                 { ...createHitbox(20, 10, 13) }
             ]),
-            projectile: false,
             duration: 35,
         },
         LightDown: {
@@ -128,12 +139,12 @@ export const mmKALLL: Character = {
 
         // Meter moves
         MeterNeutral: heal,
-        MeterForward: heal,
+        MeterForward: hadoken,
         MeterDown: heal,
         airMeterNeutral: heal,
         airMeterUp: heal,
         airMeterDown: heal,
-        airMeterForward: heal,
-        airMeterBack: heal,
+        airMeterForward: hadoken,
+        airMeterBack: { ...hadoken, xSpeed: -2.5, x: 5 }, // TODO: x: 55 would make sense but makes the projectile spawn too much to the right
     }
 }
