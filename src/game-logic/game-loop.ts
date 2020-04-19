@@ -1,7 +1,7 @@
 import * as kiltagear from '../kiltagear'
 import { render } from '../render'
 import { InputStatus, KeyStatus, GameState, InGameState, Hitbox, Player, GameOverState } from '../types';
-import { handlePlayerInputs } from './input-handler';
+import { handleCharacterSelection, handlePlayerInputs } from './input-handler';
 import { updateAttacks, nextPhysicsState } from './physics';
 import { playMusic, toggleMusicMuted, assertNever } from '../utilities';
 
@@ -45,10 +45,15 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       }
 
       return state
-      break
     case 'character-select':
-      // Change to in-game when any key is pressed
-      if (keysPressed.length > 0) {
+      state = handleCharacterSelection(state, keysPressed)
+
+      if (state.start) {
+        kiltagear.players[0].character = kiltagear.characters[state.characterSelection[0]]
+        kiltagear.players[0].health = kiltagear.players[0].character.maxHealth
+        kiltagear.players[1].character = kiltagear.characters[state.characterSelection[1]]
+        kiltagear.players[1].health = kiltagear.players[1].character.maxHealth
+
         return {
           screen: 'in-game',
           stage: kiltagear.stages.kiltis6,
@@ -57,7 +62,8 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
           musicPlaying: true
         }
       }
-      break
+
+      return state
     case 'title-screen':
       // Change to character select when any key is pressed
       if (keysPressed.length > 0) {
@@ -67,13 +73,13 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
         }
         return {
           screen: 'character-select',
-          characterSelection: [
-            { x: 1, y: 1 },
-            { x: 1, y: 1}
-          ],
-          musicPlaying: true
+          musicPlaying: true,
+          characterSelection: [0, 1], // Initial cursor positions of player 1 and 2, needs to be expanded to support more players
+          playerReady: [false, false],
+          start: false
         }
       }
+
       break
     case 'game-over':
       if (state.framesUntilTitle <= 0) {
@@ -82,6 +88,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
           musicPlaying: true
         }
       }
+
       return {
         ...state,
         framesUntilTitle: state.framesUntilTitle - 1
@@ -116,4 +123,3 @@ const gameOverState = (players: Player[]): GameOverState => {
     framesUntilTitle: 140
   }
 }
-

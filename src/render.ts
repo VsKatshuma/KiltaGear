@@ -73,17 +73,26 @@ titleContainer.y = middleY
 titleContainer.addChild(titleText, versionNumber, pressAnyKeyText)
 
 // Character selection
-var characterSelectKatshumaUrl = require('./assets/sprites/character-select-katshuma.jpg')
-var characterSelectmmKALLLUrl = require('./assets/sprites/character-select-mmkalll.jpg')
-var characterSelectTruemmKALLLUrl = require('./assets/sprites/character-select-true-mmkalll.jpg')
+var UrlKatshuma = require('./assets/sprites/character-select-katshuma.jpg')
+var UrlmmKALLL = require('./assets/sprites/character-select-mmkalll.jpg')
+var UrlTruemmKALLL = require('./assets/sprites/character-select-true-mmkalll.jpg')
 
-const characterSelectionImageKatshuma = PIXI.Sprite.from(characterSelectKatshumaUrl)
-const characterSelectionImagemmKALLL = PIXI.Sprite.from(characterSelectmmKALLLUrl)
-const characterSelectionImageTruemmKALLL = PIXI.Sprite.from(characterSelectTruemmKALLLUrl)
+const characterSelectionKatshuma = PIXI.Sprite.from(UrlKatshuma)
+const characterSelectionmmKALLL = PIXI.Sprite.from(UrlmmKALLL)
+const characterSelectionTruemmKALLL = PIXI.Sprite.from(UrlTruemmKALLL)
+const characterSelectionKatshuma2 = PIXI.Sprite.from(UrlKatshuma)
+const characterSelectionmmKALLL2 = PIXI.Sprite.from(UrlmmKALLL)
+const characterSelectionTruemmKALLL2 = PIXI.Sprite.from(UrlTruemmKALLL)
 
-characterSelectionImageKatshuma.anchor.set(0.5, 0.5)
-characterSelectionImagemmKALLL.anchor.set(0.5, 0.5)
-characterSelectionImageTruemmKALLL.anchor.set(0.5, 0.5)
+characterSelectionKatshuma.anchor.set(0.5, 0.5)
+characterSelectionmmKALLL.anchor.set(0.5, 0.5)
+characterSelectionTruemmKALLL.anchor.set(0.5, 0.5)
+characterSelectionKatshuma2.anchor.set(0.5, 0.5)
+characterSelectionmmKALLL2.anchor.set(0.5, 0.5)
+characterSelectionTruemmKALLL2.anchor.set(0.5, 0.5)
+characterSelectionKatshuma2.scale.x *= -1
+characterSelectionmmKALLL2.scale.x *= -1
+characterSelectionTruemmKALLL2.scale.x *= -1
 
 const characterSelectionLeft = new PIXI.Container()
 const characterSelectionRight = new PIXI.Container()
@@ -111,17 +120,17 @@ const characterSelectionTextStyleRight = new PIXI.TextStyle({
     dropShadow: true, dropShadowColor: '#000000', dropShadowAngle: 0, dropShadowDistance: 1
 })
 
-const characterSelectionTextLeft = new PIXI.Text('Katshuma', characterSelectionTextStyleLeft)
-const characterSelectionTextRigth = new PIXI.Text('mmKALLL', characterSelectionTextStyleRight)
+const characterSelectionTextLeft = new PIXI.Text('Player 1', characterSelectionTextStyleLeft)
+const characterSelectionTextRight = new PIXI.Text('Player 2', characterSelectionTextStyleRight)
 characterSelectionTextLeft.anchor.set(0.5)
-characterSelectionTextRigth.anchor.set(0.5)
+characterSelectionTextRight.anchor.set(0.5)
 characterSelectionTextLeft.y = 230
-characterSelectionTextRigth.y = 230
+characterSelectionTextRight.y = 230
 
-characterSelectionLeft.addChild(characterSelectionImageKatshuma)
+characterSelectionLeft.addChild(characterSelectionKatshuma, characterSelectionmmKALLL, characterSelectionTruemmKALLL)
 characterSelectionLeft.addChild(characterSelectionTextLeft)
-characterSelectionRight.addChild(characterSelectionImagemmKALLL)
-characterSelectionRight.addChild(characterSelectionTextRigth)
+characterSelectionRight.addChild(characterSelectionKatshuma2, characterSelectionmmKALLL2, characterSelectionTruemmKALLL2)
+characterSelectionRight.addChild(characterSelectionTextRight)
 
 const versus = new PIXI.Text("VS.", titleTextStyle)
 versus.anchor.set(0.5, 0.5)
@@ -131,7 +140,7 @@ versus.y = middleY
 const readyToStartTextStyle = new PIXI.TextStyle({
     fontSize: 30
 })
-const readyToStart = new PIXI.Text('Press any key to start', readyToStartTextStyle)
+const readyToStart = new PIXI.Text('Select your characters', readyToStartTextStyle)
 readyToStart.anchor.set(0.5)
 readyToStart.x = middleX
 readyToStart.y = middleY + 230
@@ -265,8 +274,7 @@ function transitionToTitleScreen(): void {
 function transitionToCharacterSelect(): void {
     app.renderer.backgroundColor = 0xAA0000
     app.stage.removeChildren()
-    app.stage.addChild(characterSelectionBackgroundVertical)
-    app.stage.addChild(characterSelectionBackgroundHorizontal)
+    app.stage.addChild(characterSelectionBackgroundVertical, characterSelectionBackgroundHorizontal)
     app.stage.addChild(characterSelectionLeft)
     app.stage.addChild(characterSelectionRight)
     app.stage.addChild(versus, readyToStart, instructionsLeft, instructionsRight)
@@ -286,6 +294,7 @@ let previousScreen = ''
 let hover = 0
 let fade = 0
 titleEsa.x = 20
+let selectedCharacter = [0, 1]
 
 let player1facing = 'right'
 let player2facing = 'right'
@@ -308,6 +317,40 @@ export function render(state: GameState): void {
         if (previousScreen != 'character-select') {
             previousScreen = 'character-select'
             transitionToCharacterSelect()
+        }
+        switch (state.characterSelection[0]) {
+            case 0:
+                characterSelectionKatshuma.visible = true
+                characterSelectionmmKALLL.visible = false
+                characterSelectionTruemmKALLL.visible = false
+                break
+            case 1:
+                characterSelectionKatshuma.visible = false
+                characterSelectionmmKALLL.visible = true
+                characterSelectionTruemmKALLL.visible = false
+                break
+            case 2:
+                characterSelectionKatshuma.visible = false
+                characterSelectionmmKALLL.visible = false
+                characterSelectionTruemmKALLL.visible = true
+                break
+        }
+        switch (state.characterSelection[1]) {
+            case 0:
+                characterSelectionKatshuma2.visible = true
+                characterSelectionmmKALLL2.visible = false
+                characterSelectionTruemmKALLL2.visible = false
+                break
+            case 1:
+                characterSelectionKatshuma2.visible = false
+                characterSelectionmmKALLL2.visible = true
+                characterSelectionTruemmKALLL2.visible = false
+                break
+            case 2:
+                characterSelectionKatshuma2.visible = false
+                characterSelectionmmKALLL2.visible = false
+                characterSelectionTruemmKALLL2.visible = true
+                break
         }
         characterSelectionBackgroundVertical.x = (characterSelectionBackgroundVertical.x + 0.5) % 64
         characterSelectionBackgroundHorizontal.y = (characterSelectionBackgroundHorizontal.y + 1) % 64
