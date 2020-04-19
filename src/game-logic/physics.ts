@@ -7,7 +7,7 @@ export const nextPhysicsState = (state: InGameState): InGameState => {
 }
 
 const updatePlayers = (state: InGameState): InGameState => {
-  let nextPlayers = state.players.slice()
+  let nextPlayers: Player[] = state.players.slice()
 
   // movement, physics, landing, state updates
   nextPlayers = handleCollisions(nextPlayers, state)
