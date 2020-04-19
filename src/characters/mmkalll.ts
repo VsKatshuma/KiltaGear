@@ -3,19 +3,16 @@ import { generateAttack, createHitbox } from "../utilities";
 
 export const heal: Attack = {
     ...generateAttack([]),
-    duration: 60,
+    duration: 80,
     endWhenHitboxConnects: false,
     endWhenHitboxesEnded: false,
     endAfterDurationEnded: true,
     onStart: (state, attack) => {
-        state.players[attack.playerSlot].state = 'hitlag'
         state.players[attack.playerSlot].hitlagRemaining = 60
         return state
     },
     onEnd: (state, attack) => {
         const player = state.players[attack.playerSlot]
-        state.players[attack.playerSlot].state = 'attacking'
-        state.players[attack.playerSlot].framesUntilNeutral = 20
         state.players[attack.playerSlot].health = Math.min(player.health + 20, player.character.maxHealth)
         return state
     }
