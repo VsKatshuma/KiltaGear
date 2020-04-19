@@ -62,6 +62,7 @@ export type Attack = {
   hitboxes: Hitbox[],
   projectile: boolean, // TODO: Implement projectiles
   duration: number, // How long to prevent player from moving, in frames
+  meterCost: number,
   endWhenHitboxConnects: boolean,
   endWhenHitboxesEnded: boolean,
   endAfterDurationEnded: boolean,

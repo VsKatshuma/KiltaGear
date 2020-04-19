@@ -75,8 +75,9 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
 function handleAttack(inputName: AttackStrength, player: Player, inputs: InputStatus, activeAttacks: ActiveAttack[]): ActiveAttack[] {
   if (playerCanAct(player)) {
     const attack: ActiveAttack | undefined = getAttackFromInput(inputName, player, inputs)
-    if (attack) {
+    if (attack && player.meter >= attack.meterCost) {
       activeAttacks = addActiveAttack(attack, activeAttacks)
+      player.meter -= attack.meterCost
       player.state = 'attacking'
       player.framesUntilNeutral = attack.duration
     }

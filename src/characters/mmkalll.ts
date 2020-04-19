@@ -7,7 +7,7 @@ export const heal: Attack = {
     endWhenHitboxConnects: false,
     endWhenHitboxesEnded: false,
     endAfterDurationEnded: true,
-    // meterCost: 25,
+    meterCost: 25,
     onStart: (state, attack) => {
         state.players[attack.playerSlot].hitlagRemaining = 60
         return state

@@ -135,6 +135,7 @@ export const generateAttack = (hitboxes: Hitbox[]): Attack => {
       hitboxes: hitboxes,
       projectile: false,
       duration: 35,
+      meterCost: 0,
       endWhenHitboxConnects: false,
       endWhenHitboxesEnded: true,
       endAfterDurationEnded: false,
