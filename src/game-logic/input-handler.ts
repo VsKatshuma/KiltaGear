@@ -1,4 +1,5 @@
-import { Player, KeyStatus, InputStatus, InGameState, playerCanMove, playerCanSDI, playerCanAct, ActiveAttack, AttackStrength, AttackDirection, CharacterState, Attack } from "../types";
+import { characters } from "../kiltagear";
+import { Player, KeyStatus, InputStatus, InGameState, CharacterSelectionState, playerCanMove, playerCanSDI, playerCanAct, ActiveAttack, AttackStrength, AttackDirection, CharacterState, Attack } from "../types";
 import { getAttackString, setMusicVolume, getMusicVolume } from "../utilities";
 import { handlePlayerMove, handlePlayerJump, handlePlayerFastFall } from "./physics";
 
@@ -14,6 +15,54 @@ export enum PlayerInput {
 }
 
 export type PlayerAction = { playerPort: number, action: PlayerInput }
+
+export const handleCharacterSelection = (currentState: CharacterSelectionState, keysPressed: KeyStatus[]): CharacterSelectionState => {
+  const nextState: CharacterSelectionState = currentState
+  const lastCharacterIndex: number = characters.length - 1
+
+  keysPressed.forEach((key: KeyStatus) => {
+    switch (key.keyName) {
+      case 'a':
+        if (!currentState.playerReady[0] && currentState.characterSelection[0] > 0)
+          nextState.characterSelection[0]--
+        break
+      case 'd':
+        if (!currentState.playerReady[0] && currentState.characterSelection[0] < lastCharacterIndex)
+          nextState.characterSelection[0]++
+        break
+      case 'ArrowLeft':
+        if (!currentState.playerReady[1] && currentState.characterSelection[1] > 0)
+          nextState.characterSelection[1]--
+        break
+      case 'ArrowRight':
+        if (!currentState.playerReady[1] && currentState.characterSelection[1] < lastCharacterIndex)
+          nextState.characterSelection[1]++
+        break
+      case 'c':
+        if (!currentState.playerReady[0]) {
+          nextState.playerReady[0] = true
+        } else if (currentState.playerReady[0] && currentState.playerReady[1]) {
+          nextState.start = true
+        }
+        break
+      case 'v':
+        nextState.playerReady[0] = false
+        break
+      case ',':
+        if (!currentState.playerReady[1]) {
+          nextState.playerReady[1] = true
+        } else if (currentState.playerReady[0] && currentState.playerReady[1]) {
+          nextState.start = true
+        }
+        break
+      case '.':
+        nextState.playerReady[1] = false
+        break
+    }
+  })
+
+  return nextState
+}
 
 export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatus, keysPressed: KeyStatus[], keysReleased: KeyStatus[]): InGameState => {
   const nextState: InGameState = currentState

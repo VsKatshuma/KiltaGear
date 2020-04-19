@@ -1,10 +1,17 @@
-import { Player, PlayerBase, InputStatus } from './types'
+import { Player, PlayerBase, InputStatus, Character } from './types'
 import { startGameLoop } from './game-logic/game-loop'
 import { Katshuma } from './characters/katshuma'
 import { mmKALLL } from './characters/mmkalll';
 import { True_mmKALLL } from './characters/true-mmkalll'
 import { PlayerInput } from './game-logic/input-handler';
 
+
+// Playable characters in KiltaGear, in the order they appear on character selection screen, left to right
+export const characters: Character[] = [
+    Katshuma,
+    mmKALLL,
+    True_mmKALLL
+]
 
 const playerBase: PlayerBase = {
     state: 'groundborne',

@@ -12,17 +12,16 @@ export type TitleScreenState = {
 export type CharacterSelectionState = {
   screen: 'character-select'
   musicPlaying: boolean
-  characterSelection: {
-    x: number,
-    y: number
-  }[]
+  characterSelection: number[]
+  playerReady: boolean[]
+  start: boolean
 }
 
 export type InGameState = {
   screen: 'in-game'
   musicPlaying: boolean
-  players: Player[],
-  activeAttacks: ActiveAttack[],
+  players: Player[]
+  activeAttacks: ActiveAttack[]
 }
 
 export type GameOverState = {
