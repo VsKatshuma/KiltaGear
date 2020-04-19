@@ -6,6 +6,8 @@ export const True_mmKALLL: Character = {
     name: '真・mmKALLL',
     id: 'true-mmkalll',
     maxHealth: 100,
+    maxMeter: 100,
+    startingMeter: 0,
     walkSpeed: 5,
     airSpeed: 8,
     weight: 1,

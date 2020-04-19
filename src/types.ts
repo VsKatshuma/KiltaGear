@@ -95,6 +95,8 @@ export type Character = {
   name: string,
   id: string,
   maxHealth: number,
+  maxMeter: number,
+  startingMeter: number,
   walkSpeed: number,
   airSpeed: number,
   weight: number,
@@ -142,8 +144,6 @@ export type PlayerBase = {
   ySpeed: number,
   hitlagRemaining: number,
   framesUntilNeutral: number,
-  meter: number,
-  jumps: number,
 }
 
 export type Player = PlayerBase & {
@@ -154,4 +154,6 @@ export type Player = PlayerBase & {
   y: number,
   facing: 'left' | 'right',
   health: number,
+  meter: number,
+  jumps: number,
 }

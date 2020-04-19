@@ -13,7 +13,7 @@ export const heal: Attack = {
     },
     onEnd: (state, attack) => {
         const player = state.players[attack.playerSlot]
-        state.players[attack.playerSlot].health = Math.min(player.health + 20, player.character.maxHealth)
+        state.players[attack.playerSlot].health = Math.min(player.health + 8, player.character.maxHealth)
         return state
     }
 }
@@ -22,6 +22,8 @@ export const mmKALLL: Character = {
     name: 'mmKALLL',
     id: 'mmkalll',
     maxHealth: 100,
+    maxMeter: 100,
+    startingMeter: 0,
     walkSpeed: 5,
     airSpeed: 8,
     weight: 1, // Multiplier relative to mmKALLL

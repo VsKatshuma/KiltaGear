@@ -5,6 +5,8 @@ export const Katshuma: Character = {
     name: 'Katshuma',
     id: 'katshuma',
     maxHealth: 100,
+    maxMeter: 100,
+    startingMeter: 0,
     walkSpeed: 7,
     airSpeed: 8,
     weight: 1,
