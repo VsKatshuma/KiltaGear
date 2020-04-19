@@ -13,7 +13,7 @@ const windowHeight = window.innerHeight
 
 app.renderer.view.style.position = 'absolute'
 app.renderer.view.style.display = 'block'
-app.renderer.autoResize = false
+app.renderer.autoDensity = false // TODO: Updated since app.renderer.autoResize was deprecated, check that this is correct
 app.renderer.resize(windowWidth, windowHeight)
 
 document.body.appendChild(app.view)
