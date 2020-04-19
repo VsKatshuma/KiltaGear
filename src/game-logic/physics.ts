@@ -7,7 +7,7 @@ export const nextPhysicsState = (state: InGameState): InGameState => {
 }
 
 const updatePlayers = (state: InGameState): InGameState => {
-  let nextPlayers = { ...state.players }
+  let nextPlayers = state.players.slice()
 
   // movement, physics, landing, state updates
   nextPlayers = handleCollisions(nextPlayers, state)
@@ -22,7 +22,7 @@ const updatePlayers = (state: InGameState): InGameState => {
 
 // Check for collisions with hitboxes
 const handleCollisions = (players: Player[], state: InGameState): Player[] => {
-  let nextPlayers = { ...players }
+  let nextPlayers: Player[] = players
   let playerSlotsWithConnectedAttacks: number[] = []
 
   nextPlayers = nextPlayers.map((player: Player): Player => {
@@ -88,6 +88,7 @@ const handleCollisions = (players: Player[], state: InGameState): Player[] => {
     return nextPlayer
   })
 
+  // After all collisions have been checked, update players with activated onAttackHit handlers
   playerSlotsWithConnectedAttacks.forEach(slot => {
     if (nextPlayers[slot].character.onAttackHit) {
       nextPlayers[slot] = nextPlayers[slot].character.onAttackHit!(nextPlayers[slot], state) // TODO: Proper type guard

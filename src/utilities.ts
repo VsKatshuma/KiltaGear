@@ -11,7 +11,7 @@ export const clamp = (number: number, min: number, max: number): number => {
 
 const damageslashUrl = require('./assets/audio/damageslash.wav')
 const sounds = [new Audio(damageslashUrl)]
-sounds.forEach(snd => snd.volume = 0.2)
+sounds.forEach(snd => snd.volume = 0.22)
 
 const midnightCarnivalUrl = require('./assets/audio/gametal-midnight-carnival.mp3')
 const track = new Audio(midnightCarnivalUrl)
