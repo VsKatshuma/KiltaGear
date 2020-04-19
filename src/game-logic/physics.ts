@@ -1,5 +1,5 @@
-import { ActiveAttack, Player, InGameState, Hitbox, CharacterState, NeutralCharacterState, playerCanAct, GameState, playerCanMove } from "../types";
-import { playHitSound, isHitboxActive, hasHitboxEnded, hasAttackEnded } from "../utilities";
+import { ActiveAttack, Player, InGameState, Hitbox, CharacterState, NeutralCharacterState } from "../types";
+import { playHitSound, isHitboxActive, hasHitboxEnded, hasAttackEnded, playerCanAct, playerHasHitlag } from "../utilities";
 
 // Called each frame
 export const nextPhysicsState = (state: InGameState): InGameState => {
@@ -8,10 +8,6 @@ export const nextPhysicsState = (state: InGameState): InGameState => {
 
 const nextPlayers = (state: InGameState): InGameState => {
   let nextPlayers = state.players
-
-  // TODO: Check for floorbounce
-
-  // TODO: Check for hitlag/landing/hitstun and tick timers
 
   // Check for collisions with hitboxes
   nextPlayers = nextPlayers.map((player: Player): Player => {
@@ -45,8 +41,6 @@ const nextPlayers = (state: InGameState): InGameState => {
               hitbox.onHit && hitbox.onHit(state, attack)
 
               // Assign hitlag to both players
-              player.state = 'hitlag'
-              nextPlayers[attack.playerSlot].state = 'hitlag'
               hitlagRemaining = Math.max(hitbox.hitLag, hitlagRemaining)
               nextPlayers[attack.playerSlot].hitlagRemaining = Math.max(hitbox.hitLag, nextPlayers[attack.playerSlot].hitlagRemaining)
             }
@@ -71,7 +65,7 @@ const nextPlayers = (state: InGameState): InGameState => {
     let nextPlayer = { ...player }
 
     // position and speeds
-    if (nextPlayer.state !== 'hitlag') {
+    if (!playerHasHitlag(nextPlayer)) {
       const minX = player.character.hurtboxRadius
       const maxX = 1200 - player.character.hurtboxRadius
 
@@ -182,32 +176,25 @@ const handleHitBoxFunctions = (state: InGameState, attack: ActiveAttack): InGame
   return newState
 }
 
-// Hitlag/hitstun and state update
+// Hitlag/hitstun and state update. Don't decrease framesUntilNeutral if the player is in hitlag.
 const handlePlayerState = (player: Player): Player => {
   const nextPlayer = { ...player }
-  nextPlayer.hitlagRemaining = Math.max(0, nextPlayer.hitlagRemaining - 1)
-  nextPlayer.framesUntilNeutral = player.state === 'hitlag' ?
+  nextPlayer.framesUntilNeutral = playerHasHitlag(player) ?
       player.framesUntilNeutral
       : Math.max(0, player.framesUntilNeutral - 1)
-  nextPlayer.state = nextPlayerState(nextPlayer.state, nextPlayer.y, nextPlayer.hitlagRemaining, nextPlayer.framesUntilNeutral)
+  nextPlayer.hitlagRemaining = Math.max(0, nextPlayer.hitlagRemaining - 1)
+  nextPlayer.state = playerState(nextPlayer)
   return nextPlayer
 }
 
-const nextPlayerState = (state: CharacterState, nextY: number, nextHitlagRemaining: number, nextFramesUntilNeutral: number): CharacterState => {
-  if (nextHitlagRemaining > 0) {
-    return 'hitlag'
-  }
-
+const playerState = (player: Player): CharacterState => {
   // need to spend time in lag state if nextFramesUntilNeutral > 0
-  if (nextFramesUntilNeutral > 0 && !playerCanAct(state)) {
-    if (state === 'hitlag') {
-      return 'hitstun'
-    }
-    return state
+  if (player.framesUntilNeutral > 0 && !playerCanAct(player)) {
+    return player.state
   }
 
   // Return to neutral after nextFramesUntilNeutral === 0
-  return nextNeutralState(nextY)
+  return nextNeutralState(player.y)
 }
 
 export const nextNeutralState = (nextY: number): NeutralCharacterState => {
