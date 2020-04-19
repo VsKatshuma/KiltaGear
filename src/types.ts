@@ -43,22 +43,9 @@ export type KeyStatus = {
 // Character status related typings
 
 export type NeutralCharacterState = 'groundborne' | 'airborne'
-export type SmashDICharacterState = 'wallbouncing' | 'floorbouncing' | 'hitlag'
-export type NoActionCharacterState = SmashDICharacterState | 'attacking' | 'landing' | 'hitstun'
+export type NoActionCharacterState = 'attacking' | 'landing' | 'hitstun'
 
 export type CharacterState = NeutralCharacterState | NoActionCharacterState
-
-export const playerCanAct = (state: CharacterState): state is NeutralCharacterState => {
-  return state === 'airborne' || state === 'groundborne'
-}
-
-export const playerCanMove = (state: CharacterState): state is NeutralCharacterState => {
-  return playerCanAct(state) || state === 'attacking'
-}
-
-export const playerCanSDI = (state: CharacterState): state is SmashDICharacterState => {
-  return state === 'wallbouncing' || state === 'floorbouncing' || state === 'hitlag'
-}
 
 export type AttackStrength = 'Light' | 'Special' | 'Meter'
 export type AttackDirection = 'Neutral' | 'Up' | 'Down' | 'Forward' | 'Back'

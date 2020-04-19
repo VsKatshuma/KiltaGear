@@ -1,4 +1,4 @@
-import { NeutralCharacterState, AttackStrength, AttackDirection, Hitbox, Attack, ActiveAttack } from './types'
+import { AttackStrength, AttackDirection, Hitbox, Attack, ActiveAttack, Player } from './types'
 
 const damageslashUrl = require('./assets/audio/damageslash.wav')
 const sounds = [new Audio(damageslashUrl)]
@@ -30,8 +30,20 @@ export const playHitSound = (): void => {
   sounds[0].play()
 }
 
-export const getAttackString = (state: NeutralCharacterState, attack: AttackStrength, direction: AttackDirection): string => {
-  return `${state === 'airborne' ? 'air' : ''}${attack}${direction}`
+export const getAttackString = (player: Player, attack: AttackStrength, direction: AttackDirection): string => {
+  return playerCanAct(player) ? `${player.state === 'airborne' ? 'air' : ''}${attack}${direction}` : ''
+}
+
+export const playerCanAct = (player: Player): boolean => {
+  return !playerHasHitlag(player) && player.framesUntilNeutral <= 0 && (player.state === 'airborne' || player.state === 'groundborne')
+}
+
+export const playerCanMove = (player: Player): boolean => {
+  return !playerHasHitlag(player) && (player.state === 'airborne' || player.state === 'groundborne' || player.state === 'attacking')
+}
+
+export const playerHasHitlag = (player: Player): boolean => {
+  return player.hitlagRemaining > 0
 }
 
 export const isHitboxActive = (hitbox: Hitbox): boolean => {
