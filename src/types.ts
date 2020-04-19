@@ -97,12 +97,17 @@ export type Character = {
   maxHealth: number,
   maxMeter: number,
   startingMeter: number,
+  meterThresholds: number[], // Used to render "segments" on the meter
   walkSpeed: number,
   airSpeed: number,
   weight: number,
   maxJumps: number,
   jumpStrength: number,
   hurtboxRadius: number,
+  onMove?: (player: Player, previousState: InGameState) => Player,
+  onJump?: (player: Player, previousState: InGameState) => Player,
+  onAttackHit?: (player: Player, previousState: InGameState) => Player, // Called when own attack hits an opponent
+  onGetHit?: (player: Player, previousState: InGameState) => Player, // Called when hit by an opponent's attack
   attacks: Partial<{
     LightNeutral: Attack,
     LightForward: Attack,

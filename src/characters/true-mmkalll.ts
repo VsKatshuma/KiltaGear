@@ -8,6 +8,7 @@ export const True_mmKALLL: Character = {
     maxHealth: 100,
     maxMeter: 100,
     startingMeter: 0,
+    meterThresholds: [],
     walkSpeed: 5,
     airSpeed: 8,
     weight: 1,

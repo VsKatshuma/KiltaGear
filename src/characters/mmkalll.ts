@@ -1,5 +1,5 @@
-import { Character, Attack } from "../types";
-import { generateAttack, createHitbox } from "../utilities";
+import { Character, Attack, Player } from "../types";
+import { generateAttack, createHitbox, gainMeter } from "../utilities";
 
 export const heal: Attack = {
     ...generateAttack([]),
@@ -7,13 +7,14 @@ export const heal: Attack = {
     endWhenHitboxConnects: false,
     endWhenHitboxesEnded: false,
     endAfterDurationEnded: true,
+    // meterCost: 25,
     onStart: (state, attack) => {
         state.players[attack.playerSlot].hitlagRemaining = 60
         return state
     },
     onEnd: (state, attack) => {
         const player = state.players[attack.playerSlot]
-        state.players[attack.playerSlot].health = Math.min(player.health + 8, player.character.maxHealth)
+        state.players[attack.playerSlot].health = Math.min(player.health + 10, player.character.maxHealth)
         return state
     }
 }
@@ -24,12 +25,17 @@ export const mmKALLL: Character = {
     maxHealth: 100,
     maxMeter: 100,
     startingMeter: 0,
+    meterThresholds: [25, 50, 75, 100],
     walkSpeed: 5,
     airSpeed: 8,
     weight: 1, // Multiplier relative to mmKALLL
     maxJumps: 2,
     jumpStrength: 1, // Multiplier relative to mmKALLL
     hurtboxRadius: 20, // Sprites are 40x100
+    onMove: (player: Player) => gainMeter(0.1, player),
+    onJump: (player: Player) => player,
+    onAttackHit: (player: Player) => gainMeter(8, player),
+    onGetHit: (player: Player) => gainMeter(-5, player),
     attacks: {
         LightNeutral: {
             ...generateAttack([

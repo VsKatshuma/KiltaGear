@@ -1,5 +1,14 @@
 import { AttackStrength, AttackDirection, Hitbox, Attack, ActiveAttack, Player } from './types'
 
+// General use
+
+// Restrict a number between a min/max
+export const clamp = (number: number, min: number, max: number): number => {
+  return Math.min(max, Math.max(min, number))
+}
+
+// Music and other assets
+
 const damageslashUrl = require('./assets/audio/damageslash.wav')
 const sounds = [new Audio(damageslashUrl)]
 sounds.forEach(snd => snd.volume = 0.2)
@@ -34,6 +43,8 @@ export const getAttackString = (player: Player, attack: AttackStrength, directio
   return playerCanAct(player) ? `${player.state === 'airborne' ? 'air' : ''}${attack}${direction}` : ''
 }
 
+// State handling and checks
+
 export const playerCanAct = (player: Player): boolean => {
   return !playerHasHitlag(player) && player.framesUntilNeutral <= 0 && (player.state === 'airborne' || player.state === 'groundborne')
 }
@@ -44,6 +55,10 @@ export const playerCanMove = (player: Player): boolean => {
 
 export const playerHasHitlag = (player: Player): boolean => {
   return player.hitlagRemaining > 0
+}
+
+export const gainMeter = (amount: number, player: Player): Player => {
+  return { ...player, meter: clamp(player.meter + amount, 0, player.character.maxMeter) }
 }
 
 export const isHitboxActive = (hitbox: Hitbox): boolean => {
@@ -65,6 +80,8 @@ export const hasAttackEnded = (attack: ActiveAttack): boolean => {
       || attack.endWhenHitboxesEnded && attack.hitboxes.length === 0
       || attack.endAfterDurationEnded && attack.currentFrame >= attack.duration
 }
+
+// Attack generation in character files
 
 export const createHitbox = (startFrame: number, duration: number, strength: number = 4): Hitbox => {
   return {
