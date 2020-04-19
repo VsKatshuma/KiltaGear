@@ -41,18 +41,14 @@ const handleCollisions = (players: Player[], state: InGameState): Player[] => {
             // TODO: Handle hitboxes that don't move with character
             // Calculate hit if hitbox overlaps with hurtbox
             // If multiple hitboxes hit on the same frame, the player gets hit with the last one of them
-            if (Math.sqrt(
-                    Math.pow((state.players[attack.playerSlot].x + hitbox.x * attack.xDirection) - player.x, 2)
-                  + Math.pow((state.players[attack.playerSlot].y + hitbox.y) - player.y, 2)
-                )
-                < hitbox.radius + player.character.hurtboxRadius) {
+            if (hitboxCollided(hitbox, attack, player, state.players[attack.playerSlot])) {
               hit = true
               hitAttack = attack
               damage = hitbox.damage
               const growth = 1 - (player.health / player.character.maxHealth)
-              xKnockback = ((hitbox.knockbackX * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))) * attack.xDirection * attack.xMultiplierOnHit
-              yKnockback = (hitbox.knockbackY * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))
-              stunDuration = hitbox.hitstunBase + (hitbox.hitstunGrowth * growth)
+              xKnockback = hitbox.knockbackX * (hitbox.knockbackBase + (hitbox.knockbackGrowth - 1) * growth * hitbox.knockbackBase)
+              yKnockback = hitbox.knockbackY * (hitbox.knockbackBase + (hitbox.knockbackGrowth - 1) * growth * hitbox.knockbackBase)
+              stunDuration = hitbox.hitstunBase + (hitbox.hitstunBase * (hitbox.hitstunGrowth - 1) * growth)
 
               hitbox.hasHit = true
               playHitSound()
@@ -167,6 +163,23 @@ export const handlePlayerFastFall = (player: Player): Player => {
 
 // Attack handling
 
+const hitboxCollided = (hitbox: Hitbox, attack: ActiveAttack, player: Player, attacker: Player): boolean => {
+  let hitboxWorldX = attack.x + hitbox.x
+  let hitboxWorldY = attack.y + hitbox.y
+
+  if (attack.movesWithPlayer) {
+    hitboxWorldX += attacker.x
+    hitboxWorldY += attacker.y
+  }
+
+  // Collided if distance between hitbox and player origins is less than sum of their radii
+  return Math.sqrt(
+      Math.pow(hitboxWorldX - player.x, 2)
+    + Math.pow(hitboxWorldY - player.y, 2)
+  )
+  < hitbox.radius + player.character.hurtboxRadius
+}
+
 export const updateAttacks = (state: InGameState): InGameState => {
   let newState = {
     ...state,
@@ -175,6 +188,8 @@ export const updateAttacks = (state: InGameState): InGameState => {
       .map(
         (attack: ActiveAttack): ActiveAttack => ({
           ...attack,
+          x: attack.x + attack.xSpeed,
+          y: attack.y + attack.ySpeed,
           currentFrame: attack.currentFrame + 1,
           hitboxes: attack.hitboxes.map((hitbox: Hitbox): Hitbox => ({
             ...hitbox,
