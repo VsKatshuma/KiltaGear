@@ -41,10 +41,10 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
 
   players.forEach((player) => {
     keysPressed.forEach((key: KeyStatus) => {
-        const input = Object.entries(player.playerInputs).find(([keyName, _]: [string, PlayerInput]) => keyName === key.keyName)
+        const input = player.playerInputs[key.keyName]
 
         if (input) {
-          switch (input[1]) {
+          switch (input) {
             case PlayerInput.Up:
               players[player.playerSlot] = handlePlayerJump(player, currentState)
               break
