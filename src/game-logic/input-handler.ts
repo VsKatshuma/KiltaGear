@@ -26,17 +26,33 @@ export const handleCharacterSelection = (currentState: CharacterSelectionState, 
 
   keysPressed.forEach((key: KeyStatus) => {
     switch (key.keyName) {
+      case 'w':
+        if (!currentState.playerReady[0] && currentState.characterSelection[0] > 0)
+          nextState.characterSelection[0]--
+        break
       case 'a':
         if (!currentState.playerReady[0] && currentState.characterSelection[0] > 0)
           nextState.characterSelection[0]--
+        break
+      case 's':
+        if (!currentState.playerReady[0] && currentState.characterSelection[0] < lastCharacterIndex)
+          nextState.characterSelection[0]++
         break
       case 'd':
         if (!currentState.playerReady[0] && currentState.characterSelection[0] < lastCharacterIndex)
           nextState.characterSelection[0]++
         break
+      case 'ArrowUp':
+        if (!currentState.playerReady[1] && currentState.characterSelection[1] > 0)
+          nextState.characterSelection[1]--
+        break
       case 'ArrowLeft':
         if (!currentState.playerReady[1] && currentState.characterSelection[1] > 0)
           nextState.characterSelection[1]--
+        break
+      case 'ArrowDown':
+        if (!currentState.playerReady[1] && currentState.characterSelection[1] < lastCharacterIndex)
+          nextState.characterSelection[1]++
         break
       case 'ArrowRight':
         if (!currentState.playerReady[1] && currentState.characterSelection[1] < lastCharacterIndex)

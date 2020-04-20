@@ -1,9 +1,9 @@
 import { Player, PlayerBase, InputStatus, Character } from './types'
 import { startGameLoop } from './game-logic/game-loop'
 import { Katshuma } from './characters/katshuma'
-import { mmKALLL } from './characters/mmkalll';
+import { mmKALLL } from './characters/mmkalll'
 import { True_mmKALLL } from './characters/true-mmkalll'
-import { PlayerInput } from './game-logic/input-handler';
+import { PlayerInput } from './game-logic/input-handler'
 
 export const stages = {
     kiltis6: {

@@ -57,9 +57,10 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
         return {
           screen: 'in-game',
           stage: kiltagear.stages.kiltis6,
+          musicPlaying: true,
           players: kiltagear.players,
-          activeAttacks: [],
-          musicPlaying: true
+          characterSelection: state.characterSelection,
+          activeAttacks: []
         }
       }
 
@@ -104,22 +105,22 @@ const isGameOver = (state: InGameState): boolean => {
   return state.players.find((player: Player) => player.health <= 0) !== undefined
 }
 
-// TODO: Add screen 'game-over'
+// TODO: Add a results screen
 const gameOverState = (players: Player[]): GameOverState => {
   const winner: Player | undefined = players.find(player => player.health > 0)
   if (winner) {
-    const winnerSlot: number = winner.playerSlot
     return {
       screen: 'game-over',
       musicPlaying: true,
-      winner: winnerSlot,
+      winner: winner,
       framesUntilTitle: 180
     }
-  }
-  return {
-    screen: 'game-over',
-    musicPlaying: true,
-    winner: undefined,
-    framesUntilTitle: 140
+  } else {
+    return {
+      screen: 'game-over',
+      musicPlaying: true,
+      winner: undefined,
+      framesUntilTitle: 140
+    }
   }
 }
