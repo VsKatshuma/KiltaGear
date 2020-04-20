@@ -21,13 +21,14 @@ export type InGameState = {
   screen: 'in-game'
   musicPlaying: boolean
   players: Player[]
+  characterSelection: number[]
   activeAttacks: ActiveAttack[]
 }
 
 export type GameOverState = {
   screen: 'game-over'
   musicPlaying: boolean
-  winner: number | undefined
+  winner: Player | undefined
   framesUntilTitle: number
 }
 
