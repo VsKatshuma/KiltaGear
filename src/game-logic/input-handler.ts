@@ -1,5 +1,5 @@
-import { Player, KeyStatus, InputStatus, InGameState, playerCanMove, playerCanSDI, playerCanAct, ActiveAttack, AttackStrength, AttackDirection, CharacterState, Attack } from "../types";
-import { getAttackString, setMusicVolume, getMusicVolume } from "../utilities";
+import { Player, KeyStatus, InputStatus, InGameState, ActiveAttack, AttackStrength, AttackDirection, CharacterState, Attack } from "../types";
+import { playerCanMove, playerCanAct, getAttackString } from "../utilities";
 import { handlePlayerMove, handlePlayerJump, handlePlayerFastFall } from "./physics";
 
 export enum PlayerInput {
@@ -19,25 +19,19 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
   const nextState: InGameState = currentState
   const players: Player[] = nextState.players
 
-  // // mute/unmute music
-  // if (keysPressed.find(input => input.keyName === 'm')) {
-  //   const newVolume = getMusicVolume() !== 0 ? 0 : 0.3
-  //   setMusicVolume(newVolume)
-  // }
-
   // Player 1 horizontal movement
-  if (keyHeld(inputs, 'a') && playerCanMove(players[0].state) && !keyHeld(inputs, 'd')) {
+  if (keyHeld(inputs, 'a') && playerCanMove(players[0]) && !keyHeld(inputs, 'd')) {
     players[0] = handlePlayerMove(players[0], -1)
   }
-  if (keyHeld(inputs, 'd') && playerCanMove(players[0].state) && !keyHeld(inputs, 'a')) {
+  if (keyHeld(inputs, 'd') && playerCanMove(players[0]) && !keyHeld(inputs, 'a')) {
     players[0] = handlePlayerMove(players[0], 1)
   }
 
   // Player 2 horizontal movement
-  if (keyHeld(inputs, 'ArrowLeft') && playerCanMove(players[1].state) && !keyHeld(inputs, 'ArrowRight')) {
+  if (keyHeld(inputs, 'ArrowLeft') && playerCanMove(players[1]) && !keyHeld(inputs, 'ArrowRight')) {
     players[1] = handlePlayerMove(players[1], -1)
   }
-  if (keyHeld(inputs, 'ArrowRight') && playerCanMove(players[1].state) && !keyHeld(inputs, 'ArrowLeft')) {
+  if (keyHeld(inputs, 'ArrowRight') && playerCanMove(players[1]) && !keyHeld(inputs, 'ArrowLeft')) {
     players[1] = handlePlayerMove(players[1], 1)
   }
 
@@ -77,9 +71,10 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
   return { ...nextState, players: players }
 }
 
+// Mutate passed player and state to add a new attack based on the input
 function handleAttack(inputName: AttackStrength, player: Player, inputs: InputStatus, activeAttacks: ActiveAttack[]): ActiveAttack[] {
-  if (playerCanAct(player.state)) {
-    const attack: ActiveAttack | undefined = getAttackFromInput(inputName, player, inputs, activeAttacks)
+  if (playerCanAct(player)) {
+    const attack: ActiveAttack | undefined = getAttackFromInput(inputName, player, inputs)
     if (attack) {
       activeAttacks = addActiveAttack(attack, activeAttacks)
       player.state = 'attacking'
@@ -106,8 +101,8 @@ function actionToAttackDirection(action: PlayerInput, facing: 'left' | 'right', 
   }
 }
 
-function getAttackFromInput(attackStrength: AttackStrength, player: Player, inputs: InputStatus, activeAttacks: ActiveAttack[]): ActiveAttack | undefined {
-  if (playerCanAct(player.state)) {
+function getAttackFromInput(attackStrength: AttackStrength, player: Player, inputs: InputStatus): ActiveAttack | undefined {
+  if (playerCanAct(player)) {
     const isHoldingLeft =  (player.playerSlot === 0 && keyHeld(inputs, 'a')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowLeft'))
     const isHoldingRight = (player.playerSlot === 0 && keyHeld(inputs, 'd')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowRight'))
     const isHoldingDown =  (player.playerSlot === 0 && keyHeld(inputs, 's')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowDown'))
@@ -120,14 +115,15 @@ function getAttackFromInput(attackStrength: AttackStrength, player: Player, inpu
     const attackDirection = actionToAttackDirection(playerDirection, player.facing, player.state)
 
     const attack: Attack | undefined = player.character.attacks[
-      getAttackString(player.state, attackStrength, attackDirection)
+      getAttackString(player, attackStrength, attackDirection)
     ]
 
     if (attack) {
       return {
         ...attack,
         playerSlot: player.playerSlot,
-        xDirection: player.facing === 'left' ? -1 : 1
+        xDirection: player.facing === 'left' ? -1 : 1,
+        currentFrame: 0
       }
     }
   }

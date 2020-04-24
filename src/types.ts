@@ -43,38 +43,29 @@ export type KeyStatus = {
 // Character status related typings
 
 export type NeutralCharacterState = 'groundborne' | 'airborne'
-export type SmashDICharacterState = 'wallbouncing' | 'floorbouncing' | 'hitlag'
-export type NoActionCharacterState = SmashDICharacterState | 'attacking' | 'landing' | 'hitstun'
+export type NoActionCharacterState = 'attacking' | 'landing' | 'hitstun'
 
 export type CharacterState = NeutralCharacterState | NoActionCharacterState
-
-export const playerCanAct = (state: CharacterState): state is NeutralCharacterState => {
-  return state === 'airborne' || state === 'groundborne'
-}
-
-export const playerCanMove = (state: CharacterState): state is NeutralCharacterState => {
-  return playerCanAct(state) || state === 'attacking'
-}
-
-export const playerCanSDI = (state: CharacterState): state is SmashDICharacterState => {
-  return state === 'wallbouncing' || state === 'floorbouncing' || state === 'hitlag'
-}
 
 export type AttackStrength = 'Light' | 'Special' | 'Meter'
 export type AttackDirection = 'Neutral' | 'Up' | 'Down' | 'Forward' | 'Back'
 export type ActiveAttack = Attack & {
   playerSlot: number,
   xDirection: -1 | 1, // 'left', 'right'
+  currentFrame: number,
 }
 
 // Character file related typings
 
 export type Attack = {
   hitboxes: Hitbox[],
-  projectile: boolean,
-  duration: number, // in frames
-  onStart?: () => void,
-  onEnd?: () => void,
+  projectile: boolean, // TODO: Implement projectiles
+  duration: number, // How long to prevent player from moving, in frames
+  endWhenHitboxConnects: boolean,
+  endWhenHitboxesEnded: boolean,
+  endAfterDurationEnded: boolean,
+  onStart?: (state: InGameState, attack: ActiveAttack) => InGameState,
+  onEnd?: (state: InGameState, attack: ActiveAttack) => InGameState,
 }
 
 export type Hitbox = {
@@ -93,11 +84,10 @@ export type Hitbox = {
   hitstunBase: number,
   hitstunGrowth: number,
   hitLag: number,
-  // characterSpecific: number,
-  // onStart?: () => void,
-  onActivation?: () => void,
-  onHit?: () => void,
-  onEnd?: () => void
+  // characterSpecific: any,
+  onActivation?: (state: InGameState, attack: ActiveAttack) => InGameState,
+  onHit?: (state: InGameState, attack: ActiveAttack) => InGameState,
+  onEnd?: (state: InGameState, attack: ActiveAttack) => InGameState
 }
 
 export type Character = {
@@ -149,6 +139,7 @@ export type PlayerBase = {
   state: CharacterState,
   xSpeed: number,
   ySpeed: number,
+  hitlagRemaining: number,
   framesUntilNeutral: number,
   meter: number,
   jumps: number,

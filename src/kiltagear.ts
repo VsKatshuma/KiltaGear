@@ -11,6 +11,7 @@ const playerBase: PlayerBase = {
     meter: 0,
     xSpeed: 0,
     ySpeed: 0,
+    hitlagRemaining: 0,
     framesUntilNeutral: 0,
     jumps: 2,
 }

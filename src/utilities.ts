@@ -1,4 +1,4 @@
-import { NeutralCharacterState, AttackStrength, AttackDirection, Hitbox, Attack } from './types'
+import { AttackStrength, AttackDirection, Hitbox, Attack, ActiveAttack, Player } from './types'
 
 const damageslashUrl = require('./assets/audio/damageslash.wav')
 const sounds = [new Audio(damageslashUrl)]
@@ -21,21 +21,49 @@ export const setMusicVolume = (volume: number): void => {
   track.volume = volume
 }
 
+export const toggleMusicMuted = (): void => {
+    const newVolume = getMusicVolume() !== 0 ? 0 : 0.3
+    setMusicVolume(newVolume)
+}
+
 export const playHitSound = (): void => {
   sounds[0].play()
 }
 
-export const getAttackString = (state: NeutralCharacterState, attack: AttackStrength, direction: AttackDirection): string => {
-  return `${state === 'groundborne' ? '' : 'air'}${attack}${direction}`
+export const getAttackString = (player: Player, attack: AttackStrength, direction: AttackDirection): string => {
+  return playerCanAct(player) ? `${player.state === 'airborne' ? 'air' : ''}${attack}${direction}` : ''
+}
+
+export const playerCanAct = (player: Player): boolean => {
+  return !playerHasHitlag(player) && player.framesUntilNeutral <= 0 && (player.state === 'airborne' || player.state === 'groundborne')
+}
+
+export const playerCanMove = (player: Player): boolean => {
+  return !playerHasHitlag(player) && (player.state === 'airborne' || player.state === 'groundborne' || player.state === 'attacking')
+}
+
+export const playerHasHitlag = (player: Player): boolean => {
+  return player.hitlagRemaining > 0
 }
 
 export const isHitboxActive = (hitbox: Hitbox): boolean => {
-  return hitbox.framesUntilActivation <= 0 &&
+  return !hitbox.hasHit && hitbox.framesUntilActivation <= 0 &&
     hitbox.framesUntilActivation + hitbox.duration > 0 // framesUntilActivation is decreased even after active
 }
 
 export const hasHitboxEnded = (hitbox: Hitbox): boolean => {
-  return hitbox.hasHit || hitbox.framesUntilActivation + hitbox.duration <= 0 // framesUntilActivation is decreased even after active
+  return hitbox.framesUntilActivation + hitbox.duration <= 0 // framesUntilActivation is decreased even after active
+}
+
+export const hasAttackHit = (attack: ActiveAttack): boolean => {
+  // findIndex returns -1 if no used hitbox is found
+  return -1 !== attack.hitboxes.findIndex((hitbox: Hitbox) => hitbox.hasHit === true)
+}
+
+export const hasAttackEnded = (attack: ActiveAttack): boolean => {
+  return attack.endWhenHitboxConnects && hasAttackHit(attack)
+      || attack.endWhenHitboxesEnded && attack.hitboxes.length === 0
+      || attack.endAfterDurationEnded && attack.currentFrame >= attack.duration
 }
 
 export const createHitbox = (startFrame: number, duration: number, strength: number = 4): Hitbox => {
@@ -48,17 +76,16 @@ export const createHitbox = (startFrame: number, duration: number, strength: num
     knockbackY: 0.5,
     hitstunBase: 25, // frames
     hitstunGrowth: 1.1, // increase hitstun when opponent on low health
-    hitLag: 5, // frames
+    hitLag: 6, // frames
     //characterSpecific: 0,
     movesWithCharacter: true,
     x: 30,
     y: 0,
     framesUntilActivation: startFrame,
     duration: duration,
-    // onStart: () => {},
-    onActivation: () => {},
-    onHit: () => {},
-    onEnd: () => {}
+    onActivation: (state) => { return state },
+    onHit: (state) => { return state },
+    onEnd: (state) => { return state }
   }
 }
 
@@ -80,19 +107,21 @@ export const createRandomHitbox = (variance: number = 15, baseStrength: number =
     y: 0 + 8 * r(variance) - 8 * r(variance),
     framesUntilActivation: variance * 1.4,
     duration: variance * 2.5,
-    // onStart: () => {},
-    onActivation: () => {},
-    onHit: () => {},
-    onEnd: () => {}
+    onActivation: (state) => { return state },
+    onHit: (state) => { return state },
+    onEnd: (state) => { return state }
   }
 }
 
-export const generateAttack = (hitboxes: Hitbox[], duration: number = 20): Attack => {
+export const generateAttack = (hitboxes: Hitbox[]): Attack => {
   return {
       hitboxes: hitboxes,
       projectile: false,
-      duration: duration,
-      onStart: () => {},
-      onEnd: () => {}
+      duration: 35,
+      endWhenHitboxConnects: false,
+      endWhenHitboxesEnded: true,
+      endAfterDurationEnded: false,
+      onStart: (state, attack) => { return state },
+      onEnd: (state, attack) => { return state }
   }
 }
