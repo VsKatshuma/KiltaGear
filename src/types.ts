@@ -52,6 +52,7 @@ export type AttackDirection = 'Neutral' | 'Up' | 'Down' | 'Forward' | 'Back'
 export type ActiveAttack = Attack & {
   playerSlot: number,
   xDirection: -1 | 1, // 'left', 'right'
+  xMultiplierOnHit: -1 | 1, // used to reverse knockback when airBack move hits
   currentFrame: number,
 }
 

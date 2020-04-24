@@ -112,17 +112,17 @@ function getAttackFromInput(attackStrength: AttackStrength, player: Player, inpu
                             (isHoldingDown ? PlayerInput.Down :
                             (isHoldingUp ? PlayerInput.Up :
                             PlayerInput.Neutral)))
-    const attackDirection = actionToAttackDirection(playerDirection, player.facing, player.state)
 
-    const attack: Attack | undefined = player.character.attacks[
-      getAttackString(player, attackStrength, attackDirection)
-    ]
+    const attackDirection = actionToAttackDirection(playerDirection, player.facing, player.state)
+    const attackId = getAttackString(player, attackStrength, attackDirection)
+    const attack: Attack | undefined = player.character.attacks[attackId]
 
     if (attack) {
       return {
         ...attack,
         playerSlot: player.playerSlot,
         xDirection: player.facing === 'left' ? -1 : 1,
+        xMultiplierOnHit: attackDirection === 'Back' ? -1 : 1,
         currentFrame: 0
       }
     }
