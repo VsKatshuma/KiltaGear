@@ -8,8 +8,8 @@ export const Katshuma: Character = {
     maxMeter: 100,
     startingMeter: 0,
     meterThresholds: Array.from(new Array(10), (_, i) => (i + 1) * 10), // [10, 20, ..., 100]
-    walkSpeed: 7,
-    airSpeed: 8,
+    walkSpeed: 8.5,
+    airSpeed: 10,
     weight: 1,
     maxJumps: 2,
     jumpStrength: 1,

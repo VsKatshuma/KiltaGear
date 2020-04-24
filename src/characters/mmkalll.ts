@@ -38,8 +38,8 @@ export const mmKALLL: Character = {
     maxMeter: 100,
     startingMeter: 0,
     meterThresholds: [25, 50, 75, 100],
-    walkSpeed: 5,
-    airSpeed: 8,
+    walkSpeed: 6.5,
+    airSpeed: 9,
     weight: 1, // Multiplier relative to mmKALLL
     maxJumps: 2,
     jumpStrength: 1, // Multiplier relative to mmKALLL
