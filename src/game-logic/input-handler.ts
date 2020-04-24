@@ -15,6 +15,10 @@ export enum PlayerInput {
 
 export type PlayerAction = { playerPort: number, action: PlayerInput }
 
+function keyHeld(inputs: InputStatus, key: string) {
+  return inputs && inputs[key] && inputs[key].isDown
+}
+
 export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatus, keysPressed: KeyStatus[], keysReleased: KeyStatus[]): InGameState => {
   const nextState: InGameState = { ...currentState }
   const players: Player[] = nextState.players
@@ -37,10 +41,10 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
 
   players.forEach((player) => {
     keysPressed.forEach((key: KeyStatus) => {
-        const input = Object.entries(player.playerInputs).find(([keyName, _]: [string, PlayerInput]) => keyName === key.keyName)
+        const input = player.playerInputs[key.keyName]
 
         if (input) {
-          switch (input[1]) {
+          switch (input) {
             case PlayerInput.Up:
               players[player.playerSlot] = handlePlayerJump(player, currentState)
               break
@@ -74,9 +78,11 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
 // Mutate passed player and state to add a new attack based on the input
 function handleAttack(inputName: AttackStrength, player: Player, inputs: InputStatus, activeAttacks: ActiveAttack[]): ActiveAttack[] {
   if (playerCanAct(player)) {
-    const attack: ActiveAttack | undefined = getAttackFromInput(inputName, player, inputs)
+    const attackDirection = getAttackDirection(player, inputs)
+    const attack: Attack | undefined = getCharacterAttack(inputName, player, attackDirection)
+
     if (attack && player.meter >= attack.meterCost) {
-      activeAttacks = addActiveAttack(attack, activeAttacks)
+      activeAttacks = addActiveAttack(attack, activeAttacks, player, attackDirection)
       player.meter -= attack.meterCost
       player.state = 'attacking'
       player.framesUntilNeutral = attack.duration
@@ -85,12 +91,38 @@ function handleAttack(inputName: AttackStrength, player: Player, inputs: InputSt
   return activeAttacks
 }
 
-function keyHeld(inputs: InputStatus, key: string) {
-  return inputs && inputs[key] && inputs[key].isDown
+function getCharacterAttack(attackStrength: AttackStrength, player: Player, attackDirection: AttackDirection): Attack | undefined {
+  if (playerCanAct(player)) {
+    const attackId = getAttackString(player, attackStrength, attackDirection)
+    const attack: Attack | undefined = player.character.attacks[attackId]
+
+    if (attack) {
+      return {
+        ...attack,
+      }
+    }
+  }
+
+  return undefined
 }
 
-function actionToAttackDirection(action: PlayerInput, facing: 'left' | 'right', state: CharacterState): AttackDirection {
-  switch (action) {
+function getAttackDirection(player: Player, inputs: InputStatus): AttackDirection {
+  const isHoldingLeft =  (player.playerSlot === 0 && keyHeld(inputs, 'a')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowLeft'))
+  const isHoldingRight = (player.playerSlot === 0 && keyHeld(inputs, 'd')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowRight'))
+  const isHoldingDown =  (player.playerSlot === 0 && keyHeld(inputs, 's')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowDown'))
+  const isHoldingUp =    (player.playerSlot === 0 && keyHeld(inputs, 'w')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowUp'))
+  const playerDirection = isHoldingLeft ? PlayerInput.Left :
+                          (isHoldingRight ? PlayerInput.Right :
+                          (isHoldingDown ? PlayerInput.Down :
+                          (isHoldingUp ? PlayerInput.Up :
+                          PlayerInput.Neutral)))
+
+  const attackDirection = inputToAttackDirection(playerDirection, player.facing, player.state)
+  return attackDirection
+}
+
+function inputToAttackDirection(input: PlayerInput, facing: 'left' | 'right', state: CharacterState): AttackDirection {
+  switch (input) {
     case PlayerInput.Left: return state === 'groundborne' ? 'Forward' : /*airborne*/ (facing === 'left' ? 'Forward' : 'Back')
     case PlayerInput.Right: return state === 'groundborne' ? 'Forward' : /*airborne*/ (facing === 'right' ? 'Forward' : 'Back')
     case PlayerInput.Down: return 'Down'
@@ -102,36 +134,38 @@ function actionToAttackDirection(action: PlayerInput, facing: 'left' | 'right', 
   }
 }
 
-function getAttackFromInput(attackStrength: AttackStrength, player: Player, inputs: InputStatus): ActiveAttack | undefined {
-  if (playerCanAct(player)) {
-    const isHoldingLeft =  (player.playerSlot === 0 && keyHeld(inputs, 'a')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowLeft'))
-    const isHoldingRight = (player.playerSlot === 0 && keyHeld(inputs, 'd')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowRight'))
-    const isHoldingDown =  (player.playerSlot === 0 && keyHeld(inputs, 's')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowDown'))
-    const isHoldingUp =    (player.playerSlot === 0 && keyHeld(inputs, 'w')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowUp'))
-    const playerDirection = isHoldingLeft ? PlayerInput.Left :
-                            (isHoldingRight ? PlayerInput.Right :
-                            (isHoldingDown ? PlayerInput.Down :
-                            (isHoldingUp ? PlayerInput.Up :
-                            PlayerInput.Neutral)))
+function addActiveAttack(attack: Attack, activeAttacks: ActiveAttack[], player: Player, attackDirection: AttackDirection): ActiveAttack[] {
+  // Handle all the nasty mirroring from facing left, doing an airBack move, etc here, so other parts of the game don't have to
+  const xDirection = player.facing === 'left' ? -1 : 1
+  const xMultiplierOnHit = attackDirection === 'Back' ? -1 : 1
+  const xSpeed = xDirection * attack.xSpeed
 
-    const attackDirection = actionToAttackDirection(playerDirection, player.facing, player.state)
-    const attackId = getAttackString(player, attackStrength, attackDirection)
-    const attack: Attack | undefined = player.character.attacks[attackId]
+  const attackX = attack.createUsingWorldCoordinates || attack.movesWithPlayer
+      ? attack.x
+      : player.x + (attack.x * xDirection)
+  const attackY = attack.createUsingWorldCoordinates || attack.movesWithPlayer
+      ? attack.y
+      : player.y + attack.y
 
-    if (attack) {
-      return {
-        ...attack,
-        playerSlot: player.playerSlot,
-        xDirection: player.facing === 'left' ? -1 : 1,
-        xMultiplierOnHit: attackDirection === 'Back' ? -1 : 1,
-        currentFrame: 0
-      }
-    }
+  const newHitboxes = attack.hitboxes
+      .slice()
+      .map(hitbox =>
+        ({
+          ...hitbox,
+          x: hitbox.x * xDirection,
+          knockbackX: hitbox.knockbackX * xDirection * xMultiplierOnHit,
+        })
+      )
+
+  const newActiveAttack: ActiveAttack = {
+    ...attack,
+    playerSlot: player.playerSlot,
+    x: attackX,
+    y: attackY,
+    xSpeed,
+    hitboxes: newHitboxes,
+    currentFrame: 0
   }
 
-  return undefined
-}
-
-function addActiveAttack(attack: ActiveAttack, activeAttacks: ActiveAttack[]): ActiveAttack[] {
-  return activeAttacks.concat(attack)
+  return activeAttacks.concat(newActiveAttack)
 }
