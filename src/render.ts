@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 import { GameState } from './types';
-import { hasHitboxEnded, isHitboxActive } from './utilities';
+import { hasHitboxEnded, isHitboxActive, isAttackRelativeToPlayer } from './utilities';
 
 var type = 'WebGL'
 if (!PIXI.utils.isWebGLSupported()) {
@@ -13,7 +13,7 @@ const windowHeight = window.innerHeight
 
 app.renderer.view.style.position = 'absolute'
 app.renderer.view.style.display = 'block'
-app.renderer.autoResize = false
+app.renderer.autoDensity = false // TODO: Updated since app.renderer.autoResize was deprecated, check that this is correct
 app.renderer.resize(windowWidth, windowHeight)
 
 document.body.appendChild(app.view)
@@ -375,7 +375,7 @@ export function render(state: GameState): void {
         // windowHeight / background1.height kertoo, miten suuri osuus taustakuvan alaosasta on näkyvissä
         container1.y = ((state.players[0].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight)
         container2.y = ((state.players[1].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight)
-        
+
         // Player rotation in hitstun
         if (state.players[0].state == 'hitstun') {
             if (player1facing == 'left') {
@@ -417,17 +417,17 @@ export function render(state: GameState): void {
         state.activeAttacks.forEach(attack => {
             attack.hitboxes.forEach(hitbox => {
                 if (isHitboxActive(hitbox)) {
-                    if (hitbox.movesWithCharacter) {
+                    if (isAttackRelativeToPlayer(attack)) {
                         if (attack.playerSlot === 0) {
                             hitboxes.drawCircle(
-                                container1.x + (hitbox.x * attack.xDirection * playerScale),
-                                container1.y + (hitbox.y * playerScale),
+                                container1.x + ((attack.x + hitbox.x) * playerScale),
+                                container1.y + ((attack.y + hitbox.y) * playerScale),
                                 hitbox.radius * playerScale
                             )
                         } else if (attack.playerSlot === 1) {
                             hitboxes.drawCircle(
-                                container2.x + (hitbox.x * attack.xDirection * playerScale),
-                                container2.y + (hitbox.y * playerScale),
+                                container2.x + ((attack.x + hitbox.x) * playerScale),
+                                container2.y + ((attack.y + hitbox.y) * playerScale),
                                 hitbox.radius * playerScale
                             )
                         } else {
@@ -435,8 +435,8 @@ export function render(state: GameState): void {
                         }
                     } else { // TODO: Make sure this draws hitboxes in the right place
                         hitboxes.drawCircle(
-                            ((hitbox.x - cameraLeft) * pixelScale),
-                            ((hitbox.y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight),
+                            (attack.x + hitbox.x - cameraLeft) * pixelScale,
+                            (attack.y + hitbox.y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight,
                             hitbox.radius * playerScale
                         )
                     }

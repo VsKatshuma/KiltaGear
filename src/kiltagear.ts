@@ -8,11 +8,10 @@ import { PlayerInput } from './game-logic/input-handler';
 
 const playerBase: PlayerBase = {
     state: 'groundborne',
-    meter: 0,
     xSpeed: 0,
     ySpeed: 0,
+    hitlagRemaining: 0,
     framesUntilNeutral: 0,
-    jumps: 2,
 }
 
 const playerOne: Player = {
@@ -20,6 +19,8 @@ const playerOne: Player = {
     playerSlot: 0,
     character: Katshuma,
     health: Katshuma.maxHealth,
+    meter: Katshuma.startingMeter,
+    jumps: Katshuma.maxJumps,
     x: 500,
     y: 450,
     facing: 'right',
@@ -39,6 +40,8 @@ const playerTwo: Player = {
     playerSlot: 1,
     character: mmKALLL,
     health: mmKALLL.maxHealth,
+    meter: mmKALLL.startingMeter,
+    jumps: mmKALLL.maxJumps,
     x: 700,
     y: 450,
     facing: 'left',

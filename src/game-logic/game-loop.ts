@@ -3,7 +3,7 @@ import { render } from '../render'
 import { InputStatus, KeyStatus, GameState, InGameState, Hitbox, Player, GameOverState } from '../types';
 import { handlePlayerInputs } from './input-handler';
 import { updateAttacks, nextPhysicsState } from './physics';
-import { playMusic } from '../utilities';
+import { playMusic, toggleMusicMuted } from '../utilities';
 
 // As a developer, I want this file to be indented with 2 spaces. -- Esa
 
@@ -27,6 +27,11 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
   const keysPressed: KeyStatus[] = kiltagear.keysPressed.map((key: string) => kiltagear.keys[key])
   const keysReleased: KeyStatus[] = kiltagear.keysReleased.map((key: string) => kiltagear.keys[key])
   kiltagear.clearKeyArrays()
+
+  // Global mute/unmute music
+  if (keysPressed.find(input => input.keyName === 'm')) {
+    toggleMusicMuted()
+  }
 
   switch (currentState.screen) {
     case 'in-game':

@@ -1,8 +1,17 @@
-import { NeutralCharacterState, AttackStrength, AttackDirection, Hitbox, Attack } from './types'
+import { AttackStrength, AttackDirection, Hitbox, Attack, ActiveAttack, Player } from './types'
+
+// General use
+
+// Restrict a number between a min/max
+export const clamp = (number: number, min: number, max: number): number => {
+  return Math.min(max, Math.max(min, number))
+}
+
+// Music and other assets
 
 const damageslashUrl = require('./assets/audio/damageslash.wav')
 const sounds = [new Audio(damageslashUrl)]
-sounds.forEach(snd => snd.volume = 0.2)
+sounds.forEach(snd => snd.volume = 0.22)
 
 const midnightCarnivalUrl = require('./assets/audio/gametal-midnight-carnival.mp3')
 const track = new Audio(midnightCarnivalUrl)
@@ -21,44 +30,85 @@ export const setMusicVolume = (volume: number): void => {
   track.volume = volume
 }
 
+export const toggleMusicMuted = (): void => {
+    const newVolume = getMusicVolume() !== 0 ? 0 : 0.3
+    setMusicVolume(newVolume)
+}
+
 export const playHitSound = (): void => {
   sounds[0].play()
 }
 
-export const getAttackString = (state: NeutralCharacterState, attack: AttackStrength, direction: AttackDirection): string => {
-  return `${state === 'groundborne' ? '' : 'air'}${attack}${direction}`
+// State handling and checks
+
+export const playerCanAct = (player: Player): boolean => {
+  return !playerHasHitlag(player) && player.framesUntilNeutral <= 0 && (player.state === 'airborne' || player.state === 'groundborne')
+}
+
+export const playerCanMove = (player: Player): boolean => {
+  return !playerHasHitlag(player) && (player.state === 'airborne' || player.state === 'groundborne' || player.state === 'attacking')
+}
+
+export const playerHasHitlag = (player: Player): boolean => {
+  return player.hitlagRemaining > 0
+}
+
+export const gainMeter = (amount: number, player: Player): Player => {
+  return { ...player, meter: clamp(player.meter + amount, 0, player.character.maxMeter) }
 }
 
 export const isHitboxActive = (hitbox: Hitbox): boolean => {
-  return hitbox.framesUntilActivation <= 0 &&
+  return !hitbox.hasHit && hitbox.framesUntilActivation <= 0 &&
     hitbox.framesUntilActivation + hitbox.duration > 0 // framesUntilActivation is decreased even after active
 }
 
 export const hasHitboxEnded = (hitbox: Hitbox): boolean => {
-  return hitbox.hasHit || hitbox.framesUntilActivation + hitbox.duration <= 0 // framesUntilActivation is decreased even after active
+  return hitbox.framesUntilActivation + hitbox.duration <= 0 // framesUntilActivation is decreased even after active
 }
 
-export const createHitbox = (startFrame: number, duration: number, strength: number = 4): Hitbox => {
+export const hasAttackHit = (attack: ActiveAttack): boolean => {
+  // findIndex returns -1 if no used hitbox is found
+  return -1 !== attack.hitboxes.findIndex((hitbox: Hitbox) => hitbox.hasHit === true)
+}
+
+export const hasAttackEnded = (attack: ActiveAttack): boolean => {
+  return attack.endWhenHitboxConnects && hasAttackHit(attack)
+      || attack.endWhenHitboxesEnded && attack.hitboxes.length === 0
+      || attack.endAfterDurationEnded && attack.currentFrame >= attack.duration
+}
+
+// Helpers for using attack data easily
+
+export const getAttackString = (player: Player, attack: AttackStrength, direction: AttackDirection): string => {
+  return playerCanAct(player) ? `${player.state === 'airborne' ? 'air' : ''}${attack}${direction}` : ''
+}
+
+export const isAttackRelativeToPlayer = (attack: Attack): boolean => {
+  return attack.movesWithPlayer && !attack.createUsingWorldCoordinates
+}
+
+// Attack generation in character files
+
+export const createHitbox = (startFrame: number, duration: number, strength: number = 6): Hitbox => {
   return {
     damage: strength * 0.75,
     radius: 10 + strength * 4,
     knockbackBase: 13 + 0.7 * strength,
-    knockbackGrowth: 1.2, // increase knockback when opponent on low health
+    knockbackGrowth: 1.25, // increase knockback when opponent on low health
     knockbackX: 1,
-    knockbackY: 0.5,
+    knockbackY: 0.6,
     hitstunBase: 25, // frames
     hitstunGrowth: 1.1, // increase hitstun when opponent on low health
-    hitLag: 5, // frames
+    hitLag: 6, // frames
+    ignoreOwnerHitlag: false,
     //characterSpecific: 0,
-    movesWithCharacter: true,
     x: 30,
     y: 0,
     framesUntilActivation: startFrame,
     duration: duration,
-    // onStart: () => {},
-    onActivation: () => {},
-    onHit: () => {},
-    onEnd: () => {}
+    onActivation: (state) => { return state },
+    onHit: (state) => { return state },
+    onEnd: (state) => { return state }
   }
 }
 
@@ -69,30 +119,51 @@ export const createRandomHitbox = (variance: number = 15, baseStrength: number =
     radius: 5 + 2 * baseStrength + 5 * r(variance),
     knockbackBase: 4 + baseStrength + 2 * r(variance),
     knockbackGrowth: 1 + 0.1 * r(variance), // increase knockback when opponent on low health
-    knockbackX: 0.77,
-    knockbackY: -0.77,
+    knockbackX: 0.5 + 0.1 * variance,
+    knockbackY: 0.1 + 0.08 * variance,
     hitstunBase: 25, // frames
     hitstunGrowth: 1.1, // increase hitstun when opponent on low health
     hitLag: baseStrength + 0.3 * r(variance), // frames
+    ignoreOwnerHitlag: false,
     //characterSpecific: 0,
-    movesWithCharacter: true,
     x: 40 + 8 * r(variance) - 8 * r(variance),
     y: 0 + 8 * r(variance) - 8 * r(variance),
     framesUntilActivation: variance * 1.4,
-    duration: variance * 2.5,
-    // onStart: () => {},
-    onActivation: () => {},
-    onHit: () => {},
-    onEnd: () => {}
+    duration: baseStrength + variance * 2.5,
+    onActivation: (state) => { return state },
+    onHit: (state) => { return state },
+    onEnd: (state) => { return state }
   }
 }
 
-export const generateAttack = (hitboxes: Hitbox[], duration: number = 20): Attack => {
+export const generateAttack = (hitboxes: Hitbox[]): Attack => {
   return {
+      x: 0,
+      y: 0,
+      xSpeed: 0,
+      ySpeed: 0,
+
+      // Only one or neither of these should be true, setting both to true is undefined behavior.
+      createUsingWorldCoordinates: false, // Ignore player position when creating the hitbox
+      movesWithPlayer: true, // Attack location is recalculated as the player moves
+
       hitboxes: hitboxes,
-      projectile: false,
-      duration: duration,
-      onStart: () => {},
-      onEnd: () => {}
+      duration: 35,
+      meterCost: 0,
+      endWhenHitboxConnects: false,
+      endWhenHitboxesEnded: true,
+      endAfterDurationEnded: false,
+      onStart: (state, attack) => { return state },
+      onEnd: (state, attack) => { return state }
+  }
+}
+
+export const generateProjectile = (hitboxes: Hitbox[]): Attack => {
+  return {
+    ...generateAttack(hitboxes),
+    movesWithPlayer: false,
+    endWhenHitboxConnects: true,
+    xSpeed: 2.5,
+    hitboxes: hitboxes.map(hitbox => ({ ...hitbox, ignoreOwnerHitlag: true })),
   }
 }
