@@ -16,23 +16,23 @@ export enum PlayerInput {
 export type PlayerAction = { playerPort: number, action: PlayerInput }
 
 export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatus, keysPressed: KeyStatus[], keysReleased: KeyStatus[]): InGameState => {
-  const nextState: InGameState = currentState
+  const nextState: InGameState = { ...currentState }
   const players: Player[] = nextState.players
 
   // Player 1 horizontal movement
   if (keyHeld(inputs, 'a') && playerCanMove(players[0]) && !keyHeld(inputs, 'd')) {
-    players[0] = handlePlayerMove(players[0], -1)
+    players[0] = handlePlayerMove(players[0], -1, currentState)
   }
   if (keyHeld(inputs, 'd') && playerCanMove(players[0]) && !keyHeld(inputs, 'a')) {
-    players[0] = handlePlayerMove(players[0], 1)
+    players[0] = handlePlayerMove(players[0], 1, currentState)
   }
 
   // Player 2 horizontal movement
   if (keyHeld(inputs, 'ArrowLeft') && playerCanMove(players[1]) && !keyHeld(inputs, 'ArrowRight')) {
-    players[1] = handlePlayerMove(players[1], -1)
+    players[1] = handlePlayerMove(players[1], -1, currentState)
   }
   if (keyHeld(inputs, 'ArrowRight') && playerCanMove(players[1]) && !keyHeld(inputs, 'ArrowLeft')) {
-    players[1] = handlePlayerMove(players[1], 1)
+    players[1] = handlePlayerMove(players[1], 1, currentState)
   }
 
   players.forEach((player) => {
@@ -42,7 +42,7 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
         if (input) {
           switch (input[1]) {
             case PlayerInput.Up:
-              players[player.playerSlot] = handlePlayerJump(player)
+              players[player.playerSlot] = handlePlayerJump(player, currentState)
               break
 
             case PlayerInput.Down:
@@ -75,8 +75,9 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
 function handleAttack(inputName: AttackStrength, player: Player, inputs: InputStatus, activeAttacks: ActiveAttack[]): ActiveAttack[] {
   if (playerCanAct(player)) {
     const attack: ActiveAttack | undefined = getAttackFromInput(inputName, player, inputs)
-    if (attack) {
+    if (attack && player.meter >= attack.meterCost) {
       activeAttacks = addActiveAttack(attack, activeAttacks)
+      player.meter -= attack.meterCost
       player.state = 'attacking'
       player.framesUntilNeutral = attack.duration
     }

@@ -62,6 +62,7 @@ export type Attack = {
   hitboxes: Hitbox[],
   projectile: boolean, // TODO: Implement projectiles
   duration: number, // How long to prevent player from moving, in frames
+  meterCost: number,
   endWhenHitboxConnects: boolean,
   endWhenHitboxesEnded: boolean,
   endAfterDurationEnded: boolean,
@@ -95,12 +96,19 @@ export type Character = {
   name: string,
   id: string,
   maxHealth: number,
+  maxMeter: number,
+  startingMeter: number,
+  meterThresholds: number[], // Used to render "segments" on the meter
   walkSpeed: number,
   airSpeed: number,
   weight: number,
   maxJumps: number,
   jumpStrength: number,
   hurtboxRadius: number,
+  onMove?: (player: Player, previousState: InGameState) => Player,
+  onJump?: (player: Player, previousState: InGameState) => Player,
+  onAttackHit?: (player: Player, previousState: InGameState) => Player, // Called when own attack hits an opponent
+  onGetHit?: (player: Player, previousState: InGameState) => Player, // Called when hit by an opponent's attack
   attacks: Partial<{
     LightNeutral: Attack,
     LightForward: Attack,
@@ -142,8 +150,6 @@ export type PlayerBase = {
   ySpeed: number,
   hitlagRemaining: number,
   framesUntilNeutral: number,
-  meter: number,
-  jumps: number,
 }
 
 export type Player = PlayerBase & {
@@ -154,4 +160,6 @@ export type Player = PlayerBase & {
   y: number,
   facing: 'left' | 'right',
   health: number,
+  meter: number,
+  jumps: number,
 }

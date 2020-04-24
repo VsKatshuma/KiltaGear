@@ -1,16 +1,23 @@
-import { Character } from "../types";
-import { generateAttack, createHitbox } from "../utilities";
+import { Character, Player } from "../types";
+import { generateAttack, createHitbox, gainMeter } from "../utilities";
 
 export const Katshuma: Character = {
     name: 'Katshuma',
     id: 'katshuma',
     maxHealth: 100,
+    maxMeter: 100,
+    startingMeter: 0,
+    meterThresholds: Array.from(new Array(10), (_, i) => (i + 1) * 10), // [10, 20, ..., 100]
     walkSpeed: 7,
     airSpeed: 8,
     weight: 1,
     maxJumps: 2,
     jumpStrength: 1,
     hurtboxRadius: 20,
+    onMove: (player: Player) => player,
+    onJump: (player: Player) => player,
+    onAttackHit: (player: Player) => player,
+    onGetHit: (player: Player) => player,
     attacks: {
         LightNeutral: {
             ...generateAttack([

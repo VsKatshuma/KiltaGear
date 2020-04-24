@@ -1,17 +1,33 @@
 import { ActiveAttack, Player, InGameState, Hitbox, CharacterState, NeutralCharacterState } from "../types";
-import { playHitSound, isHitboxActive, hasHitboxEnded, hasAttackEnded, playerCanAct, playerHasHitlag } from "../utilities";
+import { playHitSound, isHitboxActive, hasHitboxEnded, hasAttackEnded, playerCanAct, playerHasHitlag, playerCanMove } from "../utilities";
 
 // Called each frame
 export const nextPhysicsState = (state: InGameState): InGameState => {
-  return nextPlayers(state)
+  return updatePlayers(state)
 }
 
-const nextPlayers = (state: InGameState): InGameState => {
-  let nextPlayers = state.players
+const updatePlayers = (state: InGameState): InGameState => {
+  let nextPlayers: Player[] = state.players.slice()
 
-  // Check for collisions with hitboxes
+  // movement, physics, landing, state updates
+  nextPlayers = handleCollisions(nextPlayers, state)
+  nextPlayers = handlePhysics(nextPlayers)
+  nextPlayers = handleStateUpdates(nextPlayers)
+
+  return {
+    ...state,
+    players: nextPlayers
+  }
+}
+
+// Check for collisions with hitboxes
+const handleCollisions = (players: Player[], state: InGameState): Player[] => {
+  let nextPlayers: Player[] = players
+  let playerSlotsWithConnectedAttacks: number[] = []
+
   nextPlayers = nextPlayers.map((player: Player): Player => {
     let hit: boolean = false
+    let hitAttack: ActiveAttack | undefined
     let damage: number = 0
     let xKnockback: number = 0
     let yKnockback: number = 0
@@ -24,12 +40,14 @@ const nextPlayers = (state: InGameState): InGameState => {
           if (isHitboxActive(hitbox)) {
             // TODO: Handle hitboxes that don't move with character
             // Calculate hit if hitbox overlaps with hurtbox
+            // If multiple hitboxes hit on the same frame, the player gets hit with the last one of them
             if (Math.sqrt(
                     Math.pow((state.players[attack.playerSlot].x + hitbox.x * attack.xDirection) - player.x, 2)
                   + Math.pow((state.players[attack.playerSlot].y + hitbox.y) - player.y, 2)
                 )
                 < hitbox.radius + player.character.hurtboxRadius) {
               hit = true
+              hitAttack = attack
               damage = hitbox.damage
               const growth = 1 - (player.health / player.character.maxHealth)
               xKnockback = ((hitbox.knockbackX * hitbox.knockbackBase) * (hitbox.knockbackGrowth * (1 + growth))) * attack.xDirection * attack.xMultiplierOnHit
@@ -49,7 +67,7 @@ const nextPlayers = (state: InGameState): InGameState => {
       }
     })
 
-    return {
+    let nextPlayer = {
       ...player,
       health: hit ? player.health - damage : player.health,
       xSpeed: hit ? xKnockback : player.xSpeed,
@@ -58,10 +76,30 @@ const nextPlayers = (state: InGameState): InGameState => {
       framesUntilNeutral: hit ? stunDuration : player.framesUntilNeutral,
       state: hit ? 'hitstun' : player.state
     }
+
+    // Assign event handlers
+    if (hit && player.character.onGetHit) {
+      nextPlayer = player.character.onGetHit(nextPlayer, state)
+    }
+    if (hitAttack) {
+      playerSlotsWithConnectedAttacks.push(hitAttack.playerSlot)
+    }
+
+    return nextPlayer
   })
 
-  // movement, physics, landing, state updates
-  nextPlayers = nextPlayers.map((player: Player): Player => {
+  // After all collisions have been checked, update players with activated onAttackHit handlers
+  playerSlotsWithConnectedAttacks.forEach(slot => {
+    if (nextPlayers[slot].character.onAttackHit) {
+      nextPlayers[slot] = nextPlayers[slot].character.onAttackHit!(nextPlayers[slot], state) // TODO: Proper type guard
+    }
+  })
+
+  return nextPlayers
+}
+
+const handlePhysics = (players: Player[]): Player[] => {
+  return players.map((player: Player): Player => {
     let nextPlayer = { ...player }
 
     // position and speeds
@@ -84,33 +122,39 @@ const nextPlayers = (state: InGameState): InGameState => {
       // TODO: Add hitlag on floor/groundbounce
     }
 
-    nextPlayer = handlePlayerState(nextPlayer)
     return nextPlayer
   })
-
-  return {
-    ...state,
-    players: nextPlayers
-  }
 }
 
-export const handlePlayerMove = (player: Player, direction: -1 | 1): Player => {
-  return {
-    ...player,
-    facing: player.state === 'groundborne' ? (direction === -1 ? 'left' : 'right') : player.facing,
-    xSpeed: direction * (player.state === 'airborne' ? player.character.airSpeed : player.character.walkSpeed)
-  }
+const handleStateUpdates = (players: Player[]): Player[] => {
+  return players.map(player => handlePlayerState(player))
 }
 
-export const handlePlayerJump = (player: Player): Player => {
-  if (player.jumps > 0) {
-    return {
-      ...player,
-      jumps: player.jumps - 1,
-      ySpeed: player.character.jumpStrength * 16
+export const handlePlayerMove = (player: Player, direction: -1 | 1, previousState: InGameState): Player => {
+  let nextPlayer = { ...player }
+  if (playerCanMove(player)) {
+    nextPlayer.facing = player.state === 'groundborne' ? (direction === -1 ? 'left' : 'right') : player.facing,
+    nextPlayer.xSpeed = direction * (player.state === 'airborne' ? player.character.airSpeed : player.character.walkSpeed)
+
+    if (player.character.onMove) {
+      nextPlayer = player.character.onMove(nextPlayer, previousState)
     }
   }
-  return player
+
+  return nextPlayer
+}
+
+export const handlePlayerJump = (player: Player, previousState: InGameState): Player => {
+  let nextPlayer = { ...player }
+  if (player.jumps > 0) {
+    nextPlayer.jumps = player.jumps - 1,
+    nextPlayer.ySpeed = player.character.jumpStrength * 16
+
+    if (player.character.onJump) {
+      nextPlayer = player.character.onJump(nextPlayer, previousState)
+    }
+  }
+  return nextPlayer
 }
 
 export const handlePlayerFastFall = (player: Player): Player => {
@@ -188,17 +232,13 @@ const handlePlayerState = (player: Player): Player => {
 }
 
 const playerState = (player: Player): CharacterState => {
-  // need to spend time in lag state if nextFramesUntilNeutral > 0
+  // Need to spend time in lag state if nextFramesUntilNeutral > 0
   if (player.framesUntilNeutral > 0 && !playerCanAct(player)) {
     return player.state
   }
 
   // Return to neutral after nextFramesUntilNeutral === 0
-  return nextNeutralState(player.y)
-}
-
-export const nextNeutralState = (nextY: number): NeutralCharacterState => {
-  if (nextY < 600) {
+  if (player.y < 600) {
     return 'airborne'
   } else {
     return 'groundborne'
