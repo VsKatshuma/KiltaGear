@@ -13,7 +13,7 @@ const windowHeight = window.innerHeight
 
 app.renderer.view.style.position = 'absolute'
 app.renderer.view.style.display = 'block'
-app.renderer.autoResize = false
+app.renderer.autoDensity = false // TODO: Updated since app.renderer.autoResize was deprecated, check that this is correct
 app.renderer.resize(windowWidth, windowHeight)
 
 document.body.appendChild(app.view)
@@ -375,7 +375,7 @@ export function render(state: GameState): void {
         // windowHeight / background1.height kertoo, miten suuri osuus taustakuvan alaosasta on näkyvissä
         container1.y = ((state.players[0].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight)
         container2.y = ((state.players[1].y - (675 - (675 * windowHeight / background1.height))) / (675 * windowHeight / background1.height) * windowHeight)
-        
+
         // Player rotation in hitstun
         if (state.players[0].state == 'hitstun') {
             if (player1facing == 'left') {
