@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import { sprites } from './assets'
 import { characters } from './kiltagear'
 import { GameState } from './types'
 import { hasHitboxEnded, isHitboxActive, isAttackRelativeToPlayer } from './utilities'
@@ -25,34 +26,12 @@ const middleY = app.renderer.height / 2
 
 
 /*
- * Assets
- */
-var titleBeam1Url = require('./assets/sprites/title-2.png')
-var titleBeam2Url = require('./assets/sprites/title-3.png')
-var titleBeam3Url = require('./assets/sprites/title-4.png')
-var titleHoverUrl = require('./assets/sprites/title.png')
-
-var UrlKatshuma = require('./assets/sprites/character-select-katshuma.jpg')
-var UrlmmKALLL = require('./assets/sprites/character-select-mmkalll.jpg')
-var UrlTruemmKALLL = require('./assets/sprites/character-select-true-mmkalll.jpg')
-
-var characterBaseUrl = require('./assets/sprites/character.png')
-var UrlKatshumaSmall = require('./assets/sprites/in-game-katshuma.jpg')
-var UrlmmKALLLSmall = require('./assets/sprites/in-game-mmkalll.jpg')
-var UrlTruemmKALLLSmall = require('./assets/sprites/in-game-true-mmkalll.jpg')
-
-var red = require('./assets/sprites/color-red.png')
-var yellow = require('./assets/sprites/color-yellow.png')
-
-
-
-/*
  * Title screen
  */
-const titleBeam1 = PIXI.Sprite.from(titleBeam1Url)
-const titleBeam2 = PIXI.Sprite.from(titleBeam2Url)
-const titleBeam3 = PIXI.Sprite.from(titleBeam3Url)
-const titleEsa = PIXI.Sprite.from(titleHoverUrl)
+const titleBeam1 = PIXI.Sprite.from(sprites.titleBeam1Url)
+const titleBeam2 = PIXI.Sprite.from(sprites.titleBeam2Url)
+const titleBeam3 = PIXI.Sprite.from(sprites.titleBeam3Url)
+const titleEsa = PIXI.Sprite.from(sprites.titleHoverUrl)
 
 titleBeam1.anchor.set(0.5, 0.5)
 titleBeam2.anchor.set(0.5, 0.5)
@@ -88,9 +67,9 @@ titleContainer.y = middleY
 /*
  * Character select
  */
-const characterGridKatshuma = PIXI.Sprite.from(UrlKatshumaSmall)
-const characterGridmmKALLL = PIXI.Sprite.from(UrlmmKALLLSmall)
-const characterGridTruemmKALLL = PIXI.Sprite.from(UrlTruemmKALLLSmall)
+const characterGridKatshuma = PIXI.Sprite.from(sprites.KatshumaSmall)
+const characterGridmmKALLL = PIXI.Sprite.from(sprites.mmKALLLSmall)
+const characterGridTruemmKALLL = PIXI.Sprite.from(sprites.TruemmKALLLSmall)
 characterGridKatshuma.width = 80
 characterGridKatshuma.height = 80
 characterGridmmKALLL.width = 80
@@ -100,9 +79,9 @@ characterGridTruemmKALLL.height = 80
 
 var characterSelectionSize = Math.min(app.renderer.width / 4.1, app.renderer.height / 3)
 
-const characterSelectionKatshuma1 = PIXI.Sprite.from(UrlKatshuma)
-const characterSelectionmmKALLL1 = PIXI.Sprite.from(UrlmmKALLL)
-const characterSelectionTruemmKALLL1 = PIXI.Sprite.from(UrlTruemmKALLL)
+const characterSelectionKatshuma1 = PIXI.Sprite.from(sprites.Katshuma)
+const characterSelectionmmKALLL1 = PIXI.Sprite.from(sprites.mmKALLL)
+const characterSelectionTruemmKALLL1 = PIXI.Sprite.from(sprites.TruemmKALLL)
 characterSelectionKatshuma1.width = characterSelectionSize
 characterSelectionKatshuma1.height = characterSelectionSize
 characterSelectionmmKALLL1.width = characterSelectionSize
@@ -110,9 +89,9 @@ characterSelectionmmKALLL1.height = characterSelectionSize
 characterSelectionTruemmKALLL1.width = characterSelectionSize
 characterSelectionTruemmKALLL1.height = characterSelectionSize
 
-const characterSelectionKatshuma2 = PIXI.Sprite.from(UrlKatshuma)
-const characterSelectionmmKALLL2 = PIXI.Sprite.from(UrlmmKALLL)
-const characterSelectionTruemmKALLL2 = PIXI.Sprite.from(UrlTruemmKALLL)
+const characterSelectionKatshuma2 = PIXI.Sprite.from(sprites.Katshuma)
+const characterSelectionmmKALLL2 = PIXI.Sprite.from(sprites.mmKALLL)
+const characterSelectionTruemmKALLL2 = PIXI.Sprite.from(sprites.TruemmKALLL)
 characterSelectionKatshuma2.width = characterSelectionSize
 characterSelectionKatshuma2.height = characterSelectionSize
 characterSelectionmmKALLL2.width = characterSelectionSize
@@ -120,15 +99,32 @@ characterSelectionmmKALLL2.height = characterSelectionSize
 characterSelectionTruemmKALLL2.width = characterSelectionSize
 characterSelectionTruemmKALLL2.height = characterSelectionSize
 
+// Create masks for character selection highlights
+const characterGridMask1 = PIXI.Sprite.from(sprites.KatshumaSmall)
+characterGridMask1.width = 80
+characterGridMask1.height = 80
+const characterGridMask2 = PIXI.Sprite.from(sprites.mmKALLLSmall)
+characterGridMask2.width = 80
+characterGridMask2.height = 80
+const characterGridMask3 = PIXI.Sprite.from(sprites.TruemmKALLLSmall)
+characterGridMask3.width = 80
+characterGridMask3.height = 80
+const maskArray: PIXI.Sprite[] = [characterGridMask1, characterGridMask2, characterGridMask3]
+const characterGridMasks = new PIXI.Container()
+characterGridMasks.addChild(characterGridMask1, characterGridMask2, characterGridMask3)
+
 const characterGrid = new PIXI.Container()
 characterGrid.addChild(
     characterGridKatshuma,
     characterGridmmKALLL,
-    characterGridTruemmKALLL
+    characterGridTruemmKALLL,
+    characterGridMasks
 )
 // Prevent images from overlapping
-for (var i = 0; i < characterGrid.children.length; i++) {
+// TODO: Make a separate container for the characters inside the grid
+for (var i = 0; i < 3; i++) {
     characterGrid.children[i].x = i * 80
+    characterGridMasks.children[i].x = i * 80
 }
 characterGrid.x = middleX - (characterGrid.width / 2)
 characterGrid.y = middleY / 2
@@ -140,6 +136,7 @@ const characterSelection4 = new PIXI.Container()
 characterSelection2.addChild(characterSelectionKatshuma1, characterSelectionmmKALLL1, characterSelectionTruemmKALLL1)
 characterSelection3.addChild(characterSelectionKatshuma2, characterSelectionmmKALLL2, characterSelectionTruemmKALLL2)
 
+// Position player boxes at bottom half of the screen
 characterSelection1.x = app.renderer.width * 0 / 4 + ((app.renderer.width / 4 - characterSelectionSize) / 2)
 characterSelection1.y = middleY
 characterSelection2.x = app.renderer.width * 1 / 4 + ((app.renderer.width / 4 - characterSelectionSize) / 2)
@@ -197,45 +194,91 @@ const instructionsLeft = new PIXI.Text('Move: WASD\nAttack: C', readyToStartText
 const instructionsRight = new PIXI.Text('Move: Arrow keys\nAttack: Comma (,)', readyToStartTextStyle)
 characterSelection1.addChild(instructionsLeft)
 characterSelection4.addChild(instructionsRight)
-/*
-function gradient(from: string, to: string): PIXI.Texture {
-    let c = document.createElement("canvas")
-    let ctx = c.getContext("2d")
-    if (ctx) {
-        const gradient = ctx.createLinearGradient(0, 0, 100, 100)
-        gradient.addColorStop(0, from)
-        gradient.addColorStop(1, to)
-        ctx.fillStyle = gradient
-        ctx.fillRect(0, 0, 100, 100)
-        return PIXI.Texture.from(c)
-    } else throw "error"
-}
 
-const star = new PIXI.Graphics().beginTextureFill(gradient('#9ff', '#033')).drawStar(50, 50, 5, 50, 20)
-*/
-const player1Color = PIXI.Texture.from(red)
-const player2Color = PIXI.Texture.from(yellow)
+
+
+const player1Color = PIXI.Texture.from(sprites.red)
+const player2Color = PIXI.Texture.from(sprites.yellow)
 
 // Initialize selector trails
 var player1Trail: PIXI.Point[] = []
 var player2Trail: PIXI.Point[] = []
-for (var i = 0; i < 20; i++) {
+for (var i = 0; i < 40; i++) {
     player1Trail.push(new PIXI.Point(0, 0))
     player2Trail.push(new PIXI.Point(0, 0))
 }
-function resetTrails(player1X, player2X): void {
+function resetTrails(): void {
     for (var i = 0; i < 20; i++) {
-        player1Trail[i].x = 0 + (player1X * 80)
+        player1Trail[i].x = 0
         player1Trail[i].y = i * 4
-        player2Trail[i].x = 80 + (player2X * 80)
+        player2Trail[i].x = 80
         player2Trail[i].y = 80 - (i * 4)
     }
 }
 
 // Create selectors
-const player1Selector = new PIXI.SimpleRope(player1Color, player1Trail);
-const player2Selector = new PIXI.SimpleRope(player2Color, player2Trail)
+const player1Rope = new PIXI.SimpleRope(player1Color, player1Trail)
+const player2Rope = new PIXI.SimpleRope(player2Color, player2Trail)
+const player1Selector = new PIXI.Container()
+const player2Selector = new PIXI.Container()
+player1Selector.addChild(player1Rope)
+player2Selector.addChild(player2Rope)
 characterGrid.addChild(player1Selector, player2Selector)
+const playerSelectors: PIXI.Container[] = [player1Selector, player2Selector]
+
+// Create character selection highlights
+const player1Highlight = new PIXI.Graphics()
+player1Highlight.beginFill(0xFF0000)
+player1Highlight.drawRect(0, 0, 50, 114)
+player1Highlight.endFill()
+player1Highlight.x = -50 * Math.sqrt(2)
+player1Highlight.y = 50 * Math.sqrt(2)
+player1Highlight.angle = -45
+
+const player2Highlight = new PIXI.Graphics()
+player2Highlight.beginFill(0xFFFF00)
+player2Highlight.drawRect(0, 0, 50, 114)
+player2Highlight.endFill()
+player2Highlight.x = -25 * Math.sqrt(2)
+player2Highlight.y = 25 * Math.sqrt(2)
+player2Highlight.angle = -45
+
+const player3Highlight = new PIXI.Graphics()
+player3Highlight.beginFill(0x0000FF)
+player3Highlight.drawRect(0, 0, 50, 114)
+player3Highlight.endFill()
+player3Highlight.x = 0
+player3Highlight.y = 0
+player3Highlight.angle = -45
+
+const player4Highlight = new PIXI.Graphics()
+player4Highlight.beginFill(0x00FF00)
+player4Highlight.drawRect(0, 0, 50, 114)
+player4Highlight.endFill()
+player4Highlight.x = 25 * Math.sqrt(2)
+player4Highlight.y = -25 * Math.sqrt(2)
+player4Highlight.angle = -45
+
+const highlightPosition1 = new PIXI.Container()
+const highlightPosition2 = new PIXI.Container()
+const highlightPosition3 = new PIXI.Container()
+const highlightPosition4 = new PIXI.Container()
+highlightPosition1.addChild(player1Highlight)
+highlightPosition2.addChild(player2Highlight)
+highlightPosition3.addChild(player3Highlight)
+highlightPosition4.addChild(player4Highlight)
+highlightPosition1.visible = false
+highlightPosition2.visible = false
+highlightPosition3.visible = false
+highlightPosition4.visible = false
+
+const highlightArray: PIXI.Container[] = []
+highlightArray.push(highlightPosition1)
+highlightArray.push(highlightPosition2)
+highlightArray.push(highlightPosition3)
+highlightArray.push(highlightPosition4)
+characterGrid.addChild(highlightPosition1, highlightPosition2, highlightPosition3, highlightPosition4)
+
 /*
 const selectionBox = new PIXI.Graphics()
 selectionBox.lineStyle(4, 0xFFFF00, 1)
@@ -267,14 +310,14 @@ for (var y = -64; y < app.renderer.height; y += 64) {
 /*
  * In-game characters
  */
-const characterBody1 = PIXI.Sprite.from(characterBaseUrl)
-const characterBody2 = PIXI.Sprite.from(characterBaseUrl)
-const ingameKatshuma1 = PIXI.Sprite.from(UrlKatshumaSmall)
-const ingameKatshuma2 = PIXI.Sprite.from(UrlKatshumaSmall)
-const ingamemmKALLL1 = PIXI.Sprite.from(UrlmmKALLLSmall)
-const ingamemmKALLL2 = PIXI.Sprite.from(UrlmmKALLLSmall)
-const ingameTruemmKALLL1 = PIXI.Sprite.from(UrlTruemmKALLLSmall)
-const ingameTruemmKALLL2 = PIXI.Sprite.from(UrlTruemmKALLLSmall)
+const characterBody1 = PIXI.Sprite.from(sprites.characterBase)
+const characterBody2 = PIXI.Sprite.from(sprites.characterBase)
+const ingameKatshuma1 = PIXI.Sprite.from(sprites.KatshumaSmall)
+const ingameKatshuma2 = PIXI.Sprite.from(sprites.KatshumaSmall)
+const ingamemmKALLL1 = PIXI.Sprite.from(sprites.mmKALLLSmall)
+const ingamemmKALLL2 = PIXI.Sprite.from(sprites.mmKALLLSmall)
+const ingameTruemmKALLL1 = PIXI.Sprite.from(sprites.TruemmKALLLSmall)
+const ingameTruemmKALLL2 = PIXI.Sprite.from(sprites.TruemmKALLLSmall)
 const characterSprites1 = [ingameKatshuma1, ingamemmKALLL1, ingameTruemmKALLL1]
 const characterSprites2 = [ingameKatshuma2, ingamemmKALLL2, ingameTruemmKALLL2]
 characterBody1.x = 0
@@ -354,7 +397,15 @@ function transitionToTitleScreen(): void {
 function transitionToCharacterSelect(player1: number, player2: number): void {
     player1Selection = player1
     player2Selection = player2
-    resetTrails(player1Selection, player2Selection)
+    resetTrails()
+    // TODO: Turn these into a function
+    playerSelectors[0].x = 80 * player1Selection
+    playerSelectors[1].x = 80 * player2Selection
+    highlightArray[0].x = 80 * player1Selection
+    highlightArray[0].getChildAt(0).mask = maskArray[player1Selection]
+    highlightArray[1].x = 80 * player2Selection
+    highlightArray[1].getChildAt(0).mask = maskArray[player2Selection]
+
     app.renderer.backgroundColor = 0x3300AA
     app.stage.removeChildren()
     app.stage.addChild(characterSelectionBackgroundVertical, characterSelectionBackgroundHorizontal)
@@ -425,19 +476,51 @@ export function render(state: GameState): void {
         trailFrame++
 
         // Move character selectors in the grid
-        if (player1Selection < state.characterSelection[0]) {
-            player1Trail[0].x += 80
-            player1Selection++
-        } else if (player1Selection > state.characterSelection[0]) {
-            player1Trail[0].x -= 80
-            player1Selection--
+        for (var player = 0; player < 2; player++) {
+            if (playerSelectors[player].x < 80 * state.characterSelection[player]) {
+                playerSelectors[player].x += 4
+            } else if (playerSelectors[player].x > 80 * state.characterSelection[player]) {
+                playerSelectors[player].x -= 4
+            }
         }
-        if (player2Selection < state.characterSelection[1]) {
-            player2Trail[0].x += 80
-            player2Selection++
-        } else if (player2Selection > state.characterSelection[1]) {
-            player2Trail[0].x -= 80
-            player2Selection--
+
+        // Move player highlights
+        for (var x = 0; x < 4; x++) {
+            let highlight = highlightArray[x].getChildAt(0)
+            highlight.x += 2 * Math.sqrt(2)
+            highlight.y -= 2 * Math.sqrt(2)
+            if (highlight.x > 50 * Math.sqrt(2)) {
+                highlight.x -= 100 * Math.sqrt(2)
+                highlight.y += 100 * Math.sqrt(2)
+            }
+        }
+
+        if (player1Selection != state.characterSelection[0]) {
+            player1Selection = state.characterSelection[0]
+            highlightArray[0].x = 80 * player1Selection
+            highlightArray[0].getChildAt(0).mask = maskArray[player1Selection]
+        }
+        if (player2Selection != state.characterSelection[1]) {
+            player2Selection = state.characterSelection[1]
+            highlightArray[1].x = 80 * player2Selection
+            highlightArray[1].getChildAt(0).mask = maskArray[player2Selection]
+        }
+
+        switch (state.playerReady[0]) {
+            case true:
+                highlightArray[0].visible = true
+                break
+            case false:
+                highlightArray[0].visible = false
+                break
+        }
+        switch (state.playerReady[1]) {
+            case true:
+                highlightArray[1].visible = true
+                break
+            case false:
+                highlightArray[1].visible = false
+                break
         }
 
         // Show the selected character
@@ -446,7 +529,8 @@ export function render(state: GameState): void {
                 characterSelectionKatshuma1.visible = true
                 characterSelectionmmKALLL1.visible = false
                 characterSelectionTruemmKALLL1.visible = false
-                characterName1.text = 'Katshuma'
+                // TODO: Do this for every case
+                characterName1.text = characters[player1Selection].name
                 break
             case 1:
                 characterSelectionKatshuma1.visible = false
