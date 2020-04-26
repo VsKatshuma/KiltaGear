@@ -39,10 +39,10 @@ function radialGradient(red: string, green: string, blue: string): HTMLCanvasEle
 }
 
 export const sprites = {
-    titleBeam1Url: require('./assets/sprites/title-2.png'),
-    titleBeam2Url: require('./assets/sprites/title-3.png'),
-    titleBeam3Url: require('./assets/sprites/title-4.png'),
-    titleHoverUrl: require('./assets/sprites/title.png'),
+    titleBeam1: require('./assets/sprites/title-2.png'),
+    titleBeam2: require('./assets/sprites/title-3.png'),
+    titleBeam3: require('./assets/sprites/title-4.png'),
+    titleHover: require('./assets/sprites/title.png'),
 
     characterBase: require('./assets/sprites/character.png'),
     Katshuma: require('./assets/sprites/character-select-katshuma.jpg'),
@@ -53,5 +53,7 @@ export const sprites = {
     TruemmKALLLSmall: require('./assets/sprites/in-game-true-mmkalll.jpg'),
 
     red: radialGradient('255', '0', '0'),
-    yellow: radialGradient('255', '255', '0')
+    yellow: radialGradient('255', '255', '0'),
+    blue: radialGradient('0', '0', '255'),
+    green: radialGradient('0', '255', '0')
 }

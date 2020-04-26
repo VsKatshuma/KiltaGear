@@ -1,10 +1,20 @@
 import { Player, PlayerBase, InputStatus, Character } from './types'
 import { startGameLoop } from './game-logic/game-loop'
+import { PlayerInput } from './game-logic/input-handler'
+import { initialize } from './render'
 import { Katshuma } from './characters/katshuma'
 import { mmKALLL } from './characters/mmkalll'
 import { True_mmKALLL } from './characters/true-mmkalll'
-import { PlayerInput } from './game-logic/input-handler'
 
+// Playable characters in KiltaGear, in the order they appear on character selection screen, from left to right
+export const characters: Character[] = [
+    Katshuma,
+    mmKALLL,
+    True_mmKALLL
+]
+
+// Stages in KiltaGear (Background pictures)
+// TODO: Add support for stages that are actually of different size game mechanics-wise
 export const stages = {
     kiltis6: {
         name: 'Kiltahuone (6)',
@@ -13,13 +23,6 @@ export const stages = {
         height: 1536,
     }
 }
-
-// Playable characters in KiltaGear, in the order they appear on character selection screen, left to right
-export const characters: Character[] = [
-    Katshuma,
-    mmKALLL,
-    True_mmKALLL
-]
 
 const playerBase: PlayerBase = {
     state: 'airborne',
@@ -95,4 +98,5 @@ window.addEventListener('keyup', (event: KeyboardEvent) => {
     }
 })
 
+initialize()
 startGameLoop()
