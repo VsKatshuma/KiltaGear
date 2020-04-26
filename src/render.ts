@@ -241,10 +241,11 @@ healthBarRight.drawRect(windowWidth / 2 + windowWidth * 0.04, 26, windowWidth * 
 healthBarRight.endFill()
 
 // Backgrounds
-var backgroundUrl = require('./assets/sprites/ingame-6.jpg')
+var backgroundUrl = require('./assets/sprites/stages/ingame-6.jpg') // TODO: Use the filename in state.stage.image
 
 const background1 = PIXI.Sprite.from(backgroundUrl) // 2730 (width of original image) / 2.275 = 1200
 
+// TODO: Use the width and height from state.stage
 const backgroundOriginalWidth = 2730 // background1 image width is hardcoded here to be 2730
 const backgroundOriginalHeight = 1536 // background1 image height is hardcoded here to be 1536
 

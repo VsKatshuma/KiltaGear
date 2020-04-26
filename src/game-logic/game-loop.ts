@@ -51,6 +51,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       if (keysPressed.length > 0) {
         return {
           screen: 'in-game',
+          stage: kiltagear.stages.kiltis6,
           players: kiltagear.players,
           activeAttacks: [],
           musicPlaying: true

@@ -5,6 +5,14 @@ import { mmKALLL } from './characters/mmkalll';
 import { True_mmKALLL } from './characters/true-mmkalll'
 import { PlayerInput } from './game-logic/input-handler';
 
+export const stages = {
+    kiltis6: {
+        name: 'Kiltahuone (6)',
+        image: 'ingame-6',
+        width: 2730,
+        height: 1536,
+    }
+}
 
 const playerBase: PlayerBase = {
     state: 'groundborne',
