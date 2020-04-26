@@ -21,6 +21,7 @@ export type CharacterSelectionState = {
 export type InGameState = {
   screen: 'in-game'
   musicPlaying: boolean
+  stage: Stage,
   players: Player[],
   activeAttacks: ActiveAttack[],
 }
@@ -38,6 +39,22 @@ export type KeyStatus = {
   keyName: string
   isDown: boolean
   lastPressed: number
+}
+
+// Menu/stage related typings
+
+export type Stage = {
+  name: string
+  image: string // File name for the in-game background
+  thumbnail?: string // File name, shown on "stage selection" if we eventually have one
+  width: number
+  height: number // Camera stops scrolling beyond this if characters go off the top, but technically there's no ceiling yet
+}
+
+export type Options = {
+  soundVolume: number // Value between 0..1
+  musicVolume: number // Value between 0..1
+  // Key config is stored directly in kiltagear.players
 }
 
 // Character status related typings
