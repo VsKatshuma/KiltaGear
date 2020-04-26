@@ -15,7 +15,7 @@ export const stages = {
 }
 
 const playerBase: PlayerBase = {
-    state: 'groundborne',
+    state: 'airborne',
     xSpeed: 0,
     ySpeed: 0,
     hitlagRemaining: 0,
