@@ -60,8 +60,8 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
     case 'title-screen':
       // Change to character select when any key is pressed
       if (keysPressed.length > 0) {
-        if (currentState.musicPlaying === false) {
-          currentState.musicPlaying = true
+        if (state.musicPlaying === false) {
+          state.musicPlaying = true
           playMusic()
         }
         return {

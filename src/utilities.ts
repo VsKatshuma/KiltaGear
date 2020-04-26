@@ -20,10 +20,10 @@ sounds.forEach(snd => snd.volume = 0.22)
 
 const midnightCarnivalUrl = require('./assets/audio/gametal-midnight-carnival.mp3')
 const track = new Audio(midnightCarnivalUrl)
+track.volume = 0.3
+track.loop = true
 
 export const playMusic = (): void => {
-  track.volume = 0.3
-  track.loop = true
   track.play()
 }
 
