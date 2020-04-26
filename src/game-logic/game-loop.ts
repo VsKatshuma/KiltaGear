@@ -3,7 +3,7 @@ import { render } from '../render'
 import { InputStatus, KeyStatus, GameState, InGameState, Hitbox, Player, GameOverState } from '../types';
 import { handlePlayerInputs } from './input-handler';
 import { updateAttacks, nextPhysicsState } from './physics';
-import { playMusic, toggleMusicMuted } from '../utilities';
+import { playMusic, toggleMusicMuted, assertNever } from '../utilities';
 
 // As a developer, I want this file to be indented with 2 spaces. -- Esa
 
@@ -23,6 +23,7 @@ export const startGameLoop = () => {
 
 // Functional loop: return next state from current state and inputs
 const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
+  let state = { ...currentState }
 
   const keysPressed: KeyStatus[] = kiltagear.keysPressed.map((key: string) => kiltagear.keys[key])
   const keysReleased: KeyStatus[] = kiltagear.keysReleased.map((key: string) => kiltagear.keys[key])
@@ -33,9 +34,8 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
     toggleMusicMuted()
   }
 
-  switch (currentState.screen) {
+  switch (state.screen) {
     case 'in-game':
-      let state = currentState
       state = handlePlayerInputs(state, inputs, keysPressed, keysReleased)
       state = updateAttacks(state)
       state = nextPhysicsState(state)
@@ -75,20 +75,21 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       }
       break
     case 'game-over':
-      if (currentState.framesUntilTitle <= 0) {
+      if (state.framesUntilTitle <= 0) {
         return {
           screen: 'title-screen',
           musicPlaying: true
         }
       }
       return {
-        ...currentState,
-        framesUntilTitle: currentState.framesUntilTitle - 1
+        ...state,
+        framesUntilTitle: state.framesUntilTitle - 1
       }
     default:
-      throw new Error(`unknown game state when pressing key\n  state: ${currentState}\n  key event: ${event}`)
+      assertNever(state)
   }
-  return currentState
+
+  return state
 }
 
 const isGameOver = (state: InGameState): boolean => {

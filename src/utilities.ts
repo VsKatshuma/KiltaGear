@@ -7,6 +7,11 @@ export const clamp = (number: number, min: number, max: number): number => {
   return Math.min(max, Math.max(min, number))
 }
 
+// Explicitly check that all inferred types are used - see e.g. game-loop.ts
+export function assertNever(x: never): never {
+  throw new Error(`Unexpected object in assertNever:\n  ${x}`);
+}
+
 // Music and other assets
 
 const damageslashUrl = require('./assets/audio/damageslash.wav')
