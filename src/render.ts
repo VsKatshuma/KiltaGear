@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import { sprites } from './assets'
 import { characters } from './kiltagear'
 import { GameState } from './types'
-import { hasHitboxEnded, isHitboxActive, isAttackRelativeToPlayer } from './utilities'
+import { isHitboxActive, isAttackRelativeToPlayer } from './utilities'
 
 var type = 'WebGL'
 if (!PIXI.utils.isWebGLSupported()) {
