@@ -193,7 +193,7 @@ export type PlayerBase = {
 
 export type Player = PlayerBase & {
   playerSlot: number
-  playerInputs: { [key: string]: PlayerInput }
+  playerInputs: { [key: string]: PlayerInput | undefined }
   character: Character,
   x: number,
   y: number,
