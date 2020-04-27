@@ -20,25 +20,13 @@ function keyHeld(inputs: InputStatus, key: string) {
   return inputs && inputs[key] && inputs[key].isDown
 }
 
+function inputHeld(player: Player, inputs: InputStatus, inputToCheck: PlayerInput) {
+  return Object.values(inputs).some(key => player.playerInputs[key.keyName] === inputToCheck)
+}
+
 export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatus, keysPressed: KeyStatus[], keysReleased: KeyStatus[]): InGameState => {
   const nextState: InGameState = { ...currentState }
   const players: Player[] = nextState.players
-
-  // Player 1 horizontal movement
-  if (keyHeld(inputs, 'a') && playerCanMove(players[0]) && !keyHeld(inputs, 'd')) {
-    players[0] = handlePlayerMove(players[0], -1, currentState)
-  }
-  if (keyHeld(inputs, 'd') && playerCanMove(players[0]) && !keyHeld(inputs, 'a')) {
-    players[0] = handlePlayerMove(players[0], 1, currentState)
-  }
-
-  // Player 2 horizontal movement
-  if (keyHeld(inputs, 'ArrowLeft') && playerCanMove(players[1]) && !keyHeld(inputs, 'ArrowRight')) {
-    players[1] = handlePlayerMove(players[1], -1, currentState)
-  }
-  if (keyHeld(inputs, 'ArrowRight') && playerCanMove(players[1]) && !keyHeld(inputs, 'ArrowLeft')) {
-    players[1] = handlePlayerMove(players[1], 1, currentState)
-  }
 
   players.forEach((player) => {
     keysPressed.forEach((key: KeyStatus) => {
@@ -46,11 +34,23 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
 
         switch (input) {
           case PlayerInput.Up:
-            players[player.playerSlot] = handlePlayerJump(player, currentState)
+            players[player.playerSlot] = handlePlayerJump(player, nextState)
             break
 
           case PlayerInput.Down:
             players[player.playerSlot] = handlePlayerFastFall(player)
+            break
+
+          case PlayerInput.Left:
+            if (!inputHeld(player, inputs, PlayerInput.Right)) {
+              players[player.playerSlot] = handlePlayerMove(player, -1, currentState)
+            }
+            break
+
+          case PlayerInput.Right:
+            if (!inputHeld(player, inputs, PlayerInput.Left)) {
+              players[player.playerSlot] = handlePlayerMove(player, 1, currentState)
+            }
             break
 
           case PlayerInput.Light:
