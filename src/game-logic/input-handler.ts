@@ -20,70 +20,6 @@ function keyHeld(inputs: InputStatus, key: string) {
   return inputs && inputs[key] && inputs[key].isDown
 }
 
-export const handleCharacterSelection = (currentState: CharacterSelectionState, keysPressed: KeyStatus[]): CharacterSelectionState => {
-  const nextState: CharacterSelectionState = currentState
-  const lastCharacterIndex: number = characters.length - 1
-
-  keysPressed.forEach((key: KeyStatus) => {
-    switch (key.keyName) {
-      case 'w':
-        if (!currentState.playerReady[0] && currentState.characterSelection[0] > 0)
-          nextState.characterSelection[0]--
-        break
-      case 'a':
-        if (!currentState.playerReady[0] && currentState.characterSelection[0] > 0)
-          nextState.characterSelection[0]--
-        break
-      case 's':
-        if (!currentState.playerReady[0] && currentState.characterSelection[0] < lastCharacterIndex)
-          nextState.characterSelection[0]++
-        break
-      case 'd':
-        if (!currentState.playerReady[0] && currentState.characterSelection[0] < lastCharacterIndex)
-          nextState.characterSelection[0]++
-        break
-      case 'ArrowUp':
-        if (!currentState.playerReady[1] && currentState.characterSelection[1] > 0)
-          nextState.characterSelection[1]--
-        break
-      case 'ArrowLeft':
-        if (!currentState.playerReady[1] && currentState.characterSelection[1] > 0)
-          nextState.characterSelection[1]--
-        break
-      case 'ArrowDown':
-        if (!currentState.playerReady[1] && currentState.characterSelection[1] < lastCharacterIndex)
-          nextState.characterSelection[1]++
-        break
-      case 'ArrowRight':
-        if (!currentState.playerReady[1] && currentState.characterSelection[1] < lastCharacterIndex)
-          nextState.characterSelection[1]++
-        break
-      case 'c':
-        if (!currentState.playerReady[0]) {
-          nextState.playerReady[0] = true
-        } else if (currentState.playerReady[0] && currentState.playerReady[1]) {
-          nextState.start = true
-        }
-        break
-      case 'v':
-        nextState.playerReady[0] = false
-        break
-      case ',':
-        if (!currentState.playerReady[1]) {
-          nextState.playerReady[1] = true
-        } else if (currentState.playerReady[0] && currentState.playerReady[1]) {
-          nextState.start = true
-        }
-        break
-      case '.':
-        nextState.playerReady[1] = false
-        break
-    }
-  })
-
-  return nextState
-}
-
 export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatus, keysPressed: KeyStatus[], keysReleased: KeyStatus[]): InGameState => {
   const nextState: InGameState = { ...currentState }
   const players: Player[] = nextState.players
@@ -233,4 +169,68 @@ function addActiveAttack(attack: Attack, activeAttacks: ActiveAttack[], player: 
   }
 
   return activeAttacks.concat(newActiveAttack)
+}
+
+export const handleCharacterSelection = (currentState: CharacterSelectionState, keysPressed: KeyStatus[]): CharacterSelectionState => {
+  const nextState: CharacterSelectionState = currentState
+  const lastCharacterIndex: number = characters.length - 1
+
+  keysPressed.forEach((key: KeyStatus) => {
+    switch (key.keyName) {
+      case 'w':
+        if (!currentState.playerReady[0] && currentState.characterSelection[0] > 0)
+          nextState.characterSelection[0]--
+        break
+      case 'a':
+        if (!currentState.playerReady[0] && currentState.characterSelection[0] > 0)
+          nextState.characterSelection[0]--
+        break
+      case 's':
+        if (!currentState.playerReady[0] && currentState.characterSelection[0] < lastCharacterIndex)
+          nextState.characterSelection[0]++
+        break
+      case 'd':
+        if (!currentState.playerReady[0] && currentState.characterSelection[0] < lastCharacterIndex)
+          nextState.characterSelection[0]++
+        break
+      case 'ArrowUp':
+        if (!currentState.playerReady[1] && currentState.characterSelection[1] > 0)
+          nextState.characterSelection[1]--
+        break
+      case 'ArrowLeft':
+        if (!currentState.playerReady[1] && currentState.characterSelection[1] > 0)
+          nextState.characterSelection[1]--
+        break
+      case 'ArrowDown':
+        if (!currentState.playerReady[1] && currentState.characterSelection[1] < lastCharacterIndex)
+          nextState.characterSelection[1]++
+        break
+      case 'ArrowRight':
+        if (!currentState.playerReady[1] && currentState.characterSelection[1] < lastCharacterIndex)
+          nextState.characterSelection[1]++
+        break
+      case 'c':
+        if (!currentState.playerReady[0]) {
+          nextState.playerReady[0] = true
+        } else if (currentState.playerReady[0] && currentState.playerReady[1]) {
+          nextState.start = true
+        }
+        break
+      case 'v':
+        nextState.playerReady[0] = false
+        break
+      case ',':
+        if (!currentState.playerReady[1]) {
+          nextState.playerReady[1] = true
+        } else if (currentState.playerReady[0] && currentState.playerReady[1]) {
+          nextState.start = true
+        }
+        break
+      case '.':
+        nextState.playerReady[1] = false
+        break
+    }
+  })
+
+  return nextState
 }
