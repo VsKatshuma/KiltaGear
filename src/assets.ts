@@ -55,5 +55,7 @@ export const sprites = {
     red: radialGradient('255', '0', '0'),
     yellow: radialGradient('255', '255', '0'),
     blue: radialGradient('0', '0', '255'),
-    green: radialGradient('0', '255', '0')
+    green: radialGradient('0', '255', '0'),
+
+    ready: require('./assets/sprites/ready.png')
 }
