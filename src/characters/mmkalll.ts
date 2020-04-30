@@ -10,7 +10,7 @@ export const mmKALLL: Character = {
     meterThresholds: [25, 50, 75, 100],
     walkSpeed: 6.5, // Horizontal speed in pixels per frame
     airSpeed: 9,
-    weight: 1, // Multiplier relative to mmKALLL // TODO: unused
+    weight: 1, // Multiplier relative to mmKALLL
     maxJumps: 2,
     jumpStrength: 1, // Multiplier relative to mmKALLL
     hurtboxRadius: 20, // Sprites are 40x100
