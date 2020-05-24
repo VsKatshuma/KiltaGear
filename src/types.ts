@@ -193,7 +193,7 @@ export type PlayerBase = {
 
 export type Player = PlayerBase & {
   playerSlot: number
-  playerInputs: { [key: string]: PlayerInput | undefined }
+  playerInputs: { [input in Exclude<PlayerInput, PlayerInput.Neutral>]: string[] } // For each pressable PlayerInput, provide an array of keyNames
   character: Character,
   x: number,
   y: number,

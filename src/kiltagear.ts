@@ -43,13 +43,13 @@ const playerOne: Player = {
     y: 450,
     facing: 'right',
     playerInputs: {
-      'w': PlayerInput.Up,
-      'a': PlayerInput.Left,
-      's': PlayerInput.Down,
-      'd': PlayerInput.Right,
-      'c': PlayerInput.Light,
-      'v': PlayerInput.Special,
-      'b': PlayerInput.Meter,
+      [PlayerInput.Up]: ['w', 'W'],
+      [PlayerInput.Left]: ['a', 'A'],
+      [PlayerInput.Down]: ['s', 'S'],
+      [PlayerInput.Right]: ['d', 'D'],
+      [PlayerInput.Light]: ['c', 'C'],
+      [PlayerInput.Special]: ['v', 'V'],
+      [PlayerInput.Meter]: ['b', 'B'],
     }
 }
 
@@ -64,15 +64,15 @@ const playerTwo: Player = {
     y: 450,
     facing: 'left',
     playerInputs: {
-      'ArrowUp': PlayerInput.Up,
-      'ArrowLeft': PlayerInput.Left,
-      'ArrowDown': PlayerInput.Down,
-      'ArrowRight': PlayerInput.Right,
-      ',': PlayerInput.Light,
-      '.': PlayerInput.Special,
-      '/': PlayerInput.Meter,
-      '-': PlayerInput.Meter,
+      [PlayerInput.Up]: ['ArrowUp'],
+      [PlayerInput.Left]: ['ArrowLeft'],
+      [PlayerInput.Down]: ['ArrowDown'],
+      [PlayerInput.Right]: ['ArrowRight'],
+      [PlayerInput.Light]: [','],
+      [PlayerInput.Special]: ['.'],
+      [PlayerInput.Meter]: ['/', '-'],
     }
+}
 }
 
 export const players: Player[] = [playerOne, playerTwo]
