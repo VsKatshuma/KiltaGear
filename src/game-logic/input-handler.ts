@@ -190,6 +190,17 @@ export const handleCharacterSelection = (currentState: CharacterSelectionState, 
         if (!currentState.playerReady[0] && currentState.characterSelection[0] < lastCharacterIndex)
           nextState.characterSelection[0]++
         break
+      case 'c':
+        if (!currentState.playerReady[0]) {
+          nextState.playerReady[0] = true
+        } else if (currentState.playerReady[0] && currentState.playerReady[1]) {
+          nextState.start = true
+        }
+        break
+      case 'v':
+        if (!nextState.start)
+          nextState.playerReady[0] = false
+        break
       case 'ArrowUp':
         if (!currentState.playerReady[1] && currentState.characterSelection[1] > 0)
           nextState.characterSelection[1]--
@@ -206,16 +217,6 @@ export const handleCharacterSelection = (currentState: CharacterSelectionState, 
         if (!currentState.playerReady[1] && currentState.characterSelection[1] < lastCharacterIndex)
           nextState.characterSelection[1]++
         break
-      case 'c':
-        if (!currentState.playerReady[0]) {
-          nextState.playerReady[0] = true
-        } else if (currentState.playerReady[0] && currentState.playerReady[1]) {
-          nextState.start = true
-        }
-        break
-      case 'v':
-        nextState.playerReady[0] = false
-        break
       case ',':
         if (!currentState.playerReady[1]) {
           nextState.playerReady[1] = true
@@ -224,7 +225,8 @@ export const handleCharacterSelection = (currentState: CharacterSelectionState, 
         }
         break
       case '.':
-        nextState.playerReady[1] = false
+        if (!nextState.start)
+          nextState.playerReady[1] = false
         break
     }
   })

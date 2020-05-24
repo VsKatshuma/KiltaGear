@@ -21,6 +21,31 @@ document.body.appendChild(app.view)
 const middleX = app.renderer.width / 2
 const middleY = app.renderer.height / 2
 
+class Particle {
+    x: number
+    y: number
+    xSpeed: number
+    ySpeed: number
+    xAcceleration: number
+    yAcceleration: number
+
+    constructor(x: number, y: number, xSpeed: number, ySpeed: number, xAcceleration: number, yAcceleration: number) {
+      this.x = x
+      this.y = y
+      this.xSpeed = xSpeed
+      this.ySpeed = ySpeed
+      this.xAcceleration = xAcceleration
+      this.yAcceleration = yAcceleration
+    }
+
+    update() {
+        this.xSpeed += this.xAcceleration
+        this.x += this.xSpeed
+        this.ySpeed += this.yAcceleration
+        this.y += this.ySpeed
+    }
+}
+
 
 
 /*
@@ -38,7 +63,8 @@ const trailLength: number = 40
 const playerSelectors: PIXI.Container[] = []
 const highlightArray: PIXI.Container[] = []
 const maskArray: PIXI.Sprite[] = []
-const characterSelections = new PIXI.Container()
+var characterSelectionSize = Math.min(app.renderer.width / 4.1, app.renderer.height / 3)
+const characterSelections = new PIXI.Container() // Entire bottom part of character selection screen
 const characterSelection1 = new PIXI.Container()
 const characterSelection2 = new PIXI.Container()
 const characterSelection3 = new PIXI.Container()
@@ -53,6 +79,16 @@ const readyTransitionOut: number[] = [0, 0, 0, 0]
 const characterNames: PIXI.Text[] = []
 const characterSelectionBackgroundVertical = new PIXI.Graphics()
 const characterSelectionBackgroundHorizontal = new PIXI.Graphics()
+const characterAnimation1 = new PIXI.Container() // In the transition from character selection to in-game
+const characterAnimation2 = new PIXI.Container()
+const characterAnimation3 = new PIXI.Container()
+const characterAnimation4 = new PIXI.Container()
+const characterAnimationImages1: PIXI.Sprite[] = []
+const characterAnimationImages2: PIXI.Sprite[] = []
+const characterAnimationImages3: PIXI.Sprite[] = []
+const characterAnimationImages4: PIXI.Sprite[] = []
+const animationBackground = new PIXI.Container()
+var animationBackgroundCoordinates: Particle[] = []
 
 // Containers are the "characters", they group the character body and in-game sprite
 const containers: PIXI.Container[] = [new PIXI.Container(), new PIXI.Container(), new PIXI.Container(), new PIXI.Container()]
@@ -168,8 +204,6 @@ export function initialize(): void {
     characterGrid.x = middleX - (characterGrid.width / 2)
     characterGrid.y = middleY / 2
 
-    var characterSelectionSize = Math.min(app.renderer.width / 4.1, app.renderer.height / 3)
-
     // Initialize character selection images for all 4 players
     characterSelectionImages1.push(PIXI.Sprite.from(sprites.Katshuma))
     characterSelectionImages2.push(PIXI.Sprite.from(sprites.Katshuma))
@@ -196,6 +230,38 @@ export function initialize(): void {
         // TODO: Remove these when the game supports 4 players
         characterSelectionImages1[i].visible = false
         characterSelectionImages4[i].visible = false
+    }
+
+    // Initialize character animation images for all 4 players
+    characterAnimationImages1.push(PIXI.Sprite.from(sprites.Katshuma))
+    characterAnimationImages2.push(PIXI.Sprite.from(sprites.Katshuma))
+    characterAnimationImages3.push(PIXI.Sprite.from(sprites.Katshuma))
+    characterAnimationImages4.push(PIXI.Sprite.from(sprites.Katshuma))
+    characterAnimationImages1.push(PIXI.Sprite.from(sprites.mmKALLL))
+    characterAnimationImages2.push(PIXI.Sprite.from(sprites.mmKALLL))
+    characterAnimationImages3.push(PIXI.Sprite.from(sprites.mmKALLL))
+    characterAnimationImages4.push(PIXI.Sprite.from(sprites.mmKALLL))
+    characterAnimationImages1.push(PIXI.Sprite.from(sprites.TruemmKALLL))
+    characterAnimationImages2.push(PIXI.Sprite.from(sprites.TruemmKALLL))
+    characterAnimationImages3.push(PIXI.Sprite.from(sprites.TruemmKALLL))
+    characterAnimationImages4.push(PIXI.Sprite.from(sprites.TruemmKALLL))
+    // Resize character animation images
+    for (var i = 0; i < characters.length; i++) {
+        characterAnimationImages1[i].width = characterSelectionSize
+        characterAnimationImages1[i].height = characterSelectionSize
+        characterAnimationImages2[i].width = characterSelectionSize
+        characterAnimationImages2[i].height = characterSelectionSize
+        characterAnimationImages3[i].width = characterSelectionSize
+        characterAnimationImages3[i].height = characterSelectionSize
+        characterAnimationImages4[i].width = characterSelectionSize
+        characterAnimationImages4[i].height = characterSelectionSize
+    }
+    // Add character animation images to a container
+    for (var i = 0; i < characters.length; i++) {
+        characterAnimation1.addChild(characterAnimationImages1[i])
+        characterAnimation2.addChild(characterAnimationImages2[i])
+        characterAnimation3.addChild(characterAnimationImages3[i])
+        characterAnimation4.addChild(characterAnimationImages4[i])
     }
 
     // Initialize player boxes
@@ -467,6 +533,8 @@ function transitionToCharacterSelect(player1: number, player2: number): void {
     trailFrame = 0
     player1Selection = player1
     player2Selection = player2
+    animationBegun = false
+    animationDuration = 0
     resetTrails()
     // TODO: Turn these into a function
     for (var i = 0; i < characters.length; i++) {
@@ -526,6 +594,12 @@ let animationFade: number = 0
 let trailFrame: number = 0
 let player1Selection = 0
 let player2Selection = 0
+let animationBegun: boolean = false
+let animationDuration: number = 0
+
+export function allowTransitionToIngame(): boolean {
+    return animationBegun && animationDuration > 240
+}
 
 export function render(state: GameState): void {
     if (state.screen === 'title-screen') {
@@ -551,128 +625,196 @@ export function render(state: GameState): void {
             playerSelectors[3].visible = false
         }
 
-        // Animate character selectors
-        /*for (var player = 0; player < maxPlayers; player++) {
-            playerTrails[player].pop()
-        }*/
-        playerTrails[0].pop()
-        playerTrails[1].pop()
-        if (trailFrame % 80 < 20) {
-            playerTrails[0].unshift(new PIXI.Point(playerTrails[0][0].x + 4, playerTrails[0][0].y));
-            playerTrails[1].unshift(new PIXI.Point(playerTrails[1][0].x - 4, playerTrails[1][0].y));
-        } else if (trailFrame % 80 < 40) {
-            playerTrails[0].unshift(new PIXI.Point(playerTrails[0][0].x, playerTrails[0][0].y + 4));
-            playerTrails[1].unshift(new PIXI.Point(playerTrails[1][0].x, playerTrails[1][0].y - 4));
-        } else if (trailFrame % 80 < 60) {
-            playerTrails[0].unshift(new PIXI.Point(playerTrails[0][0].x - 4, playerTrails[0][0].y));
-            playerTrails[1].unshift(new PIXI.Point(playerTrails[1][0].x + 4, playerTrails[1][0].y));
+        if (!state.start) {
+            // Animate character selectors
+            /*for (var player = 0; player < maxPlayers; player++) {
+                playerTrails[player].pop()
+            }*/
+            playerTrails[0].pop()
+            playerTrails[1].pop()
+            if (trailFrame % 80 < 20) {
+                playerTrails[0].unshift(new PIXI.Point(playerTrails[0][0].x + 4, playerTrails[0][0].y));
+                playerTrails[1].unshift(new PIXI.Point(playerTrails[1][0].x - 4, playerTrails[1][0].y));
+            } else if (trailFrame % 80 < 40) {
+                playerTrails[0].unshift(new PIXI.Point(playerTrails[0][0].x, playerTrails[0][0].y + 4));
+                playerTrails[1].unshift(new PIXI.Point(playerTrails[1][0].x, playerTrails[1][0].y - 4));
+            } else if (trailFrame % 80 < 60) {
+                playerTrails[0].unshift(new PIXI.Point(playerTrails[0][0].x - 4, playerTrails[0][0].y));
+                playerTrails[1].unshift(new PIXI.Point(playerTrails[1][0].x + 4, playerTrails[1][0].y));
+            } else {
+                playerTrails[0].unshift(new PIXI.Point(playerTrails[0][0].x, playerTrails[0][0].y - 4));
+                playerTrails[1].unshift(new PIXI.Point(playerTrails[1][0].x, playerTrails[1][0].y + 4));
+            }
+            trailFrame++
+
+            // Move character selectors in the grid
+            for (var player = 0; player < maxPlayers; player++) {
+                if (playerSelectors[player].x < 80 * state.characterSelection[player]) {
+                    playerSelectors[player].x += 4
+                } else if (playerSelectors[player].x > 80 * state.characterSelection[player]) {
+                    playerSelectors[player].x -= 4
+                }
+            }
+
+            // Animate player highlights
+            for (var player = 0; player < maxPlayers; player++) {
+                let highlight = highlightArray[player].getChildAt(0)
+                highlight.x += 4 * Math.sqrt(2)
+                highlight.y -= 4 * Math.sqrt(2)
+                if (highlight.x > 60 * Math.sqrt(2)) {
+                    highlight.x -= 120 * Math.sqrt(2)
+                    highlight.y += 120 * Math.sqrt(2)
+                }
+            }
+
+            // Player 1 changed character selection ("event")
+            if (player1Selection != state.characterSelection[0]) {
+                player1Selection = state.characterSelection[0]
+
+                // Move player highlight and set mask
+                highlightArray[0].x = 80 * player1Selection
+                highlightArray[0].getChildAt(0).mask = maskArray[player1Selection]
+                for (var i = 0; i < characters.length; i++) {
+                    if (i == player1Selection) {
+                        characterSelectionImages2[i].visible = true
+                    } else {
+                        characterSelectionImages2[i].visible = false
+                    }
+                }
+                characterNames[1].text = characters[player1Selection].name
+            }
+            // Player 2 changed character selection ("event")
+            if (player2Selection != state.characterSelection[1]) {
+                player2Selection = state.characterSelection[1]
+
+                // Move player highlight and set mask
+                highlightArray[1].x = 80 * player2Selection
+                highlightArray[1].getChildAt(0).mask = maskArray[player2Selection]
+                for (var i = 0; i < characters.length; i++) {
+                    if (i == player2Selection) {
+                        characterSelectionImages3[i].visible = true
+                    } else {
+                        characterSelectionImages3[i].visible = false
+                    }
+                }
+                characterNames[2].text = characters[player2Selection].name
+            }
+
+            // Toggle player highlight and Ready-indicator visibility
+            switch (state.playerReady[0]) {
+                case true:
+                    highlightArray[0].visible = true
+                    readyIndicator[1].visible = true
+                    if (readyTransitionIn[1] > 0) {
+                        readyIndicator[1].scale.set(readyTransitionIn[1])
+                        readyIndicator[1].zIndex = 1
+                        characterSelections.sortChildren()
+                    } else {
+                        readyIndicator[1].scale.set(Math.max(Math.sin(animationCycle) * 1.2, 1))
+                        readyIndicator[1].zIndex = 0
+                        characterSelections.sortChildren()
+                    }
+                    readyTransitionIn[1] = Math.max(readyTransitionIn[1] - 1, 0)
+                    break
+                case false:
+                    highlightArray[0].visible = false
+                    readyIndicator[1].visible = false
+                    readyTransitionIn[1] = 20
+                    break
+            }
+            switch (state.playerReady[1]) {
+                case true:
+                    highlightArray[1].visible = true
+                    readyIndicator[2].visible = true
+                    readyIndicator[2].alpha = 1
+                    if (readyTransitionIn[2] > 0) {
+                        readyIndicator[2].scale.set(readyTransitionIn[2])
+                        readyIndicator[2].zIndex = 1
+                        characterSelections.sortChildren()
+                    } else {
+                        readyIndicator[2].scale.set(Math.max(Math.sin(animationCycle) * 1.2, 1))
+                        readyIndicator[2].zIndex = 0
+                        characterSelections.sortChildren()
+                    }
+                    readyTransitionIn[2] = Math.max(readyTransitionIn[2] - 1, 0)
+                    break
+                case false:
+                    highlightArray[1].visible = false
+                    readyIndicator[2].visible = false
+                    readyTransitionIn[2] = 20
+                    break
+            }
+            animationCycle += 0.25
+
+            characterSelectionBackgroundVertical.x = (characterSelectionBackgroundVertical.x) % 64
+            characterSelectionBackgroundHorizontal.y = (characterSelectionBackgroundHorizontal.y + 1) % 64
         } else {
-            playerTrails[0].unshift(new PIXI.Point(playerTrails[0][0].x, playerTrails[0][0].y - 4));
-            playerTrails[1].unshift(new PIXI.Point(playerTrails[1][0].x, playerTrails[1][0].y + 4));
-        }
-        trailFrame++
+            // Begin transition from character selection state to in-game
+            if (!animationBegun) {
+                animationBackground.removeChildren()
+                animationBackgroundCoordinates = []
 
-        // Move character selectors in the grid
-        for (var player = 0; player < maxPlayers; player++) {
-            if (playerSelectors[player].x < 80 * state.characterSelection[player]) {
-                playerSelectors[player].x += 4
-            } else if (playerSelectors[player].x > 80 * state.characterSelection[player]) {
-                playerSelectors[player].x -= 4
-            }
-        }
-
-        // Animate player highlights
-        for (var player = 0; player < maxPlayers; player++) {
-            let highlight = highlightArray[player].getChildAt(0)
-            highlight.x += 4 * Math.sqrt(2)
-            highlight.y -= 4 * Math.sqrt(2)
-            if (highlight.x > 60 * Math.sqrt(2)) {
-                highlight.x -= 120 * Math.sqrt(2)
-                highlight.y += 120 * Math.sqrt(2)
-            }
-        }
-
-        // Player 1 changed character selection ("event")
-        if (player1Selection != state.characterSelection[0]) {
-            player1Selection = state.characterSelection[0]
-
-            // Move player highlight and set mask
-            highlightArray[0].x = 80 * player1Selection
-            highlightArray[0].getChildAt(0).mask = maskArray[player1Selection]
-            for (var i = 0; i < characters.length; i++) {
-                if (i == player1Selection) {
-                    characterSelectionImages2[i].visible = true
-                } else {
-                    characterSelectionImages2[i].visible = false
+                // TODO: Fix this when the game supports 4 players
+                for (var i = 0; i < characters.length; i++) {
+                    characterAnimationImages1[i].visible = false
+                    if (player1Selection == i) {
+                        characterAnimationImages2[i].visible = true
+                    } else {
+                        characterAnimationImages2[i].visible = false
+                    }
+                    if (player2Selection == i) {
+                        characterAnimationImages3[i].visible = true
+                    } else {
+                        characterAnimationImages3[i].visible = false
+                    }
+                    characterAnimationImages4[i].visible = false
                 }
+                characterAnimation2.x = characterSelection2.x
+                characterAnimation2.y = characterSelection2.y
+                characterAnimation3.x = characterSelection3.x
+                characterAnimation3.y = characterSelection3.y
+
+                app.renderer.backgroundColor = 0x000000
+                app.stage.removeChildren()
+                app.stage.addChild(animationBackground)
+                app.stage.addChild(characterAnimation1, characterAnimation2, characterAnimation3, characterAnimation4)
+                animationBegun = true
             }
-            characterNames[1].text = characters[player1Selection].name
-        }
-        // Player 2 changed character selection ("event")
-        if (player2Selection != state.characterSelection[1]) {
-            player2Selection = state.characterSelection[1]
 
-            // Move player highlight and set mask
-            highlightArray[1].x = 80 * player2Selection
-            highlightArray[1].getChildAt(0).mask = maskArray[player2Selection]
-            for (var i = 0; i < characters.length; i++) {
-                if (i == player2Selection) {
-                    characterSelectionImages3[i].visible = true
-                } else {
-                    characterSelectionImages3[i].visible = false
-                }
+            // Animate transition
+            animationBackground.addChild(new PIXI.Graphics().beginTextureFill({texture: PIXI.Texture.from(sprites.redStar)}).drawStar(0, 0, 4, 10, 3))
+            let point = 2 * Math.PI * Math.random() // Random point on unit circle
+            animationBackgroundCoordinates.push(new Particle(
+                characterAnimation2.x + (characterSelectionSize / 2),
+                characterAnimation2.y + (characterSelectionSize / 2),
+                Math.cos(point) * 10,
+                Math.sin(point) * 10, 0, 0
+            ))
+            animationBackground.addChild(new PIXI.Graphics().beginTextureFill({texture: PIXI.Texture.from(sprites.yellowStar)}).drawStar(0, 0, 4, 10, 3))
+            point = 2 * Math.PI * Math.random() // Random point on unit circle
+            animationBackgroundCoordinates.push(new Particle(
+                characterAnimation3.x + (characterSelectionSize / 2),
+                characterAnimation3.y + (characterSelectionSize / 2),
+                Math.cos(point) * 10,
+                Math.sin(point) * 10, 0, 0
+            ))
+
+            for (var i = 0; i < animationBackgroundCoordinates.length; i++) {
+                animationBackgroundCoordinates[i].update()
+                let star = animationBackground.getChildAt(i)
+                star.x = animationBackgroundCoordinates[i].x
+                star.y = animationBackgroundCoordinates[i].y
             }
-            characterNames[2].text = characters[player2Selection].name
+            let wantedX1 = middleX / 2 - (characterSelectionSize / 2)
+            let wantedY1 = middleY - (characterSelectionSize / 2)
+            let wantedX2 = middleX + (middleX / 2) - (characterSelectionSize / 2)
+            let wantedY2 = middleY - (characterSelectionSize / 2)
+            characterAnimation2.x += (wantedX1 - characterAnimation2.x) * 0.05
+            characterAnimation2.y += (wantedY1 - characterAnimation2.y) * 0.05
+            characterAnimation3.x += (wantedX2 - characterAnimation3.x) * 0.05
+            characterAnimation3.y += (wantedY2 - characterAnimation3.y) * 0.05
+            animationDuration++
         }
-
-        // Toggle player highlight and Ready-indicator visibility
-        switch (state.playerReady[0]) {
-            case true:
-                highlightArray[0].visible = true
-                readyIndicator[1].visible = true
-                if (readyTransitionIn[1] > 0) {
-                    readyIndicator[1].scale.set(readyTransitionIn[1])
-                    readyIndicator[1].zIndex = 1
-                    characterSelections.sortChildren()
-                } else {
-                    readyIndicator[1].scale.set(Math.max(Math.sin(animationCycle) * 1.2, 1))
-                    readyIndicator[1].zIndex = 0
-                    characterSelections.sortChildren()
-                }
-                readyTransitionIn[1] = Math.max(readyTransitionIn[1] - 1, 0)
-                break
-            case false:
-                highlightArray[0].visible = false
-                readyIndicator[1].visible = false
-                readyTransitionIn[1] = 20
-                break
-        }
-        switch (state.playerReady[1]) {
-            case true:
-                highlightArray[1].visible = true
-                readyIndicator[2].visible = true
-                readyIndicator[2].alpha = 1
-                if (readyTransitionIn[2] > 0) {
-                    readyIndicator[2].scale.set(readyTransitionIn[2])
-                    readyIndicator[2].zIndex = 1
-                    characterSelections.sortChildren()
-                } else {
-                    readyIndicator[2].scale.set(Math.max(Math.sin(animationCycle) * 1.2, 1))
-                    readyIndicator[2].zIndex = 0
-                    characterSelections.sortChildren()
-                }
-                readyTransitionIn[2] = Math.max(readyTransitionIn[2] - 1, 0)
-                break
-            case false:
-                highlightArray[1].visible = false
-                readyIndicator[2].visible = false
-                readyTransitionIn[2] = 20
-                break
-        }
-        animationCycle += 0.25
-
-        characterSelectionBackgroundVertical.x = (characterSelectionBackgroundVertical.x) % 64
-        characterSelectionBackgroundHorizontal.y = (characterSelectionBackgroundHorizontal.y + 1) % 64
     }
     if (state.screen === 'in-game') {
         if (previousScreen != 'in-game') {
