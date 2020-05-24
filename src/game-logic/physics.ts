@@ -130,7 +130,7 @@ export const handlePlayerMove = (player: Player, direction: -1 | 1, previousStat
   let nextPlayer = { ...player }
   if (playerCanMove(player)) {
     nextPlayer.facing = player.state === 'groundborne' ? (direction === -1 ? 'left' : 'right') : player.facing,
-    nextPlayer.xSpeed = direction * (player.state === 'airborne' ? player.character.airSpeed : player.character.walkSpeed)
+    nextPlayer.xSpeed = direction * (player.state === 'airborne' ? player.character.airSpeed : player.character.walkSpeed) // TODO: handle state === 'attacking'
 
     if (player.character.onMove) {
       nextPlayer = player.character.onMove(nextPlayer, previousState)
