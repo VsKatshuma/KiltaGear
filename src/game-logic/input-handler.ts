@@ -11,6 +11,8 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
   const nextPlayers: Player[] = nextState.players.slice() // shallow copy
 
   nextPlayers.forEach((player) => {
+    const inputMap: { [key: string]: PlayerInput } = kiltagear.inputMaps[player.playerSlot]
+
     // Check held inputs (i.e. horizontal movement)
     if (inputHeld(player, inputs, PlayerInput.Right) && !inputHeld(player, inputs, PlayerInput.Left)) {
       player = handlePlayerMove(player, 1, currentState)
@@ -19,9 +21,9 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
       player = handlePlayerMove(player, -1, currentState)
     }
 
-  players.forEach((player) => {
+    // Check keypresses
     keysPressed.forEach((key: KeyStatus) => {
-        const input = player.playerInputs[key.keyName]
+      const input = inputMap[key.keyName]
 
         switch (input) {
           case PlayerInput.Up:
