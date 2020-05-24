@@ -37,7 +37,7 @@ const handleCollisions = (players: Player[], state: InGameState): Player[] => {
     state.activeAttacks.forEach((attack: ActiveAttack) => {
       if (attack.playerSlot !== player.playerSlot) {
         attack.hitboxes.forEach((hitbox: Hitbox) => {
-          if (isHitboxActive(hitbox)) {
+          if (!hasAttackEnded(attack) && isHitboxActive(hitbox)) {
             // TODO: Handle hitboxes that don't move with character
             // Calculate hit if hitbox overlaps with hurtbox
             // If multiple hitboxes hit on the same frame, the player gets hit with the last one of them
