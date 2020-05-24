@@ -25,42 +25,30 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
     keysPressed.forEach((key: KeyStatus) => {
       const input = inputMap[key.keyName]
 
-        switch (input) {
-          case PlayerInput.Up:
-            players[player.playerSlot] = handlePlayerJump(player, nextState)
-            break
+      switch (input) {
+        case PlayerInput.Up:
+          player = handlePlayerJump(player, nextState)
+          break
 
-          case PlayerInput.Down:
-            players[player.playerSlot] = handlePlayerFastFall(player)
-            break
+        case PlayerInput.Down:
+          player = handlePlayerFastFall(player)
+          break
 
-          case PlayerInput.Left:
-            if (!inputHeld(player, inputs, PlayerInput.Right)) {
-              players[player.playerSlot] = handlePlayerMove(player, -1, currentState)
-            }
-            break
+        case PlayerInput.Light:
+          nextState.activeAttacks = handleAttack('Light', player, inputs, nextState.activeAttacks)
+          break
 
-          case PlayerInput.Right:
-            if (!inputHeld(player, inputs, PlayerInput.Left)) {
-              players[player.playerSlot] = handlePlayerMove(player, 1, currentState)
-            }
-            break
+        case PlayerInput.Special:
+          nextState.activeAttacks = handleAttack('Special', player, inputs, nextState.activeAttacks)
+          break
 
-          case PlayerInput.Light:
-            nextState.activeAttacks = handleAttack('Light', player, inputs, nextState.activeAttacks)
-            break
+        case PlayerInput.Meter:
+          nextState.activeAttacks = handleAttack('Meter', player, inputs, nextState.activeAttacks)
+          break
 
-          case PlayerInput.Special:
-            nextState.activeAttacks = handleAttack('Special', player, inputs, nextState.activeAttacks)
-            break
-
-          case PlayerInput.Meter:
-            nextState.activeAttacks = handleAttack('Meter', player, inputs, nextState.activeAttacks)
-            break
-
-          default:
-        }
-      })
+        default:
+      }
+    })
   })
 
   return { ...nextState, players: players }
