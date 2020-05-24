@@ -1,24 +1,5 @@
-import { characters } from "../kiltagear";
-import { Player, KeyStatus, InputStatus, InGameState, CharacterSelectionState, ActiveAttack, AttackStrength, AttackDirection, CharacterState, Attack } from "../types";
-import { getAttackString, playerCanMove, playerCanAct, assertNever } from "../utilities";
+import { Player, KeyStatus, InputStatus, InGameState, CharacterSelectionState, ActiveAttack, AttackStrength, AttackDirection, CharacterState, Attack, PlayerInput } from "../types";
 import { handlePlayerMove, handlePlayerJump, handlePlayerFastFall } from "./physics";
-
-export enum PlayerInput {
-  Left,
-  Right,
-  Up,
-  Down,
-  Neutral,
-  Light,
-  Special,
-  Meter
-}
-
-export type PlayerAction = { playerPort: number, action: PlayerInput }
-
-function keyHeld(inputs: InputStatus, key: string) {
-  return inputs && inputs[key] && inputs[key].isDown
-}
 
 function inputHeld(player: Player, inputs: InputStatus, inputToCheck: PlayerInput) {
   return Object.values(inputs).some(key => player.playerInputs[key.keyName] === inputToCheck)

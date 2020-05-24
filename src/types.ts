@@ -202,3 +202,14 @@ export type Player = PlayerBase & {
   meter: number,
   jumps: number,
 }
+
+export enum PlayerInput {
+  Left = 'Left',
+  Right = 'Right',
+  Up = 'Up',
+  Down = 'Down',
+  Neutral = 'Neutral',
+  Light = 'Light',
+  Special = 'Special',
+  Meter = 'Meter'
+}
