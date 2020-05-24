@@ -1,5 +1,6 @@
 import * as kiltagear from "../kiltagear";
 import { Player, KeyStatus, InputStatus, InGameState, CharacterSelectionState, ActiveAttack, AttackStrength, AttackDirection, CharacterState, Attack, PlayerInput } from "../types";
+import { getAttackString, playerCanAct } from "../utilities";
 import { handlePlayerMove, handlePlayerJump, handlePlayerFastFall } from "./physics";
 
 function inputHeld(player: Player, inputs: InputStatus, inputToCheck: PlayerInput) {
@@ -79,7 +80,7 @@ function getCharacterAttack(attackStrength: AttackStrength, player: Player, atta
 
     if (attack) {
       return {
-        ...attack,
+        ...attack, // Shallow copy to avoid modifying the base attack when changing activeAttack
       }
     }
   }
@@ -104,8 +105,9 @@ function getAttackDirection(player: Player, inputs: InputStatus): AttackDirectio
 
 function inputToAttackDirection(input: PlayerInput, facing: 'left' | 'right', state: CharacterState): AttackDirection {
   switch (input) {
-    case PlayerInput.Left: return state === 'groundborne' ? 'Forward' : /*airborne*/ (facing === 'left' ? 'Forward' : 'Back')
-    case PlayerInput.Right: return state === 'groundborne' ? 'Forward' : /*airborne*/ (facing === 'right' ? 'Forward' : 'Back')
+    // Keep facing while airborne, eliminate illegal directions based on state
+    case PlayerInput.Left: return state === 'groundborne' ? 'Forward' : (facing === 'left' ? 'Forward' : 'Back')
+    case PlayerInput.Right: return state === 'groundborne' ? 'Forward' : (facing === 'right' ? 'Forward' : 'Back')
     case PlayerInput.Down: return 'Down'
     case PlayerInput.Up: return state === 'airborne' ? 'Up' : 'Neutral'
     case PlayerInput.Neutral: return 'Neutral'
