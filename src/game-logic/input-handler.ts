@@ -49,9 +49,11 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
         default:
       }
     })
+
+    nextPlayers[player.playerSlot] = player
   })
 
-  return { ...nextState, players: players }
+  return { ...nextState, players: nextPlayers }
 }
 
 // Mutate passed player and state to add a new attack based on the input
