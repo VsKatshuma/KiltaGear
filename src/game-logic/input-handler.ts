@@ -87,10 +87,10 @@ function getCharacterAttack(attackStrength: AttackStrength, player: Player, atta
 }
 
 function getAttackDirection(player: Player, inputs: InputStatus): AttackDirection {
-  const isHoldingLeft =  (player.playerSlot === 0 && keyHeld(inputs, 'a')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowLeft'))
-  const isHoldingRight = (player.playerSlot === 0 && keyHeld(inputs, 'd')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowRight'))
-  const isHoldingDown =  (player.playerSlot === 0 && keyHeld(inputs, 's')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowDown'))
-  const isHoldingUp =    (player.playerSlot === 0 && keyHeld(inputs, 'w')) || (player.playerSlot === 1 && keyHeld(inputs, 'ArrowUp'))
+  const isHoldingLeft =  (inputHeld(player, inputs, PlayerInput.Left))
+  const isHoldingRight = (inputHeld(player, inputs, PlayerInput.Right))
+  const isHoldingDown =  (inputHeld(player, inputs, PlayerInput.Down))
+  const isHoldingUp =    (inputHeld(player, inputs, PlayerInput.Up))
   const playerDirection = isHoldingLeft ? PlayerInput.Left :
                           (isHoldingRight ? PlayerInput.Right :
                           (isHoldingDown ? PlayerInput.Down :
