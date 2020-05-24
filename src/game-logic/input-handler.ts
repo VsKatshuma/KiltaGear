@@ -8,7 +8,16 @@ function inputHeld(player: Player, inputs: InputStatus, inputToCheck: PlayerInpu
 
 export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatus, keysPressed: KeyStatus[], keysReleased: KeyStatus[]): InGameState => {
   const nextState: InGameState = { ...currentState }
-  const players: Player[] = nextState.players
+  const nextPlayers: Player[] = nextState.players.slice() // shallow copy
+
+  nextPlayers.forEach((player) => {
+    // Check held inputs (i.e. horizontal movement)
+    if (inputHeld(player, inputs, PlayerInput.Right) && !inputHeld(player, inputs, PlayerInput.Left)) {
+      player = handlePlayerMove(player, 1, currentState)
+    }
+    if (inputHeld(player, inputs, PlayerInput.Left) && !inputHeld(player, inputs, PlayerInput.Right)) {
+      player = handlePlayerMove(player, -1, currentState)
+    }
 
   players.forEach((player) => {
     keysPressed.forEach((key: KeyStatus) => {
