@@ -140,11 +140,11 @@ type RelativeToPlayer = {
 }
 
 export type Attack = CoordinateSettings & {
-  x: number, // Check if it's relative to player or in world coordinates using utilities.isAttackRelativeToPlayer
+  x: number, // Check if the coordinate is relative to player or in world coordinates using utilities.isAttackRelativeToPlayer
   y: number,
   xSpeed: number,
   ySpeed: number,
-  duration: number, // How long to prevent player from moving, in frames
+  duration: number, // How long to prevent player from doing another attack, in frames
   meterCost: number,
   hitboxes: Hitbox[],
   endWhenHitboxConnects: boolean,
