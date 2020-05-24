@@ -103,6 +103,8 @@ const healthBarLeftBackground = new PIXI.Graphics()
 const healthBarRightBackground = new PIXI.Graphics()
 const healthBarLeft = new PIXI.Graphics()
 const healthBarRight = new PIXI.Graphics()
+const meterLeftBackground = new PIXI.Graphics()
+const meterRightBackground = new PIXI.Graphics()
 const meterLeft = new PIXI.Graphics()
 const meterRight = new PIXI.Graphics()
 const winnerText = new PIXI.Text('Game over!', new PIXI.TextStyle({ // Temporarily using title text style
@@ -505,6 +507,13 @@ export function initialize(): void {
     healthBarRight.drawRect(windowWidth / 2 + windowWidth * 0.04, 26, windowWidth * 0.4, 20)
     healthBarRight.endFill()
 
+    meterLeftBackground.beginFill(0x000099)
+    meterLeftBackground.drawRect(windowWidth * 0.06, windowHeight - 46, windowWidth * 0.4, 20)
+    meterLeftBackground.endFill()
+    meterRightBackground.beginFill(0x000099)
+    meterRightBackground.drawRect(windowWidth / 2 + windowWidth * 0.04, windowHeight - 46, windowWidth * 0.4, 20)
+    meterRightBackground.endFill()
+
     // Results
     winnerText.anchor.set(0.5)
     winnerText.x = middleX
@@ -581,9 +590,9 @@ function transitionToIngame(characterSelection: number[]): void {
     app.stage.addChild(background1, containers[1], containers[2])
     app.stage.addChild(hurtboxes, hitboxes)
     app.stage.addChild(healthBarLeftBackground, healthBarLeft)
-    app.stage.addChild(meterLeft)
+    app.stage.addChild(meterLeftBackground, meterLeft)
     app.stage.addChild(healthBarRightBackground, healthBarRight)
-    app.stage.addChild(meterRight)
+    app.stage.addChild(meterRightBackground, meterRight)
 }
 
 let previousScreen = ''
@@ -955,17 +964,32 @@ export function render(state: GameState): void {
         hitboxes.endFill()
 
         // Health
-        healthBarLeft.clear()
-        healthBarLeft.beginFill(0x00FF00)
-
         let player1HealthRemaining = state.players[0].health / state.players[0].character.maxHealth
         let player2HealthRemaining = state.players[1].health / state.players[1].character.maxHealth
+
+        healthBarLeft.clear()
+        healthBarLeft.beginFill(0x00FF00)
         healthBarLeft.drawRect((windowWidth * 0.06) + (windowWidth * 0.4 * (1 - player1HealthRemaining)), 26, windowWidth * 0.4 * player1HealthRemaining, 20)
         healthBarLeft.endFill()
+
         healthBarRight.clear()
         healthBarRight.beginFill(0x00FF00)
         healthBarRight.drawRect((windowWidth / 2 + windowWidth * 0.04) + (windowWidth * 0.4 * (1 - player2HealthRemaining)), 26, windowWidth * 0.4 * player2HealthRemaining, 20)
         healthBarRight.endFill()
+
+        // Meter
+        let player1Meter = state.players[0].meter / state.players[0].character.maxMeter
+        let player2Meter = state.players[1].meter / state.players[1].character.maxMeter
+
+        meterLeft.clear()
+        meterLeft.beginFill(0x0088FF)
+        meterLeft.drawRect((windowWidth * 0.06) + (windowWidth * 0.4 * (1 - player1Meter)), windowHeight - 46, windowWidth * 0.4 * player1Meter, 20)
+        meterLeft.endFill()
+
+        meterRight.clear()
+        meterRight.beginFill(0x0088FF)
+        meterRight.drawRect((windowWidth / 2 + windowWidth * 0.04) + (windowWidth * 0.4 * (1 - player2Meter)), windowHeight - 46, windowWidth * 0.4 * player2Meter, 20)
+        meterRight.endFill()
     }
     if (state.screen === 'game-over') {
         if (previousScreen != 'game-over') {
