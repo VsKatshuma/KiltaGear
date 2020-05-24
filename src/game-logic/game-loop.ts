@@ -72,6 +72,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
           state.musicPlaying = true
           playMusic()
         }
+        kiltagear.initializeInputMaps()
         return {
           screen: 'character-select',
           musicPlaying: true,

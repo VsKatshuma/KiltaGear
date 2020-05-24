@@ -73,9 +73,24 @@ const playerTwo: Player = {
       [PlayerInput.Meter]: ['/', '-'],
     }
 }
+
+// Swap the keys and values of player.playerInputs objects for convenience
+export const initializeInputMaps = (): void => {
+    inputMaps = players.map(player =>
+        Object.entries(player.playerInputs)
+        .reduce(
+            (mapping: { [key: string]: PlayerInput }, [input, keyNames]: [PlayerInput, string[]]) => {
+                keyNames.forEach(key => mapping[key] = input)
+                return mapping
+            },
+            {}
+        )
+    )
 }
 
 export const players: Player[] = [playerOne, playerTwo]
+export let inputMaps: { [key: string]: PlayerInput }[] = []
+initializeInputMaps()
 
 export const keys: InputStatus = {}
 export let keysPressed: string[] = []
