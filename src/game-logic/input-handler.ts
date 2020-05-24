@@ -2,7 +2,7 @@ import { Player, KeyStatus, InputStatus, InGameState, CharacterSelectionState, A
 import { handlePlayerMove, handlePlayerJump, handlePlayerFastFall } from "./physics";
 
 function inputHeld(player: Player, inputs: InputStatus, inputToCheck: PlayerInput) {
-  return Object.values(inputs).some(key => player.playerInputs[key.keyName] === inputToCheck)
+  return player.playerInputs[inputToCheck].some(keyName => inputs[keyName] && inputs[keyName].isDown)
 }
 
 export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatus, keysPressed: KeyStatus[], keysReleased: KeyStatus[]): InGameState => {
