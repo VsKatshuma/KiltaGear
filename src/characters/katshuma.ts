@@ -7,7 +7,7 @@ export const Katshuma: Character = {
     maxHealth: 100,
     maxMeter: 100,
     startingMeter: 0,
-    meterThresholds: Array.from(new Array(10), (_, i) => (i + 1) * 10), // [10, 20, ..., 100]
+    meterThresholds: [25, 50, 75, 100], // [10, 20, ..., 100]
     walkSpeed: 8.5,
     airSpeed: 10,
     weight: 1,

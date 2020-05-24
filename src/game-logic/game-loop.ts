@@ -1,5 +1,5 @@
 import * as kiltagear from '../kiltagear'
-import { render } from '../render'
+import { render, allowTransitionToIngame } from '../render'
 import { InputStatus, KeyStatus, GameState, InGameState, Hitbox, Player, GameOverState } from '../types';
 import { handleCharacterSelection, handlePlayerInputs } from './input-handler';
 import { updateAttacks, nextPhysicsState } from './physics';
@@ -48,7 +48,7 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
     case 'character-select':
       state = handleCharacterSelection(state, keysPressed)
 
-      if (state.start) {
+      if (state.start && allowTransitionToIngame()) {
         kiltagear.players[0].character = kiltagear.characters[state.characterSelection[0]]
         kiltagear.players[0].health = kiltagear.players[0].character.maxHealth
         kiltagear.players[1].character = kiltagear.characters[state.characterSelection[1]]

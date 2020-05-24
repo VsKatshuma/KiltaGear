@@ -1,3 +1,4 @@
+import * as PIXI from 'pixi.js'
 
 function gradient(from: string, to: string): PIXI.Texture {
     let c = document.createElement("canvas")
@@ -13,7 +14,7 @@ function gradient(from: string, to: string): PIXI.Texture {
 }
 
 // Example use:
-//const star = new PIXI.Graphics().beginTextureFill(gradient('#9ff', '#033')).drawStar(50, 50, 5, 50, 20)
+//const star = new PIXI.Graphics().beginTextureFill({texture: gradient('#9ff', '#033')}).drawStar(50, 50, 5, 50, 20)
 
 function radialGradient(red: string, green: string, blue: string): HTMLCanvasElement {
     let canvas = document.createElement("canvas")
@@ -57,5 +58,8 @@ export const sprites = {
     blue: radialGradient('0', '0', '255'),
     green: radialGradient('0', '255', '0'),
 
-    ready: require('./assets/sprites/ready.png')
+    ready: require('./assets/sprites/ready.png'),
+    
+    redStar: require('./assets/sprites/color-red.png'),
+    yellowStar: require('./assets/sprites/color-yellow.png')
 }
