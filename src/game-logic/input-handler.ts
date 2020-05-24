@@ -1,3 +1,4 @@
+import * as kiltagear from "../kiltagear";
 import { Player, KeyStatus, InputStatus, InGameState, CharacterSelectionState, ActiveAttack, AttackStrength, AttackDirection, CharacterState, Attack, PlayerInput } from "../types";
 import { handlePlayerMove, handlePlayerJump, handlePlayerFastFall } from "./physics";
 
@@ -151,7 +152,7 @@ function addActiveAttack(attack: Attack, activeAttacks: ActiveAttack[], player: 
 
 export const handleCharacterSelection = (currentState: CharacterSelectionState, keysPressed: KeyStatus[]): CharacterSelectionState => {
   const nextState: CharacterSelectionState = currentState
-  const lastCharacterIndex: number = characters.length - 1
+  const lastCharacterIndex: number = kiltagear.characters.length - 1
 
   keysPressed.forEach((key: KeyStatus) => {
     switch (key.keyName) {
