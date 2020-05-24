@@ -103,10 +103,9 @@ const healthBarLeftBackground = new PIXI.Graphics()
 const healthBarRightBackground = new PIXI.Graphics()
 const healthBarLeft = new PIXI.Graphics()
 const healthBarRight = new PIXI.Graphics()
-const meterLeftBackground = new PIXI.Graphics()
-const meterRightBackground = new PIXI.Graphics()
-const meterLeft = new PIXI.Graphics()
-const meterRight = new PIXI.Graphics()
+const meters = new PIXI.Container()
+const meterBackgrounds: PIXI.Graphics[] = [new PIXI.Graphics(), new PIXI.Graphics(), new PIXI.Graphics(), new PIXI.Graphics()]
+const meterForegrounds: PIXI.Graphics[] = [new PIXI.Graphics(), new PIXI.Graphics(), new PIXI.Graphics(), new PIXI.Graphics()]
 const winnerText = new PIXI.Text('Game over!', new PIXI.TextStyle({ // Temporarily using title text style
     fontFamily: 'Arial', fontSize: 108, fontWeight: 'bold',
     fill: ['#FF0000', '#FFFFFF', '#FFFF00'], stroke: '#000000',
@@ -507,12 +506,10 @@ export function initialize(): void {
     healthBarRight.drawRect(windowWidth / 2 + windowWidth * 0.04, 26, windowWidth * 0.4, 20)
     healthBarRight.endFill()
 
-    meterLeftBackground.beginFill(0x000099)
-    meterLeftBackground.drawRect(windowWidth * 0.06, windowHeight - 46, windowWidth * 0.4, 20)
-    meterLeftBackground.endFill()
-    meterRightBackground.beginFill(0x000099)
-    meterRightBackground.drawRect(windowWidth / 2 + windowWidth * 0.04, windowHeight - 46, windowWidth * 0.4, 20)
-    meterRightBackground.endFill()
+    for (var player = 0; player < maxPlayers; player++) {
+        meters.addChild(meterBackgrounds[player])
+        meters.addChild(meterForegrounds[player])
+    }
 
     // Results
     winnerText.anchor.set(0.5)
@@ -590,9 +587,8 @@ function transitionToIngame(characterSelection: number[]): void {
     app.stage.addChild(background1, containers[1], containers[2])
     app.stage.addChild(hurtboxes, hitboxes)
     app.stage.addChild(healthBarLeftBackground, healthBarLeft)
-    app.stage.addChild(meterLeftBackground, meterLeft)
     app.stage.addChild(healthBarRightBackground, healthBarRight)
-    app.stage.addChild(meterRightBackground, meterRight)
+    app.stage.addChild(meters)
 }
 
 let previousScreen = ''
@@ -607,7 +603,7 @@ let animationBegun: boolean = false
 let animationDuration: number = 0
 
 export function allowTransitionToIngame(): boolean {
-    return animationBegun && animationDuration > 240
+    return animationBegun && animationDuration > 210
 }
 
 export function render(state: GameState): void {
@@ -981,15 +977,35 @@ export function render(state: GameState): void {
         let player1Meter = state.players[0].meter / state.players[0].character.maxMeter
         let player2Meter = state.players[1].meter / state.players[1].character.maxMeter
 
-        meterLeft.clear()
-        meterLeft.beginFill(0x0088FF)
-        meterLeft.drawRect((windowWidth * 0.06) + (windowWidth * 0.4 * (1 - player1Meter)), windowHeight - 46, windowWidth * 0.4 * player1Meter, 20)
-        meterLeft.endFill()
+        meterBackgrounds[1].clear()
+        meterBackgrounds[1].lineStyle(3, 0x000000)
+        meterBackgrounds[1].beginFill(0x000099, 0.33)
+        meterBackgrounds[1].drawRect(windowWidth * 0.06, windowHeight - 46, windowWidth * 0.4, 20)
+        for (var threshold = 0; threshold < state.players[0].character.meterThresholds.length; threshold++) {
+            meterBackgrounds[1].moveTo(windowWidth * 0.06 + (windowWidth * 0.4) * (state.players[0].character.meterThresholds[threshold] / state.players[0].character.maxMeter), windowHeight - 46)
+            meterBackgrounds[1].lineTo(windowWidth * 0.06 + (windowWidth * 0.4) * (state.players[0].character.meterThresholds[threshold] / state.players[0].character.maxMeter), windowHeight - 26)
+        }
+        meterBackgrounds[1].endFill()
 
-        meterRight.clear()
-        meterRight.beginFill(0x0088FF)
-        meterRight.drawRect((windowWidth / 2 + windowWidth * 0.04) + (windowWidth * 0.4 * (1 - player2Meter)), windowHeight - 46, windowWidth * 0.4 * player2Meter, 20)
-        meterRight.endFill()
+        meterBackgrounds[2].clear()
+        meterBackgrounds[2].lineStyle(3, 0x000000)
+        meterBackgrounds[2].beginFill(0x000099, 0.33)
+        meterBackgrounds[2].drawRect(windowWidth / 2 + windowWidth * 0.04, windowHeight - 46, windowWidth * 0.4, 20)
+        for (var threshold = 0; threshold < state.players[1].character.meterThresholds.length; threshold++) {
+            meterBackgrounds[1].moveTo(windowWidth / 2 + windowWidth * 0.04 + (windowWidth * 0.4) * (state.players[1].character.meterThresholds[threshold] / state.players[1].character.maxMeter), windowHeight - 46)
+            meterBackgrounds[1].lineTo(windowWidth / 2 + windowWidth * 0.04 + (windowWidth * 0.4) * (state.players[1].character.meterThresholds[threshold] / state.players[1].character.maxMeter), windowHeight - 26)
+        }
+        meterBackgrounds[2].endFill()
+
+        meterForegrounds[1].clear()
+        meterForegrounds[1].beginFill(0x0088FF)
+        meterForegrounds[1].drawRect((windowWidth * 0.06) + (windowWidth * 0.4 * (1 - player1Meter)), windowHeight - 43, windowWidth * 0.4 * player1Meter, 16)
+        meterForegrounds[1].endFill()
+
+        meterForegrounds[2].clear()
+        meterForegrounds[2].beginFill(0x0088FF)
+        meterForegrounds[2].drawRect((windowWidth / 2 + windowWidth * 0.04) + (windowWidth * 0.4 * (1 - player2Meter)), windowHeight - 43, windowWidth * 0.4 * player2Meter, 16)
+        meterForegrounds[2].endFill()
     }
     if (state.screen === 'game-over') {
         if (previousScreen != 'game-over') {
