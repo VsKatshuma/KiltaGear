@@ -87,7 +87,9 @@ const characterAnimationImages1: PIXI.Sprite[] = []
 const characterAnimationImages2: PIXI.Sprite[] = []
 const characterAnimationImages3: PIXI.Sprite[] = []
 const characterAnimationImages4: PIXI.Sprite[] = []
+const animationNames: PIXI.Text[] = []
 const animationBackground = new PIXI.Container()
+const animationFlash = new PIXI.Graphics()
 var animationBackgroundCoordinates: Particle[] = []
 
 // Containers are the "characters", they group the character body and in-game sprite
@@ -331,6 +333,11 @@ export function initialize(): void {
 
     characterSelection2.addChild(characterNames[1])
     characterSelection3.addChild(characterNames[2])
+
+    animationNames.push(new PIXI.Text('', characterNameStyle1))
+    animationNames.push(new PIXI.Text('', characterNameStyle2))
+    animationNames.push(new PIXI.Text('', characterNameStyle3))
+    animationNames.push(new PIXI.Text('', characterNameStyle4))
 
     const versus = new PIXI.Text("VS.", titleTextStyle)
     versus.anchor.set(0.5, 0.5)
@@ -603,7 +610,7 @@ let animationBegun: boolean = false
 let animationDuration: number = 0
 
 export function allowTransitionToIngame(): boolean {
-    return animationBegun && animationDuration > 210
+    return animationBegun && animationDuration > 320
 }
 
 export function render(state: GameState): void {
@@ -779,45 +786,73 @@ export function render(state: GameState): void {
                 characterAnimation3.x = characterSelection3.x
                 characterAnimation3.y = characterSelection3.y
 
+                for (var player = 0; player < maxPlayers; player++) {
+                    animationNames[player].text = ''
+                }
+
                 app.renderer.backgroundColor = 0x000000
                 app.stage.removeChildren()
                 app.stage.addChild(animationBackground)
-                app.stage.addChild(characterAnimation1, characterAnimation2, characterAnimation3, characterAnimation4)
+                app.stage.addChild(
+                    characterAnimation1, characterAnimation2, characterAnimation3, characterAnimation4,
+                    animationNames[0], animationNames[1], animationNames[2], animationNames[3]
+                )
+                app.stage.addChild(animationFlash)
                 animationBegun = true
             }
 
             // Animate transition
-            animationBackground.addChild(new PIXI.Graphics().beginTextureFill({texture: PIXI.Texture.from(sprites.redStar)}).drawStar(0, 0, 4, 10, 3))
-            let point = 2 * Math.PI * Math.random() // Random point on unit circle
-            animationBackgroundCoordinates.push(new Particle(
-                characterAnimation2.x + (characterSelectionSize / 2),
-                characterAnimation2.y + (characterSelectionSize / 2),
-                Math.cos(point) * 10,
-                Math.sin(point) * 10, 0, 0
-            ))
-            animationBackground.addChild(new PIXI.Graphics().beginTextureFill({texture: PIXI.Texture.from(sprites.yellowStar)}).drawStar(0, 0, 4, 10, 3))
-            point = 2 * Math.PI * Math.random() // Random point on unit circle
-            animationBackgroundCoordinates.push(new Particle(
-                characterAnimation3.x + (characterSelectionSize / 2),
-                characterAnimation3.y + (characterSelectionSize / 2),
-                Math.cos(point) * 10,
-                Math.sin(point) * 10, 0, 0
-            ))
+            let destinationX1 = middleX / 2 - (characterSelectionSize / 2)
+            let destinationY1 = middleY - (characterSelectionSize / 2)
+            let destinationX2 = middleX + (middleX / 2) - (characterSelectionSize / 2)
+            let destinationY2 = middleY - (characterSelectionSize / 2)
+            characterAnimation2.x += (destinationX1 - characterAnimation2.x) * 0.05
+            characterAnimation2.y += (destinationY1 - characterAnimation2.y) * 0.05
+            characterAnimation3.x += (destinationX2 - characterAnimation3.x) * 0.05
+            characterAnimation3.y += (destinationY2 - characterAnimation3.y) * 0.05
 
-            for (var i = 0; i < animationBackgroundCoordinates.length; i++) {
-                animationBackgroundCoordinates[i].update()
-                let star = animationBackground.getChildAt(i)
-                star.x = animationBackgroundCoordinates[i].x
-                star.y = animationBackgroundCoordinates[i].y
+            if (animationDuration == 112) {
+                animationFlash.beginFill(0xFFFFFF)
+                animationFlash.drawRect(0, 0, windowWidth, windowHeight)
+                animationFlash.endFill()
+            } else if (animationDuration == 116) {
+                animationFlash.clear()
+                animationNames[1].text = characters[player1Selection].name
+                animationNames[1].x = characterAnimation2.x
+                animationNames[1].y = characterAnimation2.y - 70
+                animationNames[2].text = characters[player2Selection].name
+                animationNames[2].x = characterAnimation3.x + 60
+                animationNames[2].y = characterAnimation3.y + characterSelectionSize + 25
             }
-            let wantedX1 = middleX / 2 - (characterSelectionSize / 2)
-            let wantedY1 = middleY - (characterSelectionSize / 2)
-            let wantedX2 = middleX + (middleX / 2) - (characterSelectionSize / 2)
-            let wantedY2 = middleY - (characterSelectionSize / 2)
-            characterAnimation2.x += (wantedX1 - characterAnimation2.x) * 0.05
-            characterAnimation2.y += (wantedY1 - characterAnimation2.y) * 0.05
-            characterAnimation3.x += (wantedX2 - characterAnimation3.x) * 0.05
-            characterAnimation3.y += (wantedY2 - characterAnimation3.y) * 0.05
+
+            // Add stars
+            if (animationDuration >= 112) {
+                animationBackground.addChild(new PIXI.Graphics().beginTextureFill({texture: PIXI.Texture.from(sprites.redStar)}).drawStar(0, 0, 4, 10, 3))
+                let point = 2 * Math.PI * Math.random() // Random point on unit circle
+                animationBackgroundCoordinates.push(new Particle(
+                    characterAnimation2.x + (characterSelectionSize / 2),
+                    characterAnimation2.y + (characterSelectionSize / 2),
+                    Math.cos(point) * 10,
+                    Math.sin(point) * 10, 0, 0
+                ))
+                animationBackground.addChild(new PIXI.Graphics().beginTextureFill({texture: PIXI.Texture.from(sprites.yellowStar)}).drawStar(0, 0, 4, 10, 3))
+                point = 2 * Math.PI * Math.random() // Random point on unit circle
+                animationBackgroundCoordinates.push(new Particle(
+                    characterAnimation3.x + (characterSelectionSize / 2),
+                    characterAnimation3.y + (characterSelectionSize / 2),
+                    Math.cos(point) * 10,
+                    Math.sin(point) * 10, 0, 0
+                ))
+                for (var i = 0; i < animationBackgroundCoordinates.length; i++) {
+                    animationBackgroundCoordinates[i].update()
+                    let star = animationBackground.getChildAt(i)
+                    star.x = animationBackgroundCoordinates[i].x
+                    star.y = animationBackgroundCoordinates[i].y
+                }
+                animationNames[1].x += 0.5
+                animationNames[2].x -= 0.5
+            }
+
             animationDuration++
         }
     }
@@ -981,31 +1016,30 @@ export function render(state: GameState): void {
         meterBackgrounds[1].lineStyle(3, 0x000000)
         meterBackgrounds[1].beginFill(0x000099, 0.33)
         meterBackgrounds[1].drawRect(windowWidth * 0.06, windowHeight - 46, windowWidth * 0.4, 20)
+        meterBackgrounds[2].clear()
+        meterBackgrounds[2].lineStyle(3, 0x000000)
+        meterBackgrounds[2].beginFill(0x000099, 0.33)
+        meterBackgrounds[2].drawRect(windowWidth / 2 + windowWidth * 0.04, windowHeight - 46, windowWidth * 0.4, 20)
+        
+        meterForegrounds[1].clear()
+        meterForegrounds[1].beginFill(0x0088FF)
+        meterForegrounds[1].drawRect((windowWidth * 0.06) + (windowWidth * 0.4 * (1 - player1Meter)), windowHeight - 43, windowWidth * 0.4 * player1Meter, 16)
+        meterForegrounds[1].endFill()
+        meterForegrounds[2].clear()
+        meterForegrounds[2].beginFill(0x0088FF)
+        meterForegrounds[2].drawRect((windowWidth / 2 + windowWidth * 0.04) + (windowWidth * 0.4 * (1 - player2Meter)), windowHeight - 43, windowWidth * 0.4 * player2Meter, 16)
+        meterForegrounds[2].endFill()
+
         for (var threshold = 0; threshold < state.players[0].character.meterThresholds.length; threshold++) {
             meterBackgrounds[1].moveTo(windowWidth * 0.06 + (windowWidth * 0.4) * (state.players[0].character.meterThresholds[threshold] / state.players[0].character.maxMeter), windowHeight - 46)
             meterBackgrounds[1].lineTo(windowWidth * 0.06 + (windowWidth * 0.4) * (state.players[0].character.meterThresholds[threshold] / state.players[0].character.maxMeter), windowHeight - 26)
         }
         meterBackgrounds[1].endFill()
-
-        meterBackgrounds[2].clear()
-        meterBackgrounds[2].lineStyle(3, 0x000000)
-        meterBackgrounds[2].beginFill(0x000099, 0.33)
-        meterBackgrounds[2].drawRect(windowWidth / 2 + windowWidth * 0.04, windowHeight - 46, windowWidth * 0.4, 20)
         for (var threshold = 0; threshold < state.players[1].character.meterThresholds.length; threshold++) {
-            meterBackgrounds[1].moveTo(windowWidth / 2 + windowWidth * 0.04 + (windowWidth * 0.4) * (state.players[1].character.meterThresholds[threshold] / state.players[1].character.maxMeter), windowHeight - 46)
-            meterBackgrounds[1].lineTo(windowWidth / 2 + windowWidth * 0.04 + (windowWidth * 0.4) * (state.players[1].character.meterThresholds[threshold] / state.players[1].character.maxMeter), windowHeight - 26)
+            meterBackgrounds[2].moveTo(windowWidth / 2 + windowWidth * 0.04 + (windowWidth * 0.4) * (state.players[1].character.meterThresholds[threshold] / state.players[1].character.maxMeter), windowHeight - 46)
+            meterBackgrounds[2].lineTo(windowWidth / 2 + windowWidth * 0.04 + (windowWidth * 0.4) * (state.players[1].character.meterThresholds[threshold] / state.players[1].character.maxMeter), windowHeight - 26)
         }
         meterBackgrounds[2].endFill()
-
-        meterForegrounds[1].clear()
-        meterForegrounds[1].beginFill(0x0088FF)
-        meterForegrounds[1].drawRect((windowWidth * 0.06) + (windowWidth * 0.4 * (1 - player1Meter)), windowHeight - 43, windowWidth * 0.4 * player1Meter, 16)
-        meterForegrounds[1].endFill()
-
-        meterForegrounds[2].clear()
-        meterForegrounds[2].beginFill(0x0088FF)
-        meterForegrounds[2].drawRect((windowWidth / 2 + windowWidth * 0.04) + (windowWidth * 0.4 * (1 - player2Meter)), windowHeight - 43, windowWidth * 0.4 * player2Meter, 16)
-        meterForegrounds[2].endFill()
     }
     if (state.screen === 'game-over') {
         if (previousScreen != 'game-over') {
