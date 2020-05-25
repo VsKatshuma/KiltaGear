@@ -10,6 +10,7 @@ const updatePlayers = (state: InGameState): InGameState => {
   let nextPlayers: Player[] = state.players.slice()
 
   // movement, physics, landing, state updates
+  nextPlayers = handleOnFrameEvents(nextPlayers, state)
   nextPlayers = handleCollisions(nextPlayers, state)
   nextPlayers = handlePhysics(nextPlayers)
   nextPlayers = handleStateUpdates(nextPlayers)
@@ -18,6 +19,14 @@ const updatePlayers = (state: InGameState): InGameState => {
     ...state,
     players: nextPlayers
   }
+}
+
+const handleOnFrameEvents = (players: Player[], state: InGameState): Player[] => {
+  return players.map(player =>
+    player.character.onEachFrame ?
+    player.character.onEachFrame(player, state) :
+    player
+  )
 }
 
 // Check for collisions with hitboxes
