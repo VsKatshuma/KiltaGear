@@ -49,10 +49,9 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
       state = handleCharacterSelection(state, keysPressed)
 
       if (state.start && allowTransitionToIngame()) {
-        kiltagear.players[0].character = kiltagear.characters[state.characterSelection[0]]
-        kiltagear.players[0].health = kiltagear.players[0].character.maxHealth
-        kiltagear.players[1].character = kiltagear.characters[state.characterSelection[1]]
-        kiltagear.players[1].health = kiltagear.players[1].character.maxHealth
+        kiltagear.initializePlayers(
+          state.characterSelection.map(selection => kiltagear.characters[selection])
+        )
 
         return {
           screen: 'in-game',
