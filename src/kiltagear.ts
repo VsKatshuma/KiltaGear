@@ -74,6 +74,18 @@ const playerTwo: Player = {
     }
 }
 
+export const initializePlayers = (selectedCharacters: Character[]) => {
+    selectedCharacters.forEach((character, i) => {
+        players[i] = {
+            ...players[i],
+            character: character,
+            health: character.maxHealth,
+            meter: character.startingMeter,
+            jumps: character.maxJumps - 1,
+        }
+    })
+}
+
 // Swap the keys and values of player.playerInputs objects for convenience
 export const initializeInputMaps = (): void => {
     inputMaps = players.map(player =>
