@@ -65,6 +65,20 @@ const nextState = (currentState: GameState, inputs: InputStatus): GameState => {
 
       return state
     case 'title-screen':
+      // Shortcut for jumping straight in-game with music muted
+      if (keysPressed.some(key => key.keyName === '0')) {
+        kiltagear.initializeInputMaps()
+        kiltagear.initializePlayers([kiltagear.characters[0], kiltagear.characters[1]])
+        return {
+          screen: 'in-game',
+          stage: kiltagear.stages.kiltis6,
+          musicPlaying: true,
+          players: kiltagear.players,
+          characterSelection: [0, 1],
+          activeAttacks: []
+        }
+      }
+
       // Change to character select when any key is pressed
       if (keysPressed.length > 0) {
         if (state.musicPlaying === false) {
