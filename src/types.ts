@@ -84,6 +84,7 @@ export type Character = {
   maxJumps: number,
   jumpStrength: number,
   hurtboxRadius: number,
+  onEachFrame?: (player: Player, previousState: InGameState) => Player,
   onMove?: (player: Player, previousState: InGameState) => Player,
   onJump?: (player: Player, previousState: InGameState) => Player,
   onAttackHit?: (player: Player, previousState: InGameState) => Player, // Called when own attack hits an opponent

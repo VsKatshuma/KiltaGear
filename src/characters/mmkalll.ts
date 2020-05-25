@@ -14,6 +14,7 @@ export const mmKALLL: Character = {
     maxJumps: 2,
     jumpStrength: 1, // Multiplier relative to mmKALLL
     hurtboxRadius: 20, // Sprites are 40x100
+    onEachFrame: (player: Player) => player,
     onMove: (player: Player) => gainMeter(0.1, player),
     onJump: (player: Player) => player,
     onAttackHit: (player: Player) => gainMeter(8, player),
