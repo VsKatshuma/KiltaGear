@@ -1,5 +1,3 @@
-import { PlayerInput } from "./game-logic/input-handler";
-
 // Game state handling related typings
 
 export type GameState = (TitleScreenState | CharacterSelectionState | InGameState | GameOverState)
@@ -187,6 +185,7 @@ export type PlayerBase = {
   state: CharacterState,
   xSpeed: number,
   ySpeed: number,
+  canSDI: boolean,
   hitlagRemaining: number,
   framesUntilNeutral: number,
 }

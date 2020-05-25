@@ -1,6 +1,5 @@
-import { Player, PlayerBase, InputStatus, Character } from './types'
+import { Player, PlayerBase, InputStatus, Character, PlayerInput } from './types'
 import { startGameLoop } from './game-logic/game-loop'
-import { PlayerInput } from './game-logic/input-handler'
 import { initialize } from './render'
 import { Katshuma } from './characters/katshuma'
 import { mmKALLL } from './characters/mmkalll'
@@ -28,6 +27,7 @@ const playerBase: PlayerBase = {
     state: 'airborne',
     xSpeed: 0,
     ySpeed: 0,
+    canSDI: false,
     hitlagRemaining: 0,
     framesUntilNeutral: 0,
 }
