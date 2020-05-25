@@ -1,5 +1,7 @@
-import { Character, Player } from "../types";
-import { generateAttack, createHitbox, gainMeter } from "../utilities";
+import { Character, Player, InGameState } from "../types";
+import { generateAttack, createHitbox, gainMeter, sum } from "../utilities";
+
+const METER_GAIN_MULTIPLIER = 0.055
 
 export const Katshuma: Character = {
     name: 'Katshuma',
@@ -14,6 +16,22 @@ export const Katshuma: Character = {
     maxJumps: 2,
     jumpStrength: 1,
     hurtboxRadius: 20,
+    onEachFrame:
+        // Return a meter-gain function that keeps state in a closure
+        (() => {
+            let xDiff = 99999999
+            return (player: Player, previousState: InGameState) => {
+
+                // Sum of the x-differences between Katshuma and each other player
+                const otherPlayers = previousState.players.filter(otherPlayer => otherPlayer.playerSlot !== player.playerSlot)
+                const newXDiff = sum(otherPlayers.map(op => Math.abs(op.x - player.x)))
+
+                // If distance increased, gain meter in relation to the change in the sum of x-differences, divided with the number of players
+                const meterGain = Math.max(0, (newXDiff - xDiff) / otherPlayers.length * METER_GAIN_MULTIPLIER)
+                xDiff = newXDiff
+                return gainMeter(meterGain, player)
+            }
+        })(),
     onMove: (player: Player) => player,
     onJump: (player: Player) => player,
     onAttackHit: (player: Player) => player,
