@@ -5,6 +5,10 @@ Play now at https://mmkalll.itch.io/kiltagear!
 
 ![真・mmKALLL](src/assets/sprites/original-true-mmkalll.jpg?raw=true "True mmKALLL")
 
+### Kanban and backlog
+
+https://kanbanflow.com/board/PHB3xT
+
 ### Installing on local machine
 
 1. Have `yarn` and Node.js 10.15.0 or newer installed (see https://yarnpkg.com/lang/en/docs/install/).
