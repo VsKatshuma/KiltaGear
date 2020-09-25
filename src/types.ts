@@ -213,3 +213,5 @@ export enum PlayerInput {
   Special = 'Special',
   Meter = 'Meter'
 }
+
+export type DirectionalInput = PlayerInput.Left | PlayerInput.Right | PlayerInput.Up | PlayerInput.Down

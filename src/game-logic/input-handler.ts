@@ -1,7 +1,7 @@
 import * as kiltagear from "../kiltagear";
 import { Player, KeyStatus, InputStatus, InGameState, CharacterSelectionState, ActiveAttack, AttackStrength, AttackDirection, CharacterState, Attack, PlayerInput } from "../types";
-import { getAttackString, playerCanAct } from "../utilities";
-import { handlePlayerMove, handlePlayerJump, handlePlayerFastFall } from "./physics";
+import { getAttackString, playerCanAct, playerCanSDI, isDirectionalInput } from "../utilities";
+import { handlePlayerMove, handlePlayerJump, handlePlayerFastFall, handlePlayerSDI } from "./physics";
 
 function inputHeld(player: Player, inputs: InputStatus, inputToCheck: PlayerInput) {
   return player.playerInputs[inputToCheck].some(keyName => inputs[keyName] && inputs[keyName].isDown)
@@ -26,28 +26,32 @@ export const handlePlayerInputs = (currentState: InGameState, inputs: InputStatu
     keysPressed.forEach((key: KeyStatus) => {
       const input = inputMap[key.keyName]
 
-      switch (input) {
-        case PlayerInput.Up:
-          player = handlePlayerJump(player, nextState)
-          break
+      if (playerCanSDI(player) && isDirectionalInput(input)) {
+        player = handlePlayerSDI(player, input)
+      } else {
+        switch (input) {
+          case PlayerInput.Up:
+            player = handlePlayerJump(player, nextState)
+            break
 
-        case PlayerInput.Down:
-          player = handlePlayerFastFall(player)
-          break
+          case PlayerInput.Down:
+            player = handlePlayerFastFall(player)
+            break
 
-        case PlayerInput.Light:
-          nextState.activeAttacks = handleAttack('Light', player, inputs, nextState.activeAttacks)
-          break
+          case PlayerInput.Light:
+            nextState.activeAttacks = handleAttack('Light', player, inputs, nextState.activeAttacks)
+            break
 
-        case PlayerInput.Special:
-          nextState.activeAttacks = handleAttack('Special', player, inputs, nextState.activeAttacks)
-          break
+          case PlayerInput.Special:
+            nextState.activeAttacks = handleAttack('Special', player, inputs, nextState.activeAttacks)
+            break
 
-        case PlayerInput.Meter:
-          nextState.activeAttacks = handleAttack('Meter', player, inputs, nextState.activeAttacks)
-          break
+          case PlayerInput.Meter:
+            nextState.activeAttacks = handleAttack('Meter', player, inputs, nextState.activeAttacks)
+            break
 
-        default:
+          default:
+        }
       }
     })
 

@@ -1,4 +1,4 @@
-import { AttackStrength, AttackDirection, Hitbox, Attack, ActiveAttack, Player } from './types'
+import { AttackStrength, AttackDirection, Hitbox, Attack, ActiveAttack, Player, PlayerInput, DirectionalInput } from './types'
 
 // General use
 
@@ -58,6 +58,10 @@ export const playerCanMove = (player: Player): boolean => {
   return !playerHasHitlag(player) && (player.state === 'airborne' || player.state === 'groundborne' || player.state === 'attacking')
 }
 
+export const playerCanSDI = (player: Player): boolean => {
+  return player.canSDI && player.hitlagRemaining > 0
+}
+
 export const playerHasHitlag = (player: Player): boolean => {
   return player.hitlagRemaining > 0
 }
@@ -94,6 +98,10 @@ export const getAttackString = (player: Player, attack: AttackStrength, directio
 
 export const isAttackRelativeToPlayer = (attack: Attack): boolean => {
   return attack.movesWithPlayer && !attack.createUsingWorldCoordinates
+}
+
+export const isDirectionalInput = (input: PlayerInput): input is DirectionalInput => {
+  return input === PlayerInput.Left || input === PlayerInput.Right || input === PlayerInput.Up || input === PlayerInput.Down
 }
 
 // Attack generation in character files

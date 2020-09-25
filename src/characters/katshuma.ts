@@ -40,7 +40,7 @@ export const Katshuma: Character = {
         LightNeutral: {
             ...generateAttack([
                 { ...createHitbox(4, 12, 5), radius: 123 },
-                { ...createHitbox(12, 20, 10) }
+                { ...createHitbox(12, 20, 10), hitLag: 100 }
             ]),
             endWhenHitboxConnects: false
         },
